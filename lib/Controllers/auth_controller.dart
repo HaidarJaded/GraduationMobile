@@ -42,13 +42,6 @@ class AuthController {
       await prefs.setString('token', token);
       await prefs.setString('profile', userInfo);
 
-      //Initial Firebase
-      await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
-      FirebaseMessaging messaging = FirebaseMessaging.instance;
-      String? fcmToken = await messaging.getToken();
-      await prefs.setString('FcmToken', fcmToken!);
-      await saveFcm(fcmToken);
       // emit(LoginState.success);
       return true;
     } catch (e) {
@@ -82,6 +75,8 @@ class AuthController {
       final String token = responseBody['token'];
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token', token);
+      final String? fcmToken = prefs.getString('FcmToken');
+      saveFcm(fcmToken!);
       return true;
     } catch (e) {
       return false;
@@ -97,6 +92,22 @@ class AuthController {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<bool> getAndSaveFcm() async {
+    try {
+      //Initial Firebase
+      await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform);
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      String? fcmToken = await messaging.getToken();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('FcmToken', fcmToken!);
+      await saveFcm(fcmToken);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }
