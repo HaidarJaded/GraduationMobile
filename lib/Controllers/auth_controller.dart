@@ -1,16 +1,29 @@
+// ignore_for_file: camel_case_types, avoid_print
+
 import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthController {
+enum LoginState {
+  initial,
+  loading,
+  success,
+  failure,
+  inState,
+}
+
+class loginCubit extends Cubit<LoginState> {
+  loginCubit() : super(LoginState.initial);
+
   Future<bool> login(String email, String password) async {
     try {
-      // emit(LoginState.loading);
+      emit(LoginState.loading);
 
       final responseBody = await Api().post(
           path: "/api/login", body: {'email': email, 'password': password});
@@ -42,10 +55,10 @@ class AuthController {
       await prefs.setString('token', token);
       await prefs.setString('profile', userInfo);
 
-      // emit(LoginState.success);
+      emit(LoginState.success);
       return true;
     } catch (e) {
-      // emit(LoginState.failure);
+      emit(LoginState.failure);
       print(e.toString());
       return false;
     }

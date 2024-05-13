@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_shadowing_type_parameters
+
 import 'dart:async';
 
 import 'package:graduation_mobile/helper/api.dart';
