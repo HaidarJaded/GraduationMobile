@@ -16,18 +16,16 @@ class CrudController<T extends HasId> {
   Future<List<T>?> getAll(Map<String, dynamic>? queryParams) async {
     try {
       String? table = getTable<T>();
-      final Map<String, dynamic> response =
+      final dynamic response =
           await Api().get(path: 'api/$table', queryParams: queryParams);
       final body = response['body'];
       if (body is List) {
         final items = body.map((itemData) => _fromJson<T>(itemData)).toList();
-        return items.cast<T>(); 
+        return items.cast<T>();
       } else {
-        print('Error: expected the body to be a List');
         return null;
       }
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -39,7 +37,8 @@ class CrudController<T extends HasId> {
     if (response == null) {
       return null;
     }
-    final T item = _fromJson<T>(response);
+    final body = response['body'];
+    final T item = _fromJson<T>(body);
     return item;
   }
 
@@ -60,7 +59,6 @@ class CrudController<T extends HasId> {
 
       return addedItem;
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
