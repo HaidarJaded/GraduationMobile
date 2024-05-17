@@ -29,7 +29,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
   Future<void> getDeviceData() async {
     try {
       ReturnedObject data =
-          await _crudController.getAll({'imei':'123'});
+          await _crudController.getAll({});
       final List? devices = data.items;
       if (devices != null) {
         emit(AllDevicesSucces(device: devices as List<Device>));

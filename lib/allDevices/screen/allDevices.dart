@@ -28,7 +28,7 @@ class _allDevicesState extends State<allDevices> {
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       var data = await CrudController<Device>()
-          .getAll({'page': page, 'per_page': perPage, 'imei': '123'});
+          .getAll({'page': page, 'per_page': perPage});
       final List<Device>? devices = data.items;
       if (devices != null) {
         int currentPage = data.pagination?['current_page'];
