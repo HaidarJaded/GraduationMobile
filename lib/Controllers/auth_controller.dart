@@ -1,14 +1,9 @@
 // ignore_for_file: camel_case_types, avoid_print
-
-import 'dart:convert';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum LoginState {
   initial,
@@ -28,11 +23,13 @@ class loginCubit extends Cubit<LoginState> {
       final responseBody = await Api().post(
           path: "/api/login", body: {'email': email, 'password': password});
       if (responseBody == null) {
+        emit(LoginState.failure);
         return false;
       }
       final token = responseBody['token'] as String?;
       final userInfoMap = responseBody['auth'] as Map<String, dynamic>?;
       if (token == null || userInfoMap == null) {
+        emit(LoginState.failure);
         return false;
       }
       final rulePermissions = List<Map<String, dynamic>>.from(
@@ -48,18 +45,13 @@ class loginCubit extends Cubit<LoginState> {
 
       await User.saveUserPermissions(permissions);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final userInfo = jsonEncode(userInfoMap);
-
-      // Save token and user info as strings in shared preferences
-      await prefs.setString('token', token);
-      await prefs.setString('profile', userInfo);
+      await InstanceSharedPrefrences().setToken(token);
+      await InstanceSharedPrefrences().setProfile(userInfoMap);
 
       emit(LoginState.success);
       return true;
     } catch (e) {
       emit(LoginState.failure);
-      print(e.toString());
       return false;
     }
   }
@@ -70,8 +62,8 @@ class loginCubit extends Cubit<LoginState> {
       if (responseBody == null) {
         return false;
       }
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.clear();
+      emit(LoginState.initial);
+      await InstanceSharedPrefrences().clearAll();
       return true;
     } catch (e) {
       return false;
@@ -80,16 +72,17 @@ class loginCubit extends Cubit<LoginState> {
 
   Future<bool> refreshToken() async {
     try {
+      emit(LoginState.loading);
       final responseBody =
           await Api().post(path: "/api/refresh_token", body: {});
       if (responseBody == null) {
+        emit(LoginState.initial);
         return false;
       }
       final String token = responseBody['token'];
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', token);
-      final String? fcmToken = prefs.getString('FcmToken');
-      saveFcm(fcmToken!);
+      InstanceSharedPrefrences().setToken(token);
+      emit(LoginState.success);
+      getAndSaveFcm();
       return true;
     } catch (e) {
       return false;
@@ -98,11 +91,8 @@ class loginCubit extends Cubit<LoginState> {
 
   Future saveFcm(String fcmToken) async {
     try {
-      final responseBody = await Api().post(
+      await Api().post(
           path: "/api/firebase/store_token", body: {"device_token": fcmToken});
-      if (responseBody) {
-        return false;
-      }
     } catch (e) {
       print(e.toString());
     }
@@ -111,12 +101,11 @@ class loginCubit extends Cubit<LoginState> {
   Future<bool> getAndSaveFcm() async {
     try {
       //Initial Firebase
-      await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
       FirebaseMessaging messaging = FirebaseMessaging.instance;
       String? fcmToken = await messaging.getToken();
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('FcmToken', fcmToken!);
+      if (fcmToken == null) {
+        return false;
+      }
       await saveFcm(fcmToken);
       return true;
     } catch (e) {
