@@ -27,9 +27,9 @@ class LoginPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (state == LoginState.success) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
           SnackBarAlert().alert("Login successfuly",
               color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-          WidgetsBinding.instance.addPostFrameCallback((_) {
             BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
             // This will ensure that the current frame is complete before executing the navigation
             Navigator.of(context).pushAndRemoveUntil(
