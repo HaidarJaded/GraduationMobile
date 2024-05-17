@@ -4,10 +4,9 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 
 import 'package:meta/meta.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../Controllers/crud_controller.dart';
 import '../../../helper/api.dart';
 import '../../../models/customer_model.dart';
@@ -23,12 +22,11 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
 
     try {
       var body = jsonEncode({'national_id': nationalId});
-      print(body);
 
       // var result =
       //     await Api().get(path: 'api/customers?national_id=$nationalId');
       final List<Customer>? result =
-          await _crudController.getAll({'national_id': nationalId});
+          (await _crudController.getAll({'national_id': nationalId})).items;
 
       if (result != null && result.isNotEmpty) {
         emit(AddDevicesFound(result: result));
@@ -51,10 +49,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       required String info,
       required repairedInCenter}) async {
     emit(AddDevicesLoading());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var profile = jsonDecode(prefs.getString('profile')!);
-    var client_id = profile['id'];
-    print(client_id);
+    var client_id = await InstanceSharedPrefrences().getId();
     var respons = await Api().post(path: '/api/devices/with_customer', body: {
       'name': firstnameCustomer,
       'last_name': lastnameCustomer,

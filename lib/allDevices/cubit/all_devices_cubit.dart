@@ -2,6 +2,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:bloc/bloc.dart';
+import 'package:graduation_mobile/Controllers/returned_object.dart';
 
 import '../../Controllers/crud_controller.dart';
 import '../../models/device_model.dart';
@@ -27,9 +28,11 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
 
   Future<void> getDeviceData() async {
     try {
-      final List<Device>? data = await _crudController.getAll({});
-      if (data != null) {
-        emit(AllDevicesSucces(device: data));
+      ReturnedObject data =
+          await _crudController.getAll({'imei':'123'});
+      final List? devices = data.items;
+      if (devices != null) {
+        emit(AllDevicesSucces(device: devices as List<Device>));
       } else {
         emit(AllDevicesfailure(errorMessage: 'Error: Failed to fetch data'));
       }
