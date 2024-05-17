@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
 import '../../Controllers/auth_controller.dart';
 import '../../allDevices/cubit/all_devices_cubit.dart';
@@ -26,6 +27,8 @@ class LoginPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (state == LoginState.success) {
+          SnackBarAlert().alert("Login successfuly",
+              color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
           WidgetsBinding.instance.addPostFrameCallback((_) {
             BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
             // This will ensure that the current frame is complete before executing the navigation
@@ -56,7 +59,7 @@ class LoginPage extends StatelessWidget {
                       SizedBox(
                         height: 200,
                         width: 200,
-                        child: Image.asset('images/myp.PNG'),
+                        child: Image.asset('assets/images/myp.PNG'),
                       ),
                       const Text(
                         "Login",
