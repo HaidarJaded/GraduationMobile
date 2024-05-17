@@ -1,15 +1,16 @@
+import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/http_exception.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 
 class Api {
   final String baseUrl = "https://haidarjaded787.serv00.net/";
   Future<dynamic> get(
       {required String path, Map<String, dynamic>? queryParams}) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
+      String? token =await InstanceSharedPrefrences().getToken();
       var headers = <String, String>{
         'Accept': 'application/json',
         'Authorization': token != null ? 'Bearer $token' : '',
@@ -24,8 +25,13 @@ class Api {
       } else {
         throw HttpException(response.statusCode!);
       }
+    } on DioException catch (e) {
+      SnackBarAlert().alert(e.response?.data['message']);
+      if (e.response?.statusCode == 401) {
+        Get.offAll(() => LoginPage());
+      }
+      return null;
     } catch (e) {
-      SnackBarAlert().alert(e.toString());
       return null;
     }
   }
@@ -35,8 +41,7 @@ class Api {
     required dynamic body,
   }) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
+      String? token =await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': token != null ? 'Bearer $token' : '',
@@ -51,19 +56,21 @@ class Api {
       } else {
         throw HttpException(response.statusCode!);
       }
+    } on DioException catch (e) {
+      SnackBarAlert().alert(e.response?.data['message']);
+      if (e.response?.statusCode == 401) {
+        Get.offAll(() => LoginPage());
+      }
+      return null;
     } catch (e) {
-      SnackBarAlert().alert(e.toString());
       return null;
     }
   }
 
   Future<dynamic> put(
-      {required String path,
-      required Map<String, dynamic> body,
-      required int id}) async {
+      {required String path, required Map<String, dynamic> body}) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
+      String? token =await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -78,16 +85,20 @@ class Api {
       } else {
         throw HttpException(response.statusCode!);
       }
+    } on DioException catch (e) {
+      SnackBarAlert().alert(e.response?.data['message']);
+      if (e.response?.statusCode == 401) {
+        Get.offAll(() => LoginPage());
+      }
+      return null;
     } catch (e) {
-      SnackBarAlert().alert(e.toString());
       return null;
     }
   }
 
   Future<void> delete({required String path, required int id}) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
+      String? token =await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -100,8 +111,15 @@ class Api {
       if (!(response.statusCode! >= 200 && response.statusCode! < 300)) {
         throw HttpException(response.statusCode!);
       }
+    } on DioException catch (e) {
+      SnackBarAlert().alert(e.response?.data['message']);
+      // if (e.response?.statusCode == 403) {
+
+      Get.offAll(() => LoginPage());
+      // }
+      return;
     } catch (e) {
-      SnackBarAlert().alert(e.toString());
+      return;
     }
   }
 }

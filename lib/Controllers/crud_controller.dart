@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:graduation_mobile/Controllers/returned_object.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
@@ -15,20 +16,23 @@ import 'package:graduation_mobile/models/service_model.dart';
 class CrudController<T extends HasId> {
   CrudController();
 
-  Future<List<T>?> getAll(Map<String, dynamic>? queryParams) async {
+  Future<ReturnedObject<T>> getAll(Map<String, dynamic>? queryParams) async {
     try {
+      ReturnedObject<T> returnedData = ReturnedObject<T>();
       String? table = getTable<T>();
       final dynamic response =
           await Api().get(path: 'api/$table', queryParams: queryParams);
       final body = response['body'];
       if (body is List) {
         final items = body.map((itemData) => _fromJson<T>(itemData)).toList();
-        return items.cast<T>();
+        returnedData.items = items.cast<T>();
+        returnedData.pagination = response['pagination'];
+        return returnedData;
       } else {
-        return null;
+        return returnedData;
       }
     } catch (e) {
-      return null;
+      return ReturnedObject<T>();
     }
   }
 
@@ -68,7 +72,7 @@ class CrudController<T extends HasId> {
   Future<T?> update(int id, Map<String, dynamic> body) async {
     String? table = getTable<T>();
     final dynamic response =
-        await Api().put(path: 'api/$table', id: id, body: body);
+        await Api().put(path: 'api/$table/$id', body: body);
     if (response != null) {
       final T updatedItem = _fromJson<T>(response);
       return updatedItem;
