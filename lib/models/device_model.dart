@@ -1,3 +1,4 @@
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/user_model.dart';
@@ -25,10 +26,11 @@ class Device implements HasId {
   int? deliverToClient;
   int? deliverToCustomer;
   int? repairedInCenter;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   Customer? customer;
   User? user;
+  Client? client;
 
   Device({
     this.id,
@@ -51,14 +53,15 @@ class Device implements HasId {
     this.deliverToClient,
     this.deliverToCustomer,
     this.repairedInCenter,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.customer,
     this.user,
+    this.client,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) {
-    return Device(
+    var device = Device(
       id: json['id'],
       model: json['model'],
       imei: json['imei'] ?? '',
@@ -71,21 +74,23 @@ class Device implements HasId {
       problem: json['problem'],
       costToClient: (json['cost_to_client'] as num?)?.toDouble(),
       costToCustomer: (json['cost_to_customer'] as num?)?.toDouble(),
-      fixSteps: json['fix_steps'],
+      fixSteps: json['fix_steps'] as String?,
       status: json['status'],
       clientApproval: json['client_approval'],
       dateReceipt: DateTime.parse(json['date_receipt']),
-      expectedDateOfDelivery: json['Expected_date_of_delivery'] != null
-          ? DateTime.parse(json['Expected_date_of_delivery'])
-          : null,
+      expectedDateOfDelivery:
+          DateTime.tryParse(json['Expected_date_of_delivery'] ?? ''),
       deliverToClient: json['deliver_to_client'],
       deliverToCustomer: json['deliver_to_customer'],
       repairedInCenter: json['repaired_in_center'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      customer:json['customer'],
-      user:json['user'],
+      createdAt: DateTime.tryParse(json['created_at']),
+      updatedAt: DateTime.tryParse(json['updated_at']),
+      customer:
+          json['customer'] != null ? Customer.fromJson(json['customer']) : null,
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
+    return device;
   }
 
   Map<String, dynamic> toJson() {
@@ -110,8 +115,8 @@ class Device implements HasId {
       'deliver_to_client': deliverToClient,
       'deliver_to_customer': deliverToCustomer,
       'repaired_in_center': repairedInCenter,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }

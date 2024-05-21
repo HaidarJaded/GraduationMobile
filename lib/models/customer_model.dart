@@ -42,7 +42,7 @@ class Customer implements HasId {
       devicesCount: json['devices_count'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      client: json['client'],
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
   }
 

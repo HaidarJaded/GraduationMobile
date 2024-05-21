@@ -48,8 +48,8 @@ class Order implements HasId {
       deliverTime: json['deliver_time'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      user: json['user'],
-      client: json['client'],
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
   }
 
