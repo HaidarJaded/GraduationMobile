@@ -1,10 +1,11 @@
+import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 
 class Device implements HasId {
-
   @override
   int? id;
-    static String table="devices";
+  static String table = "devices";
   String model;
   String imei;
   String code;
@@ -26,7 +27,8 @@ class Device implements HasId {
   int? repairedInCenter;
   DateTime createdAt;
   DateTime updatedAt;
-
+  Customer? customer;
+  User? user;
 
   Device({
     this.id,
@@ -36,7 +38,7 @@ class Device implements HasId {
     required this.clientId,
     this.userId,
     this.customerId,
-     this.clientPriority,
+    this.clientPriority,
     this.info,
     this.problem,
     this.costToClient,
@@ -51,6 +53,8 @@ class Device implements HasId {
     this.repairedInCenter,
     required this.createdAt,
     required this.updatedAt,
+    this.customer,
+    this.user,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) {
@@ -66,7 +70,7 @@ class Device implements HasId {
       info: json['info'],
       problem: json['problem'],
       costToClient: (json['cost_to_client'] as num?)?.toDouble(),
-      costToCustomer: (json['cost_to_customer']as num?)?.toDouble(),
+      costToCustomer: (json['cost_to_customer'] as num?)?.toDouble(),
       fixSteps: json['fix_steps'],
       status: json['status'],
       clientApproval: json['client_approval'],
@@ -79,6 +83,8 @@ class Device implements HasId {
       repairedInCenter: json['repaired_in_center'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
+      customer:json['customer'],
+      user:json['user'],
     );
   }
 
@@ -108,6 +114,4 @@ class Device implements HasId {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
-
-
 }
