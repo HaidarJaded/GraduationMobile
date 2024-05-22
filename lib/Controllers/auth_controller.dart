@@ -49,6 +49,7 @@ class loginCubit extends Cubit<LoginState> {
       await InstanceSharedPrefrences().setProfile(userInfoMap);
 
       emit(LoginState.success);
+      getAndSaveFcm();
       return true;
     } catch (e) {
       emit(LoginState.failure);
