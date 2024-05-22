@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 
 enum LoginState {
@@ -112,5 +113,9 @@ class loginCubit extends Cubit<LoginState> {
     } catch (e) {
       return false;
     }
+  }
+
+  void resetState() {
+    emit(LoginState.initial);
   }
 }

@@ -1,10 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
-
 import '../../Controllers/auth_controller.dart';
 import '../../allDevices/cubit/all_devices_cubit.dart';
 import '../../allDevices/screen/allDevices.dart';
@@ -40,7 +38,9 @@ class LoginPage extends StatelessWidget {
         }
 
         if (state == LoginState.failure) {
-          return const Text('فشل تسجيل الدخول');
+          emailController.text = '';
+          passwordController.text = '';
+          context.read<loginCubit>().resetState();
         }
         if (state == LoginState.initial) {
           return Scaffold(
