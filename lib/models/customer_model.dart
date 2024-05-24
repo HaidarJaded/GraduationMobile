@@ -1,9 +1,10 @@
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 
 class Customer implements HasId {
   @override
   int? id;
-  static String table="customers";
+  static String table = "customers";
   String name;
   String lastName;
   String nationalId;
@@ -13,6 +14,7 @@ class Customer implements HasId {
   int devicesCount;
   String createdAt;
   String updatedAt;
+  Client? client;
 
   Customer({
     required this.id,
@@ -25,6 +27,7 @@ class Customer implements HasId {
     required this.devicesCount,
     required this.createdAt,
     required this.updatedAt,
+    this.client,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
@@ -39,6 +42,7 @@ class Customer implements HasId {
       devicesCount: json['devices_count'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
   }
 

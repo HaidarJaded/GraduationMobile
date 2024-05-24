@@ -9,8 +9,13 @@ import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
+import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+<<<<<<< HEAD
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
+=======
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
+>>>>>>> 1bc1066d5515b73fd1b4cbf1c285aafb4d0b51ae
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
@@ -19,6 +24,7 @@ import 'sign-UpPage.dart/sing-upCubit.dart';
 import 'the_center/center.dart';
 import 'the_center/cubit/the_center_cubit.dart';
 import 'package:get/get.dart';
+import 'package:connectivity/connectivity.dart';
 
 PageController pageController = PageController(initialPage: 0);
 int currentIndex = 0;
@@ -72,24 +78,34 @@ Future main() async {
     onDismissActionReceivedMethod:
         NotificationController.onDismissActionReceivedMethod,
   );
+  Connectivity()
+      .onConnectivityChanged
+      .listen((ConnectivityResult result) async {
+    if (CheckConnection.currentState != null &&
+        CheckConnection.currentState == ConnectivityResult.none &&
+        await CheckConnection().checkInternetConnection()) {
+      SnackBarAlert().alert("عاد الاتصال بالانترنت",
+          title: "تم استعادة الاتصال",
+          color: const Color.fromRGBO(0, 200, 0, 1));
+      await checkLoginStatus();
+    }
+  });
   runApp(const MyApp());
+}
+
+Future<void> checkLoginStatus() async {
+  String? token = await InstanceSharedPrefrences().getToken();
+  if (token == null ||
+      !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
+    return;
+  }
+  Get.off(() => const allDevices());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<void> checkLoginStatus() async {
-    String? token = await InstanceSharedPrefrences().getToken();
-    if (token == null ||
-        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
-      return;
-    }
-    BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
-    Get.off(() => const allDevices());
-  }
-
   @override
   Widget build(BuildContext context) {
-    checkLoginStatus();
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => loginCubit()),
@@ -116,7 +132,7 @@ class MyApp extends StatelessWidget {
             create: (context) => EditCubit(),
           ),
         ],
-        child: GetMaterialApp(
+        child: const GetMaterialApp(
             debugShowCheckedModeBanner: false, home: LoginPage()));
   }
 }

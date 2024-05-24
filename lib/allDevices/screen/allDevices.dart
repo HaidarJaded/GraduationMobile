@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+<<<<<<< HEAD
 import 'package:graduation_mobile/allDevices/screen/edit.dart';
 
+=======
+import 'package:graduation_mobile/allDevices/screen/addDevice.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
+>>>>>>> 1bc1066d5515b73fd1b4cbf1c285aafb4d0b51ae
 import 'package:graduation_mobile/models/device_model.dart';
 import '../../bar/CustomDrawer.dart';
 import '../../bar/SearchAppBar.dart';
@@ -26,15 +31,24 @@ int? selectedDeviceId;
 
 class _allDevicesState extends State<allDevices> {
   int perPage = 20;
-  int currentPage = 2;
+  int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
   List<dynamic> devices = [];
   bool firstTime = true;
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
-      var data = await CrudController<Device>()
-          .getAll({'page': page, 'per_page': perPage});
+      if (currentPage > pagesCount) {
+        return;
+      }
+      int? id = await InstanceSharedPrefrences().getId();
+      var data = await CrudController<Device>().getAll({
+        'page': currentPage,
+        'per_page': perPage,
+        'orderBy': 'date_receipt',
+        'dir': 'desc',
+        'client_id': id
+      });
       final List<Device>? devices = data.items;
       if (devices != null) {
         int currentPage = data.pagination?['current_page'];
@@ -59,10 +73,21 @@ class _allDevicesState extends State<allDevices> {
   @override
   void initState() {
     super.initState();
+    InstanceSharedPrefrences().getId().then((id) => {
+          BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
+            'page': 1,
+            'per_page': perPage,
+            'orderBy': 'date_receipt',
+            'dir': 'desc',
+            'client_id': id
+          })
+        });
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         setState(() {
-          currentPage++;
+          if (currentPage <= pagesCount) {
+            currentPage++;
+          }
         });
         await fetchDevices(currentPage);
       }
@@ -80,10 +105,11 @@ class _allDevicesState extends State<allDevices> {
               body: const Center(child: CircularProgressIndicator()));
         } else if (state is AllDevicesSucces) {
           if (firstTime) {
-            // setState(() {
-            devices.addAll(state.device);
+            totalCount = state.data.pagination?['total'];
+            currentPage = state.data.pagination?['current_page'];
+            pagesCount = state.data.pagination?['last_page'];
+            devices.addAll(state.data.items!);
             firstTime = false;
-            // });
           }
           return Scaffold(
               floatingActionButton: FloatingActionButton(
@@ -199,7 +225,7 @@ class _allDevicesState extends State<allDevices> {
                         ),
                       );
                     } else {
-                      if (devices.length < totalCount) {
+                      if (currentPage <= pagesCount && pagesCount > 1) {
                         return const Padding(
                           padding: EdgeInsets.symmetric(vertical: 32),
                           child: Center(
@@ -208,7 +234,11 @@ class _allDevicesState extends State<allDevices> {
                         );
                       }
                     }
-                    return null;
+                    return devices.isEmpty
+                        ? const Center(child: Text('لا يوجد اجهزة'))
+                        : devices.length >= 20
+                            ? const Center(child: Text('لا يوجد المزيد'))
+                            : null;
                   },
                   // onReorder: (int oldIndex, int newIndex) {
                   //   context
