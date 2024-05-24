@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:graduation_mobile/Controllers/returned_object.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/check_connection.dart';
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
 import 'package:graduation_mobile/models/customer_model.dart';
@@ -18,6 +20,9 @@ class CrudController<T extends HasId> {
 
   Future<ReturnedObject<T>> getAll(Map<String, dynamic>? queryParams) async {
     try {
+      if (!await CheckConnection().thereIsAnInternet()) {
+        return ReturnedObject();
+      }
       ReturnedObject<T> returnedData = ReturnedObject<T>();
       String? table = getTable<T>();
       final dynamic response =
@@ -37,6 +42,9 @@ class CrudController<T extends HasId> {
   }
 
   Future<T?> getById(int id, Map<String, dynamic>? queryParams) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return null;
+    }
     String? table = getTable<T>();
     final dynamic response =
         await Api().get(path: 'api/$table/$id', queryParams: queryParams);
@@ -50,6 +58,9 @@ class CrudController<T extends HasId> {
 
   Future<T?> create(T item) async {
     try {
+      if (!await CheckConnection().thereIsAnInternet()) {
+        return null;
+      }
       String? table = getTable<T>();
       final body = _toJson<T>(item);
       final dynamic response =
@@ -70,6 +81,9 @@ class CrudController<T extends HasId> {
   }
 
   Future<T?> update(int id, Map<String, dynamic> body) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return null;
+    }
     String? table = getTable<T>();
     final dynamic response =
         await Api().put(path: 'api/$table/$id', body: body);
@@ -81,6 +95,9 @@ class CrudController<T extends HasId> {
   }
 
   Future<void> delete(int id) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return;
+    }
     String? table = getTable<T>();
     await Api().delete(path: 'api/$table', id: id);
   }
@@ -94,6 +111,7 @@ class CrudController<T extends HasId> {
       Service: (json) => Service.fromJson(json),
       Order: (json) => Order.fromJson(json),
       Customer: (json) => Customer.fromJson(json),
+      Client: (json) => Client.fromJson(json),
     };
 
     final factoryFunction = modelFactories[T];
@@ -112,6 +130,7 @@ class CrudController<T extends HasId> {
       Service: Service.table,
       Order: Order.table,
       Customer: Customer.table,
+      Client: Client.table
     };
 
     final factoryTable = modelFactories[T];
@@ -136,8 +155,9 @@ class CrudController<T extends HasId> {
       return (item as Order).toJson();
     } else if (item is Customer) {
       return (item as Customer).toJson();
+    } else if (item is Client) {
+      return (item as Client).toJson();
     }
-
     throw Exception('Unknown model type');
   }
 }

@@ -2,20 +2,47 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:graduation_mobile/helper/check_connection.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import '../../Controllers/auth_controller.dart';
-import '../../allDevices/cubit/all_devices_cubit.dart';
 import '../../allDevices/screen/allDevices.dart';
 import '../../sign-UpPage.dart/screen/signUp-pages.dart';
 
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => LoginPageState();
+}
+
 // ignore: must_be_immutable
-class LoginPage extends StatelessWidget {
+class LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool failur = false;
 
-  LoginPage({super.key});
+  Future<void> checkLoginStatus() async {
+    String? token = await InstanceSharedPrefrences().getToken();
+    if (token == null ||
+        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
+      return;
+    }
+    Get.off(() => const allDevices());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    CheckConnection().thereIsAnInternet().then((internet) => {
+          if (!internet)
+            {BlocProvider.of<loginCubit>(context).noInternet()}
+          else
+            {checkLoginStatus()}
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +53,10 @@ class LoginPage extends StatelessWidget {
         }
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-          SnackBarAlert().alert("Login successfuly",
-              color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
-            // This will ensure that the current frame is complete before executing the navigation
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const allDevices()),
-              (route) => false,
-            );
+            SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "مرحباً بعودتك");
+            Get.off(() => const allDevices());
           });
         }
 

@@ -2,8 +2,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 
 enum LoginState {
@@ -19,6 +19,9 @@ class loginCubit extends Cubit<LoginState> {
 
   Future<bool> login(String email, String password) async {
     try {
+      if (!await CheckConnection().thereIsAnInternet()) {
+        return false;
+      }
       emit(LoginState.loading);
 
       final responseBody = await Api().post(
@@ -60,6 +63,9 @@ class loginCubit extends Cubit<LoginState> {
 
   Future<bool> logout() async {
     try {
+      if (!await CheckConnection().thereIsAnInternet()) {
+        return false;
+      }
       final responseBody = await Api().post(path: "api/logout", body: {});
       if (responseBody == null) {
         return false;
@@ -117,5 +123,9 @@ class loginCubit extends Cubit<LoginState> {
 
   void resetState() {
     emit(LoginState.initial);
+  }
+
+  void noInternet() async {
+    emit(LoginState.loading);
   }
 }
