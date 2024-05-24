@@ -227,9 +227,7 @@ class LoginPageState extends State<LoginPage> {
             ),
           );
         }
-        return Container(
-            color: const Color.fromARGB(
-                255, 255, 255, 255)); // حالة أخرى (مثلاً AuthInitial)
+        return Container();
       },
     );
   }

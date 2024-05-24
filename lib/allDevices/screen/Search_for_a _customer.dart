@@ -3,17 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/allDevices/screen/addDevce2.dart';
 
 import 'cubit/add_devices_cubit.dart';
 
-class addDevices extends StatelessWidget {
-  addDevices({super.key, required this.title});
+class Search_for_a_customer extends StatelessWidget {
+  Search_for_a_customer({super.key, required this.title});
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nationalId = TextEditingController();
   final String title;
   bool exist = false;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddDevicesCubit, AddDevicesState>(
@@ -81,10 +81,7 @@ class addDevices extends StatelessWidget {
         if (state.errormessage == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // This will ensure that the current frame is complete before executing the navigation
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => addInfoDevice()),
-              (route) => false,
-            );
+            Get.to(addInfoDevice());
           });
         }
       }
@@ -127,26 +124,24 @@ class addDevices extends StatelessWidget {
                     ])))),
             actions: [
               MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () {},
                   color: const Color.fromARGB(255, 200, 188, 202),
                   elevation: 10.10,
                   child: const Text("الغاء")),
               MaterialButton(
                   onPressed: () {
                     if (myform.currentState!.validate()) {
-                      print(nationalId.text);
                       BlocProvider.of<AddDevicesCubit>(context)
                           .checkNationalId(nationalId: nationalId.text);
+
+                      nationalId.clear();
                     }
                   },
                   color: const Color.fromARGB(255, 200, 188, 202),
                   elevation: 10.10,
-                  child: const Text("اضافة"))
+                  child: const Text("بحث"))
             ]);
       }
-
       return Container();
     });
   }

@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 
 import 'package:meta/meta.dart';
@@ -36,6 +37,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
     } catch (e) {
       emit(AddDevicesFailure(errorMessage: e));
     }
+    Get.back();
   }
 
   Future<dynamic> addNewDevicewithNewCustomer(
@@ -69,6 +71,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
         "nationalId" +
         nationalId);
     emit(AddDevicesSuccess());
+    Get.back();
   }
 }
   
