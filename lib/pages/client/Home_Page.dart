@@ -72,7 +72,7 @@ class _HomePages extends State<HomePages> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return LoginPage();
+                    return const LoginPage();
                   }),
                 );
               },

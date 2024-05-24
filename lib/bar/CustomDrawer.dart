@@ -20,7 +20,7 @@ class CustomDrawer extends StatelessWidget {
     if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
       SnackBarAlert().alert("Logout successfuly",
           color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-      Get.offAll(() => LoginPage());
+      Get.offAll(() => const LoginPage());
     }
   }
 
