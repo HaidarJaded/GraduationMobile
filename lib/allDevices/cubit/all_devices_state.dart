@@ -7,8 +7,8 @@ class AllDevicesInitial extends AllDevicesState {}
 class AllDevicesLoading extends AllDevicesState {}
 
 class AllDevicesSucces extends AllDevicesState {
-  final List<Device> device;
-  AllDevicesSucces({required this.device});
+  final ReturnedObject data;
+  AllDevicesSucces({required this.data});
 }
 
 class AllDevicesfailure extends AllDevicesState {

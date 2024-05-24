@@ -2,6 +2,7 @@ import 'package:graduation_mobile/models/rule_model.dart';
 
 class Client {
   final int? id;
+  static String table = "clients";
   final String centerName;
   final String? phone;
   final int devicesCount;
@@ -33,7 +34,7 @@ class Client {
     this.rule,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'center_name': centerName,
