@@ -5,14 +5,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
+import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
+import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
-import 'login/loginScreen/loginPage.dart';
 import 'pages/client/phone_cubit/phone_cubit.dart';
+import 'sign-UpPage.dart/sing-upCubit.dart';
 import 'the_center/center.dart';
 import 'the_center/cubit/the_center_cubit.dart';
 import 'package:get/get.dart';
@@ -102,6 +105,15 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => PhoneCubit(),
+          ),
+          BlocProvider(
+            create: (context) => RegistrationCubit(),
+          ),
+          BlocProvider(
+            create: (context) => SwitchBloc(),
+          ),
+          BlocProvider(
+            create: (context) => EditCubit(),
           ),
         ],
         child: GetMaterialApp(

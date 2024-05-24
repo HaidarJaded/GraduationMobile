@@ -28,8 +28,9 @@ class LoginPage extends StatelessWidget {
         }
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-          SnackBarAlert().alert("Login successfuly",
-              color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
+            SnackBarAlert().alert("Login successfuly",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "Successfuly");
             BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
             // This will ensure that the current frame is complete before executing the navigation
             Navigator.of(context).pushAndRemoveUntil(
@@ -204,9 +205,7 @@ class LoginPage extends StatelessWidget {
             ),
           );
         }
-        return Container(
-            color: const Color.fromARGB(
-                255, 255, 255, 255)); // حالة أخرى (مثلاً AuthInitial)
+        return Container();
       },
     );
   }

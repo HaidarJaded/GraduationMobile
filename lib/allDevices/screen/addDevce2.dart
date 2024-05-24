@@ -1,12 +1,15 @@
-// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names
+// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names, empty_statements, deprecated_member_use, unnecessary_import
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 
 import '../cubit/all_devices_cubit.dart';
+import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
 class addInfoDevice extends StatelessWidget {
@@ -25,7 +28,12 @@ class addInfoDevice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddDevicesCubit, AddDevicesState>(
+    return WillPopScope(onWillPop: () async {
+      Get.offAll(allDevices());
+      BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
+
+      return false;
+    }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
         if (state is AddDevicesFound) {
           return Scaffold(
@@ -289,10 +297,27 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-                    textFormField(
-                        labelText: "الى السينتير",
-                        icon: const Icon(Icons.home_filled),
-                        controller: inCenterController),
+                    BlocBuilder<SwitchBloc, SwitchState>(
+                      builder: (context, state) {
+                        return Row(
+                          children: [
+                            Switch(
+                              value: state.inCenter,
+                              onChanged: (val) {
+                                BlocProvider.of<SwitchBloc>(context)
+                                    .add(ToggleSwitch(val));
+
+                                inCenterController.text = val ? '1' : '0';
+                              },
+                            ),
+                            Container(
+                              width: 30,
+                            ),
+                            const Text("اضافة الى المركز"),
+                          ],
+                        );
+                      },
+                    ),
 
                     InkWell(
                       onTap: () async {
@@ -308,16 +333,23 @@ class addInfoDevice extends StatelessWidget {
                                   imei: ImeiController.text,
                                   info: infoController.text,
                                   repairedInCenter: inCenterController.text);
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            BlocProvider.of<AllDevicesCubit>(context)
-                                .getDeviceData();
-                            // This will ensure that the current frame is complete before executing the navigation
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => const allDevices()),
-                              (route) => false,
-                            );
-                          });
+                          if (state is AddDevicesSuccess) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              BlocProvider.of<AllDevicesCubit>(context)
+                                  .getDeviceData();
+
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => const allDevices()),
+                                (route) => false,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('تم الاضافة بنجاح')),
+                              );
+                            });
+                          }
+                          ;
                         }
                       },
                       child: Container(
@@ -350,6 +382,6 @@ class addInfoDevice extends StatelessWidget {
           ),
         );
       },
-    );
+    ));
   }
 }

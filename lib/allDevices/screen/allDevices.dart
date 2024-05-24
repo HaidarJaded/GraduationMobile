@@ -1,15 +1,19 @@
 // ignore: file_names
-// ignore_for_file: camel_case_types, non_constant_identifier_names, unused_local_variable, unused_element, file_names, duplicate_ignore
+// ignore_for_file: camel_case_types, non_constant_identifier_names, unused_local_variable, unused_element, file_names, duplicate_ignore, unnecessary_string_interpolations
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
-import 'package:graduation_mobile/allDevices/screen/addDevice.dart';
+import 'package:graduation_mobile/allDevices/screen/edit.dart';
+
 import 'package:graduation_mobile/models/device_model.dart';
 import '../../bar/CustomDrawer.dart';
 import '../../bar/SearchAppBar.dart';
 import '../cubit/all_devices_cubit.dart';
+
+import 'Search_for_a _customer.dart';
+import 'cubit/edit_cubit.dart';
 
 class allDevices extends StatefulWidget {
   const allDevices({super.key});
@@ -17,6 +21,8 @@ class allDevices extends StatefulWidget {
   @override
   State<allDevices> createState() => _allDevicesState();
 }
+
+int? selectedDeviceId;
 
 class _allDevicesState extends State<allDevices> {
   int perPage = 20;
@@ -85,7 +91,7 @@ class _allDevicesState extends State<allDevices> {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return addDevices(
+                      return Search_for_a_customer(
                         title: "اضف جهاز",
                       );
                     },
@@ -112,10 +118,30 @@ class _allDevicesState extends State<allDevices> {
                             ExpansionTile(
                               // key: ValueKey(),
                               expandedAlignment: FractionalOffset.topRight,
-                              title: Text(devices[i].model),
+                              title: Text(
+                                state.device[i].model,
+                              ),
+
                               subtitle:
                                   // ignore: prefer_interpolation_to_compose_strings
-                                  Text(devices[i].imei),
+                                  Text(state.device[i].imei),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  if (state.device[i].id != null) {
+                                    selectedDeviceId = state.device[i].id;
+
+                                    BlocProvider.of<EditCubit>(context)
+                                        .exitIdDevice(id: selectedDeviceId!);
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return edit();
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
                               children: <Widget>[
                                 Padding(
                                     padding: const EdgeInsets.only(
@@ -133,20 +159,39 @@ class _allDevicesState extends State<allDevices> {
                                           Row(
                                             children: [
                                               Expanded(
-                                                  child:
-                                                      Text(devices[i].status)),
+                                                  child: Text(
+                                                      "${state.device[i].problem}")),
                                               const Expanded(child: Text(":")),
                                               const Expanded(
                                                   child: Text("العطل")),
                                             ],
                                           ),
-                                          // Row(
-                                          //   children: [
-                                          //     Expanded(child: state.device[i].costToClient),
-                                          //     const Expanded(child: Text(":")),
-                                          //     const Expanded(child: Text("التكلفة ")),
-                                          //   ],
-                                          // ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Text(
+                                                      "${state.device[i].costToCustomer}")),
+                                              const Expanded(child: Text(":")),
+                                              const Expanded(
+                                                  child: Text("التكلفة ")),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Text(
+                                                      "${state.device[i].status}")),
+                                              const Expanded(child: Text(":")),
+                                              const Expanded(
+                                                  child: Text("الحالة")),
+                                            ],
+                                          ),
                                         ])))
                               ],
                             )
@@ -186,7 +231,7 @@ class _allDevicesState extends State<allDevices> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return addDevices(
+                    return Search_for_a_customer(
                       title: "اضف جهاز",
                     );
                   },
@@ -203,48 +248,3 @@ class _allDevicesState extends State<allDevices> {
     );
   }
 }
-
-// Widget deviceData(int index, Map<String, String> device) => Card(
-//       key: ValueKey(state.data[index].itemName),
-//       color: const Color.fromARGB(255, 252, 234, 251),
-//       child: Column(
-//         children: [
-//           ExpansionTile(
-//             key: ValueKey(device['imei']),
-//             expandedAlignment: FractionalOffset.topRight,
-//             title: Text(device['model']!),
-//             subtitle:
-//                 // ignore: prefer_interpolation_to_compose_strings
-//                 Text(device['imei']!),
-//             children: <Widget>[
-//               Padding(
-//                   padding: const EdgeInsets.only(
-//                       left: 25, top: 5, bottom: 5, right: 25),
-//                   child: Container(
-//                       transformAlignment: Alignment.topRight,
-//                       decoration: const BoxDecoration(
-//                           color: Color.fromARGB(255, 242, 235, 247),
-//                           borderRadius: BorderRadius.all(Radius.circular(10))),
-//                       padding: const EdgeInsets.all(10),
-//                       alignment: Alignment.topLeft,
-//                       child: Column(children: [
-//                         Row(
-//                           children: [
-//                             Expanded(child: Text(device['problem']!)),
-//                             const Expanded(child: Text(":")),
-//                             const Expanded(child: Text("العطل")),
-//                           ],
-//                         ),
-//                         Row(
-//                           children: [
-//                             Expanded(child: Text(device['cost_to_client']!)),
-//                             const Expanded(child: Text(":")),
-//                             const Expanded(child: Text("التكلفة ")),
-//                           ],
-//                         ),
-//                       ])))
-//             ],
-//           )
-//         ],
-//       ),
-//     );

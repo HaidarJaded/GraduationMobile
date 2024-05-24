@@ -140,4 +140,6 @@ class CrudController<T extends HasId> {
 
     throw Exception('Unknown model type');
   }
+
+  gebyid(Map map) {}
 }
