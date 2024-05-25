@@ -31,6 +31,7 @@ class _allDevicesState extends State<allDevices> {
   int totalCount = 0;
   List<dynamic> devices = [];
   bool firstTime = true;
+  bool readyToBuild = false;
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
@@ -68,15 +69,20 @@ class _allDevicesState extends State<allDevices> {
   @override
   void initState() {
     super.initState();
-    InstanceSharedPrefrences().getId().then((id) => {
-          BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
-            'page': 1,
-            'per_page': perPage,
-            'orderBy': 'date_receipt',
-            'dir': 'desc',
-            'client_id': id
-          })
-        });
+    readyToBuild = false;
+    InstanceSharedPrefrences()
+        .getId()
+        .then((id) => {
+              BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
+                'page': 1,
+                'per_page': perPage,
+                'orderBy': 'date_receipt',
+                'dir': 'desc',
+                'client_id': id
+              })
+            })
+        .then((value) => readyToBuild = true);
+
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         setState(() {
@@ -93,7 +99,7 @@ class _allDevicesState extends State<allDevices> {
   Widget build(BuildContext context) {
     return BlocBuilder<AllDevicesCubit, AllDevicesState>(
       builder: (context, state) {
-        if (state is AllDevicesLoading) {
+        if (state is AllDevicesLoading || readyToBuild == false) {
           return Scaffold(
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),

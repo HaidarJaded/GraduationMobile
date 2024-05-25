@@ -30,6 +30,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
 
   Future<void> getDeviceData([Map<String, dynamic>? queryParams]) async {
     try {
+      emit(AllDevicesLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
       if (data.items != null) {
         emit(AllDevicesSucces(data: data));
