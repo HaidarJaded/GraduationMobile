@@ -3,12 +3,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/bar/CustomBottomNavigationBar.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
-import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
@@ -19,12 +19,14 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
     super.key,
   });
-  
+
   void logout() async {
     if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
-      SnackBarAlert().alert("Logout successfuly",
-          color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-       Get.offAll(() => const LoginPage());
+      SnackBarAlert().alert("تم تسجيل الخروج بنجاح",
+          color: const Color.fromRGBO(0, 200, 0, 1), title: "إلى اللقاء");
+      Future.delayed(const Duration(seconds: 2), () {
+        SystemNavigator.pop();
+      });
     }
   }
 
@@ -83,8 +85,9 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const allDevices()));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => const allDevices()));
+                        Get.off(() => const allDevices());
                       },
                     ),
                     const SizedBox(
@@ -112,9 +115,10 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const CustomBottomNavigationBar()));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         const CustomBottomNavigationBar()));
+                        Get.off(() => const CustomBottomNavigationBar());
                       },
                     ),
                     const SizedBox(
@@ -122,8 +126,9 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const oldPhone()));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => const oldPhone()));
+                        Get.off(() => const oldPhone());
                       },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
@@ -151,8 +156,10 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const anyQuestion()));
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => const anyQuestion()));
+                        Get.off(() => const anyQuestion());
+
                       },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
