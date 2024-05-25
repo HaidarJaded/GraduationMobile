@@ -140,17 +140,17 @@ class _allDevicesState extends State<allDevices> {
                               // key: ValueKey(),
                               expandedAlignment: FractionalOffset.topRight,
                               title: Text(
-                                state.data.items?[i].model,
+                                devices[i].model,
                               ),
 
                               subtitle:
                                   // ignore: prefer_interpolation_to_compose_strings
-                                  Text(state.data.items?[i].imei),
+                                  Text(devices[i].imei),
                               trailing: IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  if (state.data.items?[i].id != null) {
-                                    selectedDeviceId = state.data.items?[i].id;
+                                  if (devices[i].id != null) {
+                                    selectedDeviceId = devices[i].id;
 
                                     BlocProvider.of<EditCubit>(context)
                                         .exitIdDevice(id: selectedDeviceId!);
@@ -181,7 +181,7 @@ class _allDevicesState extends State<allDevices> {
                                             children: [
                                               Expanded(
                                                   child: Text(
-                                                      "${state.data.items?[i].problem}")),
+                                                      "${devices[i].problem}")),
                                               const Expanded(child: Text(":")),
                                               const Expanded(
                                                   child: Text("العطل")),
@@ -194,7 +194,7 @@ class _allDevicesState extends State<allDevices> {
                                             children: [
                                               Expanded(
                                                   child: Text(
-                                                      "${state.data.items?[i].costToCustomer}")),
+                                                      "${devices[i].costToCustomer}")),
                                               const Expanded(child: Text(":")),
                                               const Expanded(
                                                   child: Text("التكلفة ")),
@@ -207,7 +207,7 @@ class _allDevicesState extends State<allDevices> {
                                             children: [
                                               Expanded(
                                                   child: Text(
-                                                      "${state.data.items?[i].status}")),
+                                                      "${devices[i].status}")),
                                               const Expanded(child: Text(":")),
                                               const Expanded(
                                                   child: Text("الحالة")),
@@ -219,21 +219,20 @@ class _allDevicesState extends State<allDevices> {
                           ],
                         ),
                       );
+                    } else if (currentPage <= pagesCount && pagesCount > 1) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
                     } else {
-                      if (currentPage <= pagesCount && pagesCount > 1) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 32),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
+                      return devices.isEmpty
+                          ? const Center(child: Text('لا يوجد اجهزة'))
+                          : devices.length >= 20
+                              ? const Center(child: Text('لا يوجد المزيد'))
+                              : null;
                     }
-                    return devices.isEmpty
-                        ? const Center(child: Text('لا يوجد اجهزة'))
-                        : devices.length >= 20
-                            ? const Center(child: Text('لا يوجد المزيد'))
-                            : null;
                   },
                   // onReorder: (int oldIndex, int newIndex) {
                   //   context
