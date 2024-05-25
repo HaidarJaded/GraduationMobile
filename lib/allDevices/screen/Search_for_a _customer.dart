@@ -14,6 +14,7 @@ class Search_for_a_customer extends StatelessWidget {
   TextEditingController nationalId = TextEditingController();
   final String title;
   bool exist = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddDevicesCubit, AddDevicesState>(
@@ -22,66 +23,79 @@ class Search_for_a_customer extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       }
       if (state is AddDevicesFound) {
-        // 88934377569
-        return AlertDialog(
-            title: const Text("الزبون موجود"),
-            content: SizedBox(
-              height: 300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Expanded(
-                    child: Text("الاسم:"),
-                  ),
-                  Expanded(
-                    child: Text('${state.result[0].name}: ' +
-                        '${state.result[0].lastName}'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Expanded(
-                    child: Text("email:"),
-                  ),
-                  Expanded(
-                    child: Text('${state.result[0].email}'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Expanded(
-                    child: Text("الرقم:"),
-                  ),
-                  Expanded(
-                    child: Text('${state.result[0].phone}: الاسم'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Expanded(
-                    child: Text("الرقم الوطني:"),
-                  ),
-                  Expanded(child: Text('${state.result[0].nationalId}')),
-                ],
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.back();
+          Get.dialog(AlertDialog(
+              title: const Text("الزبون موجود"),
+              content: SizedBox(
+                height: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Expanded(
+                      child: Text("الاسم:"),
+                    ),
+                    Expanded(
+                      child: Text('${state.result[0].name}: ' +
+                          '${state.result[0].lastName}'),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Expanded(
+                      child: Text("email:"),
+                    ),
+                    Expanded(
+                      child: Text('${state.result[0].email}'),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Expanded(
+                      child: Text("الرقم:"),
+                    ),
+                    Expanded(
+                      child: Text('${state.result[0].phone}: الاسم'),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Expanded(
+                      child: Text("الرقم الوطني:"),
+                    ),
+                    Expanded(child: Text('${state.result[0].nationalId}')),
+                  ],
+                ),
               ),
-            ),
-            actions: [
-              MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => addInfoDevice()),
-                    );
-                  },
-                  color: const Color.fromARGB(255, 200, 188, 202),
-                  elevation: 10.10,
-                  child: const Text("اضف معلومات الجهاز")),
-            ]);
+              actions: [
+                MaterialButton(
+                    onPressed: () {
+                      Get.back();
+                      Get.off(() => addInfoDevice(
+                            customerNationalId: state.result[0].nationalId,
+                          ));
+                    },
+                    color: const Color.fromARGB(255, 200, 188, 202),
+                    elevation: 10.10,
+                    child: const Text("اضف معلومات الجهاز")),
+                MaterialButton(
+                    onPressed: () {
+                      BlocProvider.of<AddDevicesCubit>(Get.context!).resetState();
+                      Get.back();
+                    },
+                    color: const Color.fromARGB(255, 200, 188, 202),
+                    elevation: 10.10,
+                    child: const Text("الغاء"))
+              ]));
+        });
       }
       if (state is AddDevicesFailure) {
         if (state.errormessage == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // This will ensure that the current frame is complete before executing the navigation
-            Get.to(addInfoDevice());
+            Get.off(() => addInfoDevice(
+                  customerNationalId: nationalId.text,
+                ));
           });
         }
       }
@@ -124,7 +138,9 @@ class Search_for_a_customer extends StatelessWidget {
                     ])))),
             actions: [
               MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.back();
+                  },
                   color: const Color.fromARGB(255, 200, 188, 202),
                   elevation: 10.10,
                   child: const Text("الغاء")),
@@ -133,8 +149,6 @@ class Search_for_a_customer extends StatelessWidget {
                     if (myform.currentState!.validate()) {
                       BlocProvider.of<AddDevicesCubit>(context)
                           .checkNationalId(nationalId: nationalId.text);
-
-                      nationalId.clear();
                     }
                   },
                   color: const Color.fromARGB(255, 200, 188, 202),

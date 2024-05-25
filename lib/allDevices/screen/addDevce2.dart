@@ -7,13 +7,15 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
-import '../cubit/all_devices_cubit.dart';
 import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
 class addInfoDevice extends StatelessWidget {
-  addInfoDevice({super.key});
+  addInfoDevice({super.key, required customerNationalId}) {
+    nationalIdController = TextEditingController(text: customerNationalId);
+  }
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -29,12 +31,15 @@ class addInfoDevice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(onWillPop: () async {
-      Get.offAll(()=>const allDevices());
-      BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
+      Get.offAll(() => const allDevices());
+      BlocProvider.of<AddDevicesCubit>(context).resetState();
 
       return false;
     }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
+        if (state is AddDevicesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (state is AddDevicesFound) {
           return Scaffold(
               body: Padding(
@@ -128,7 +133,11 @@ class addInfoDevice extends StatelessWidget {
                           ])))));
         }
         if (state is AddDevicesSuccess) {
-          return const Text("text");
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            BlocProvider.of<AddDevicesCubit>(Get.context!).resetState();
+            Get.off(() => const allDevices());
+            SnackBarAlert().alert("تمت الاضافة بنجاح");
+          });
         }
         return Scaffold(
           body: Padding(
@@ -229,23 +238,16 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    textFormField(
-                      labelText: "الرقم الوطني",
-                      icon: const Icon(Icons.person_add_alt_1_outlined),
+                    TextFormField(
+                      readOnly: true,
+                      enabled: false,
                       controller: nationalIdController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'ادخل الرقم الوطني لصاحب الجهاز';
-                        } else if (value.length < 11) {
-                          return 'يجب ألا يكون الرقم أقل من 11 أرقام';
-                        }
-                        return null;
-                      },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.person_add_alt_1_outlined),
+                        labelText: "الرقم الوطني",
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-
                     const SizedBox(
                       height: 16,
                     ),
@@ -333,23 +335,6 @@ class addInfoDevice extends StatelessWidget {
                                   imei: ImeiController.text,
                                   info: infoController.text,
                                   repairedInCenter: inCenterController.text);
-                          if (state is AddDevicesSuccess) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              BlocProvider.of<AllDevicesCubit>(context)
-                                  .getDeviceData();
-
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => const allDevices()),
-                                (route) => false,
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('تم الاضافة بنجاح')),
-                              );
-                            });
-                          }
-                          ;
                         }
                       },
                       child: Container(
