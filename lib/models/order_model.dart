@@ -18,7 +18,6 @@ class Order implements HasId {
   String updatedAt;
   Client? client;
   User? user;
-
   Order({
     required this.id,
     required this.deviceId,

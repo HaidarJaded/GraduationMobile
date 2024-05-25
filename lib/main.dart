@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,12 +14,14 @@ import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
+import 'package:graduation_mobile/order/cubit/order_cubit.dart';
+
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
 import 'pages/client/phone_cubit/phone_cubit.dart';
 import 'sign-UpPage.dart/sing-upCubit.dart';
-import 'the_center/center.dart';
+
 import 'the_center/cubit/the_center_cubit.dart';
 import 'package:get/get.dart';
 import 'package:connectivity/connectivity.dart';
@@ -111,7 +114,7 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => TheCenterCubit(),
-            child: const center(),
+            child: const Center(),
           ),
           BlocProvider(
             create: (context) => AddDevicesCubit(),
@@ -127,6 +130,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => EditCubit(),
+          ),
+          BlocProvider(
+            create: (context) => OrderCubit(),
           ),
         ],
         child: const GetMaterialApp(

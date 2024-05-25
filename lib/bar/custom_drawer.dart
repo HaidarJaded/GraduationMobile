@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
-import 'package:graduation_mobile/bar/CustomBottomNavigationBar.dart';
+import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
+import 'package:graduation_mobile/order/cubit/order_cubit.dart';
+import 'package:graduation_mobile/order/screenOrder.dart';
+import 'package:graduation_mobile/the_center/center.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
@@ -19,12 +22,12 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
     super.key,
   });
-  
+
   void logout() async {
     if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
       SnackBarAlert().alert("Logout successfuly",
           color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-       Get.offAll(() => const LoginPage());
+      Get.offAll(() => const LoginPage());
     }
   }
 
@@ -83,8 +86,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const allDevices()));
+                        Get.offAll(const allDevices());
                       },
                     ),
                     const SizedBox(
@@ -112,9 +114,9 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const CustomBottomNavigationBar()));
+                        BlocProvider.of<AllDevicesCubit>(context)
+                            .getDeviceData();
+                        Get.offAll(center());
                       },
                     ),
                     const SizedBox(
@@ -122,8 +124,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const oldPhone()));
+                        Get.offAll(const oldPhone());
                       },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
@@ -151,8 +152,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const anyQuestion()));
+                        Get.offAll(const anyQuestion());
                       },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
@@ -167,6 +167,36 @@ class CustomDrawer extends StatelessWidget {
                             ),
                             Text(
                               "Any question",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        BlocProvider.of<OrderCubit>(context).getOrder();
+
+                        Get.offAll(const order());
+                      },
+                      // ignore: avoid_unnecessary_containers
+                      child: Container(
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.list_alt_sharp,
+                              size: 23,
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              "order",
                               style: TextStyle(
                                 fontSize: 18,
                               ),

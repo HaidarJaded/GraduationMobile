@@ -68,9 +68,7 @@ class Search_for_a_customer extends StatelessWidget {
             actions: [
               MaterialButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => addInfoDevice()),
-                    );
+                    Get.to(addInfoDevice());
                   },
                   color: const Color.fromARGB(255, 200, 188, 202),
                   elevation: 10.10,
@@ -109,8 +107,8 @@ class Search_for_a_customer extends StatelessWidget {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'ادخل الرقم الوطني لصاحب الجهاز';
-                          } else if (value.length < 11) {
-                            return 'يجب ألا يكون الرقم أقل من 11 أرقام';
+                          } else if (value.length != 11) {
+                            return 'يجب أن يكون 11 رقم';
                           }
                           return null;
                         },
