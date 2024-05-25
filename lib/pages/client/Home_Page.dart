@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
 import 'package:graduation_mobile/pages/client/step.dart';
 import 'package:graduation_mobile/pages/client/updateStatus.dart';
@@ -50,9 +51,7 @@ class _HomePages extends State<HomePages> {
               leading: const Icon(Icons.notifications_active_sharp),
               title: const Text("notifications"),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NotificationScreen();
-                }));
+                Get.to(NotificationScreen());
               },
             ),
             const ListTile(
@@ -69,12 +68,7 @@ class _HomePages extends State<HomePages> {
             ),
             MaterialButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return const LoginPage();
-                  }),
-                );
+                Get.to(const LoginPage());
               },
               minWidth: 10,
               color: const Color(0xFF3E7FF8),
@@ -110,19 +104,13 @@ class _HomePages extends State<HomePages> {
                       children: [
                         IconButton(
                             onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const UpdateStatus();
-                              }));
+                              Get.to(const UpdateStatus());
                             },
                             icon: const Icon(Icons.tips_and_updates)),
                         IconButton(
                           icon: const Icon(FontAwesomeIcons.list),
                           onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const RepairSteps();
-                            }));
+                            Get.to(const RepairSteps());
                           },
                         ),
                       ],
@@ -136,9 +124,7 @@ class _HomePages extends State<HomePages> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const AddDetalis();
-          }));
+          Get.to(const AddDetalis());
         },
         child: const Icon(Icons.post_add_outlined),
       ),

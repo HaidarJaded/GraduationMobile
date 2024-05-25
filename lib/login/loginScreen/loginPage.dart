@@ -194,12 +194,7 @@ class LoginPageState extends State<LoginPage> {
                               );
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 // This will ensure that the current frame is complete before executing the navigation
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignUpPages()),
-                                  (route) => false,
-                                );
+                                Get.to(const SignUpPages());
                               });
                             },
                             child: const Text(

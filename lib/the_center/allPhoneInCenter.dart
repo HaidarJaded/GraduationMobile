@@ -1,53 +1,226 @@
-// ignore_for_file: file_names, camel_case_types
+// ignore_for_file: file_names, camel_case_types, avoid_unnecessary_containers, unnecessary_import
 
 import 'package:flutter/material.dart';
-// ignore: unnecessary_import
+
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
+import 'package:graduation_mobile/allDevices/screen/edit.dart';
+
+import '../Controllers/crud_controller.dart';
+import '../allDevices/screen/cubit/edit_cubit.dart';
+import '../helper/shared_perferences.dart';
+import '../models/device_model.dart';
 
 class allPhoneInCenter extends StatefulWidget {
   const allPhoneInCenter({super.key});
-  static String id = 'allPhoneInCenter';
 
   @override
   State<allPhoneInCenter> createState() => _allPhoneInCenterState();
 }
 
+int? selectedDeviceId;
 // ignore: non_constant_identifier_names
 
 class _allPhoneInCenterState extends State<allPhoneInCenter> {
+  int perPage = 20;
+  int currentPage = 1;
+  int pagesCount = 0;
+  int totalCount = 0;
+  List<dynamic> devices = [];
+  bool firstTime = true;
+  Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
+    try {
+      if (currentPage > pagesCount) {
+        return;
+      }
+      int? id = await InstanceSharedPrefrences().getId();
+      var data = await CrudController<Device>().getAll({
+        'page': currentPage,
+        'per_page': perPage,
+        'orderBy': 'date_receipt',
+        'dir': 'desc',
+        'client_id': id
+      });
+      final List<Device>? devices = data.items;
+      if (devices != null) {
+        int currentPage = data.pagination?['current_page'];
+        int lastPage = data.pagination?['last_page'];
+        int totalCount = data.pagination?['total'];
+        setState(() {
+          this.currentPage = currentPage;
+          pagesCount = lastPage;
+          this.devices.addAll(devices);
+          this.totalCount = totalCount;
+        });
+        return;
+      }
+      return;
+    } catch (e) {
+      Get.snackbar("title", e.toString());
+      return;
+    }
+  }
+
+  final controller = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    InstanceSharedPrefrences().getId().then((id) => {
+          BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
+            'page': 1,
+            'per_page': perPage,
+            'orderBy': 'date_receipt',
+            'dir': 'desc',
+            'client_id': id
+          })
+        });
+    controller.addListener(() async {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        setState(() {
+          if (currentPage <= pagesCount) {
+            currentPage++;
+          }
+        });
+        await fetchDevices(currentPage);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ignore: avoid_unnecessary_containers
-    // return BlocBuilder<GetDevicesFromCenterCubit, GetDevicesFromCenterState>(
-    //   builder: (context, state) {
-    //     if (state is GetDevicesFromCenterLoading) {
-    //       return const Center(child: CircularProgressIndicator());
-    //     } else if (state is GetDevicesFromCentersSucsses) {
-    //       // ignore: avoid_unnecessary_containers
-    //       return Container(
-    // child: Container(
-    //     padding: const EdgeInsets.all(5),
-    //     child: ListView.builder(
-    //         itemCount: state.DevicesData.length,
-    //         itemBuilder: (context, i) {
-    //           return phoneInCenter_card(
-    //             devicesM: state.DevicesData[i],
-    //           );
-    //         })));
-    //     } else if (state is GetDevicesFromCenterFailure) {
-    //       return Text(state.errMessage);
-    //     }
-    // ignore: avoid_unnecessary_containers
-    return Container(
-        child: Container(
-      padding: const EdgeInsets.all(5),
-      // child: ListView.builder(
-      //     itemCount: ,
-      //     itemBuilder: (context, i) {
-      //       return phoneInCenter_card(
-      //         devicesM:,
-      //       );
-      //     })
-    ));
+    return BlocBuilder<AllDevicesCubit, AllDevicesState>(
+        builder: (context, state) {
+      if (state is AllDevicesLoading) {
+        const Center(child: CircularProgressIndicator());
+      } else if (state is AllDevicesSucces) {
+        if (firstTime) {
+          totalCount = state.data.pagination?['total'];
+          currentPage = state.data.pagination?['current_page'];
+          pagesCount = state.data.pagination?['last_page'];
+          devices.addAll(state.data.items!);
+          firstTime = false;
+        }
+        return Container(
+            child: Container(
+          padding: const EdgeInsets.all(5),
+          child: ListView.builder(
+            controller: controller,
+            itemCount: devices.length + 1,
+            itemBuilder: (context, i) {
+              if (i < devices.length) {
+                return Card(
+                    // key: ValueKey(state.data[index].itemName),
+                    color: const Color.fromARGB(255, 252, 234, 251),
+                    child: Column(children: [
+                      ExpansionTile(
+                          // key: ValueKey(),
+                          expandedAlignment: FractionalOffset.topRight,
+                          title: Text(
+                            state.data.items?[i].model,
+                          ),
+                          subtitle:
+                              // ignore: prefer_interpolation_to_compose_strings
+                              Text(state.data.items?[i].imei),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              if (state.data.items?[i].id != null) {
+                                selectedDeviceId = state.data.items?[i].id;
+
+                                BlocProvider.of<EditCubit>(context)
+                                    .exitIdDevice(id: selectedDeviceId!);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return edit();
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 25, top: 5, bottom: 5, right: 25),
+                                child: Container(
+                                    transformAlignment: Alignment.topRight,
+                                    decoration: const BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 242, 235, 247),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    padding: const EdgeInsets.all(10),
+                                    alignment: Alignment.topLeft,
+                                    child: Column(children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child: Text(
+                                                  "${state.data.items?[i].problem}")),
+                                          const Expanded(child: Text(":")),
+                                          const Expanded(child: Text("العطل")),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 3,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child: Text(
+                                                  "${state.data.items?[i].costToCustomer}")),
+                                          const Expanded(child: Text(":")),
+                                          const Expanded(
+                                              child: Text("التكلفة ")),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 3,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child: Text(
+                                                  "${state.data.items?[i].status}")),
+                                          const Expanded(child: Text(":")),
+                                          const Expanded(child: Text("الحالة")),
+                                        ],
+                                      ),
+                                    ])))
+                          ])
+                    ]));
+              } else {
+                if (currentPage <= pagesCount && pagesCount > 1) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+              }
+              return devices.isEmpty
+                  ? const Center(child: Text('لا يوجد اجهزة'))
+                  : devices.length >= 20
+                      ? const Center(child: Text('لا يوجد المزيد'))
+                      : null;
+            },
+            // onReorder: (int oldIndex, int newIndex) {
+            //   context
+            //       .read<AllDevicesCubit>()
+            //       .reorderDevices(oldIndex, newIndex);
+            // },
+          ),
+        ));
+      } else if (state is AllDevicesfailure) {
+        return Center(child: Text(state.errorMessage));
+      }
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    });
   }
 }

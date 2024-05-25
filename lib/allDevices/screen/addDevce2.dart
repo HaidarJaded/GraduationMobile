@@ -9,6 +9,7 @@ import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
+import '../cubit/all_devices_cubit.dart';
 import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
@@ -75,10 +76,6 @@ class addInfoDevice extends StatelessWidget {
                                 }
                                 return null;
                               },
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[أ-يa-zA-Z ]')),
-                              ],
                             ),
                             const SizedBox(
                               height: 10,
@@ -88,8 +85,8 @@ class addInfoDevice extends StatelessWidget {
                               icon: const Icon(Icons.numbers),
                               controller: ImeiController,
                               validator: (value) {
-                                if (value.length < 15) {
-                                  return 'يجب ألا يكون الرقم أقل من 15 أرقام';
+                                if (value.length != 15) {
+                                  return 'يجب ان يكون 15 رقم';
                                 }
                               },
                             ),
@@ -134,9 +131,21 @@ class addInfoDevice extends StatelessWidget {
         }
         if (state is AddDevicesSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            BlocProvider.of<AddDevicesCubit>(Get.context!).resetState();
+            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
+            SnackBarAlert().alert(
+              "تم الاضافة بنجاح",
+              color: const Color.fromRGBO(0, 200, 0, 1),
+            );
             Get.off(() => const allDevices());
-            SnackBarAlert().alert("تمت الاضافة بنجاح");
+            SnackBarAlertWithButton().alert("",
+                title: "هل تود بارسال طلب؟",
+                yesButton: MaterialButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "نعم",
+                    selectionColor: Colors.black,
+                  ),
+                ));
           });
         }
         return Scaffold(
@@ -167,10 +176,6 @@ class addInfoDevice extends StatelessWidget {
                       labelText: "الاسم",
                       icon: const Icon(Icons.abc_rounded),
                       controller: nameController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'ادخل اسم صاحب الجهاز';
@@ -185,10 +190,6 @@ class addInfoDevice extends StatelessWidget {
                       labelText: "الكنية",
                       icon: const Icon(Icons.abc_rounded),
                       controller: lastNameController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "ادخل الكنية من فضلك";
@@ -226,8 +227,8 @@ class addInfoDevice extends StatelessWidget {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'ادخل رقم صاحب الجهاز';
-                        } else if (value.length < 10) {
-                          return 'يجب ألا يكون الرقم أقل من 10 أرقام';
+                        } else if (value.length != 10) {
+                          return 'يجب ان يكون 10 ارقام';
                         }
                         return null;
                       },
@@ -271,10 +272,6 @@ class addInfoDevice extends StatelessWidget {
                         }
                         return null;
                       },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                     ),
                     const SizedBox(
                       height: 10,
@@ -284,8 +281,8 @@ class addInfoDevice extends StatelessWidget {
                       icon: const Icon(Icons.numbers),
                       controller: ImeiController,
                       validator: (value) {
-                        if (value.length < 15) {
-                          return 'يجب ألا يكون الرقم أقل من 15 أرقام';
+                        if (value.length != 15) {
+                          return 'يجب أن يكون 15 رقم';
                         }
                       },
                     ),
@@ -313,9 +310,12 @@ class addInfoDevice extends StatelessWidget {
                               },
                             ),
                             Container(
-                              width: 30,
+                              width: 60,
                             ),
-                            const Text("اضافة الى المركز"),
+                            const Text(
+                              "اضافة الى المركز",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ],
                         );
                       },
@@ -335,6 +335,8 @@ class addInfoDevice extends StatelessWidget {
                                   imei: ImeiController.text,
                                   info: infoController.text,
                                   repairedInCenter: inCenterController.text);
+
+                          ;
                         }
                       },
                       child: Container(

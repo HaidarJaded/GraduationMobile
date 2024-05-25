@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../login/loginScreen/loginPage.dart';
 
@@ -53,12 +54,7 @@ class HomeDelivery extends StatelessWidget {
             ),
             MaterialButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return const LoginPage();
-                  }),
-                );
+                Get.offAll(const LoginPage());
               },
               minWidth: 10,
               color: const Color(0xFF3E7FF8),

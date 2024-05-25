@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
 import 'allDevices.dart';
@@ -156,10 +157,17 @@ class edit extends StatelessWidget {
         }
         if (state is EditSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            SnackBarAlert().alert("updat successfuly",
-                color: const Color.fromRGBO(0, 200, 0, 1),
-                title: "Successfuly");
-            Get.offAll(() => const allDevices());
+            // SnackBarAlert().alert("updat successfuly",
+            //     color: const Color.fromRGBO(0, 200, 0, 1),
+            //     title: "Successfuly");
+            // Get.offAll(() => const allDevices());
+            SnackBarAlertWithButton().alert("add susessfuly",
+                title: "هل تود ارسال طلب توصيل؟",
+                yesButton: MaterialButton(
+                  onPressed: () {},
+                  child: const Text("yes"),
+                ));
+            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
           });
         }
 
@@ -167,7 +175,8 @@ class edit extends StatelessWidget {
           if (state.errMessage == "No data to update") {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               SnackBarAlert().alert("No data to update",
-                  color:const Color.fromARGB(255, 200, 0, 0), title: "Error");
+                  color: const Color.fromARGB(255, 200, 0, 0), title: "Error");
+              BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
               // This will ensure that the current frame is complete before executing the navigation
               Get.offAll(() => const allDevices());
             });

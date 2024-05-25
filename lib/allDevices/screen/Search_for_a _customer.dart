@@ -123,8 +123,8 @@ class Search_for_a_customer extends StatelessWidget {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'ادخل الرقم الوطني لصاحب الجهاز';
-                          } else if (value.length < 11) {
-                            return 'يجب ألا يكون الرقم أقل من 11 أرقام';
+                          } else if (value.length != 11) {
+                            return 'يجب أن يكون 11 رقم';
                           }
                           return null;
                         },

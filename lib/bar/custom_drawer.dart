@@ -7,13 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
-import 'package:graduation_mobile/bar/CustomBottomNavigationBar.dart';
+import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
 import '../drawerScreen/anyQuestion.dart';
 import '../drawerScreen/oldPhone.dart';
+import '../order/cubit/order_cubit.dart';
+import '../order/screenOrder.dart';
+import '../the_center/center.dart';
+import 'CustomBottomNavigationBar.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -115,6 +119,9 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
+                        BlocProvider.of<AllDevicesCubit>(context)
+                            .getDeviceData();
+                        Get.offAll(center());
                         // Navigator.of(context).push(MaterialPageRoute(
                         //     builder: (context) =>
                         //         const CustomBottomNavigationBar()));
@@ -159,7 +166,6 @@ class CustomDrawer extends StatelessWidget {
                         // Navigator.of(context).push(MaterialPageRoute(
                         //     builder: (context) => const anyQuestion()));
                         Get.off(() => const anyQuestion());
-
                       },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
@@ -174,6 +180,36 @@ class CustomDrawer extends StatelessWidget {
                             ),
                             Text(
                               "Any question",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        BlocProvider.of<OrderCubit>(context).getOrder();
+
+                        Get.offAll(const order());
+                      },
+                      // ignore: avoid_unnecessary_containers
+                      child: Container(
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.list_alt_sharp,
+                              size: 23,
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              "order",
                               style: TextStyle(
                                 fontSize: 18,
                               ),

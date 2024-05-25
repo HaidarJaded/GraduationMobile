@@ -3,8 +3,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 
-import '../code.dart';
+import '../../allDevices/screen/TextFormField.dart';
+
 import '../sing-upCubit.dart';
 // import 'package:my_phone/pages/login-pages.dart';
 // import 'package:my_phone/pages/signUp-pages.dart';
@@ -23,6 +26,8 @@ class _SignUpPagesState extends State<SignUpPages> {
   TextEditingController lastname = TextEditingController();
   TextEditingController address = TextEditingController();
   TextEditingController national_Id = TextEditingController();
+  TextEditingController centerName = TextEditingController();
+  TextEditingController password_confirmation = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -36,7 +41,7 @@ class _SignUpPagesState extends State<SignUpPages> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => codepage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
             (route) => false,
           );
         });
@@ -79,23 +84,46 @@ class _SignUpPagesState extends State<SignUpPages> {
                     const SizedBox(
                       height: 30,
                     ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      keyboardType: TextInputType.emailAddress,
+                    textFormField(
+                      labelText: "name",
+                      icon: const Icon(Icons.abc_outlined),
+                      controller: name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        // Add more password validation if needed
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    textFormField(
+                      labelText: 'last name',
+                      icon: const Icon(Icons.abc),
+                      controller: lastname,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        // Add more password validation if needed
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    textFormField(
+                      labelText: 'email',
+                      icon: const Icon(Icons.email_outlined),
                       controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: const TextStyle(fontFamily: "Roboto"),
-                        prefixIcon: const Icon(Icons.email),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
+                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return 'ادخل عنوان بريد إلكتروني صحيح';
                         }
                         // Add more email validation if needed
                         return null;
@@ -122,6 +150,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
                         }
+                        if (value.length < 8) {
+                          return 'يجب ان يكون 8 ارقام';
+                        }
                         // Add more password validation if needed
                         return null;
                       },
@@ -131,11 +162,12 @@ class _SignUpPagesState extends State<SignUpPages> {
                     ),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: name,
+                      obscureText: true,
+                      controller: password_confirmation,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: 'password confirmation',
                         labelStyle: const TextStyle(fontFamily: "Roboto"),
-                        prefixIcon: const Icon(Icons.person),
+                        prefixIcon: const Icon(Icons.lock_outline),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 15),
                         border: OutlineInputBorder(
@@ -144,96 +176,78 @@ class _SignUpPagesState extends State<SignUpPages> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'Please enter your password confirmation';
                         }
-                        // Add more email validation if needed
+                        if (value.length < 8) {
+                          return 'يجب ان يكون 8 ارقام';
+                        }
+
                         return null;
                       },
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: lastname,
-                      decoration: InputDecoration(
-                        labelText: 'Last Name',
-                        labelStyle: const TextStyle(fontFamily: "pe"),
-                        prefixIcon: const Icon(Icons.person_2_outlined),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        // Add more email validation if needed
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: address,
-                      decoration: InputDecoration(
-                        labelText: 'address',
-                        labelStyle: const TextStyle(fontFamily: "Roboto"),
-                        prefixIcon: const Icon(Icons.home_filled),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        // Add more email validation if needed
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                    textFormField(
+                      labelText: 'national id',
+                      icon: const Icon(Icons.list_rounded),
                       controller: national_Id,
-                      decoration: InputDecoration(
-                        labelText: 'national Id',
-                        labelStyle: const TextStyle(fontFamily: "Roboto"),
-                        prefixIcon: const Icon(Icons.cast_rounded),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'Please enter your password confirmation';
                         }
-                        // Add more email validation if needed
-                        return null;
+                        if (value.length != 11) {
+                          return 'يجب ان يكون 11 رقم';
+                        }
                       },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    textFormField(
+                      labelText: 'adress',
+                      icon: const Icon(Icons.line_axis),
+                      controller: address,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your adress';
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    textFormField(
+                      labelText: 'center name',
+                      icon: const Icon(Icons.home_filled),
+                      controller: centerName,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your center name';
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     const SizedBox(height: 50.0),
                     InkWell(
                       onTap: () {
                         if (formKey.currentState?.validate() ?? false) {
-                          BlocProvider.of<RegistrationCubit>(context).register(
-                            name: name.text,
-                            lastName: lastname.text,
-                            address: address.text,
-                            email: emailController.text,
-                            password: passwordController.text,
-                            nationalId: national_Id.text,
-                          );
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            BlocProvider.of<RegistrationCubit>(context)
+                                .register(
+                                    name: name.text,
+                                    lastName: lastname.text,
+                                    address: address.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    nationalId: national_Id.text,
+                                    centerName: centerName.text,
+                                    password_confirmation:
+                                        password_confirmation.text);
+                            Get.offAll(const LoginPage());
+                          });
                         }
                       },
                       child: Container(
@@ -270,14 +284,7 @@ class _SignUpPagesState extends State<SignUpPages> {
                           style: TextStyle(),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return codepage();
-                              }),
-                            );
-                          },
+                          onTap: () {},
                           child: const Text(
                             'SignIn',
                             style: TextStyle(color: Colors.blueAccent),
