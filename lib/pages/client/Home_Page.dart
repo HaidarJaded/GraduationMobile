@@ -50,6 +50,29 @@ class _HomePages extends State<HomePages> {
     super.dispose();
   }
 
+  Future<void> updateDeviceStatus(Device device, String status) async {
+    // هنا يتم تحديث حالة الجهاز
+    device.status = status;
+    await _crudController.update(
+        device.id.hashCode, device as Map<String, dynamic>);
+    _phoneCubit.getDevicesByUserId(userId!); // تحديث قائمة الأجهزة بعد التعديل
+  }
+
+  void notifyClient(Device device, double cost, String issue,
+      DateTime expectedDeliveryDate) async {
+    // هنا يتم إشعار العميل بالتفاصيل
+    device.status = 'بانتظار استجابة العميل';
+    device.costToCustomer = cost;
+    device.problem = issue;
+    device.expectedDateOfDelivery = expectedDeliveryDate;
+    await _crudController.update(
+        device.id.hashCode, device as Map<String, dynamic>);
+    _phoneCubit.getDevicesByUserId(userId!); // تحديث قائمة الأجهزة بعد التعديل
+    // إرسال الإشعار
+    SnackBarAlert().alert("Notification sent to client",
+        color: const Color.fromRGBO(0, 200, 0, 1), title: "Notification");
+  }
+
   void logout() async {
     if (await BlocProvider.of<loginCubit>(context).logout()) {
       SnackBarAlert().alert("Logout successfuly",
@@ -194,6 +217,15 @@ class _HomePages extends State<HomePages> {
                                     onPressed: () async {
                                       if (device.status == 'يتم فحصه') {
                                         // تغيير الحالة إلى "بانتظار استجابة العميل"
+                                        notifyClient(
+                                            device,
+                                            100.0,
+                                            "Issue details",
+                                            DateTime(2024, 22, 1));
+                                      } else {
+                                        // تغيير الحالة إلى "يتم فحصه"
+                                        await updateDeviceStatus(
+                                            device, 'يتم فحصه');
                                       }
                                     },
                                     icon: const Icon(Icons.tips_and_updates),
