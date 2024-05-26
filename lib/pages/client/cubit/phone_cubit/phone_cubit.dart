@@ -11,21 +11,19 @@ final CrudController<Device> _crudController = CrudController<Device>();
 class PhoneCubit extends Cubit<PhoneState> {
   PhoneCubit() : super(PhoneInitial());
 
-  Future<void> getDevicesByUserId(int userId) async {
+  Future<void> getDevicesByUserId([Map<String, dynamic>? queryParams]) async {
     emit(PhoneLoading());
     try {
       final ReturnedObject allDevices =
-          await _crudController.getAll({'user_id': userId});
+          await _crudController.getAll(queryParams);
       final List? userDevises = allDevices.items;
 
       if (userDevises != null) {
-        print(userDevises);
-        emit(PhoneSuccess(device: userDevises as List<Device>));
+        emit(PhoneSuccess(data: allDevices));
       } else {
         emit(PhoneFailure(errorMessage: 'Failed to fetch data'));
       }
     } catch (e) {
-      print('Error in getDevicesByUserId: $e');
       emit(PhoneFailure(errorMessage: 'Failed to fetch data'));
     }
   }

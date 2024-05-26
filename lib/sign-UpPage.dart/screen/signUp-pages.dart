@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, file_names, use_super_parameters
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -64,9 +65,10 @@ class _SignUpPagesState extends State<SignUpPages> {
                     const SizedBox(
                       height: 70,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 200,
                       width: 200,
+                      child: Image.asset('assets/images/myp.PNG'),
                     ),
                     Text(
                       "Welcome To MyPhone",
@@ -203,6 +205,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                           return 'يجب ان يكون 11 رقم';
                         }
                       },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                     const SizedBox(
                       height: 20,

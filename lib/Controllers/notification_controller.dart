@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -60,7 +61,7 @@ class NotificationController {
   }).toList();
   AwesomeNotifications().createNotification(
     content: NotificationContent(
-      id: 10,
+      id: Random().nextInt(100),
       channelKey: 'basic_channel',
       title: title,
       body: body,
