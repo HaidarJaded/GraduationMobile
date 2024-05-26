@@ -27,20 +27,74 @@ class _HomePages extends State<HomePages> {
   late CrudController<Device> _crudController;
   late PhoneCubit _phoneCubit;
   int? userId;
+  int perPage = 20;
+  int currentPage = 1;
+  int pagesCount = 0;
+  int totalCount = 0;
+  List<dynamic> devices = [];
+  bool firstTime = true;
+  bool readyToBuild = false;
 
-  Future fetch() async {
-    userId = await InstanceSharedPrefrences().getId();
-    _crudController = CrudController<Device>();
-
-    _phoneCubit.getDevicesByUserId(userId!);
+  Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
+    try {
+      if (currentPage > pagesCount) {
+        return;
+      }
+      var data = await CrudController<Device>().getAll({
+        'page': currentPage,
+        'per_page': perPage,
+        'orderBy': 'date_receipt',
+        'dir': 'desc',
+        'user_id': userId,
+      });
+      final List<Device>? devices = data.items;
+      if (devices != null) {
+        int currentPage = data.pagination?['current_page'];
+        int lastPage = data.pagination?['last_page'];
+        int totalCount = data.pagination?['total'];
+        setState(() {
+          this.currentPage = currentPage;
+          pagesCount = lastPage;
+          this.devices.addAll(devices);
+          this.totalCount = totalCount;
+        });
+        return;
+      }
+      return;
+    } catch (e) {
+      Get.snackbar("title", e.toString());
+      return;
+    }
   }
 
+  final scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
-
+    readyToBuild = false;
     _phoneCubit = PhoneCubit();
-    fetch();
+    InstanceSharedPrefrences().getId().then((id) {
+      userId = id;
+      _crudController = CrudController<Device>();
+      _phoneCubit.getDevicesByUserId({
+        'page': currentPage,
+        'per_page': perPage,
+        'orderBy': 'date_receipt',
+        'dir': 'desc',
+        'user_id': userId,
+      }).then((value) => readyToBuild = true);
+    });
+    scrollController.addListener(() async {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        setState(() {
+          if (currentPage <= pagesCount) {
+            currentPage++;
+          }
+        });
+        await fetchDevices(currentPage);
+      }
+    });
   }
 
   @override
@@ -53,7 +107,13 @@ class _HomePages extends State<HomePages> {
     // هنا يتم تحديث حالة الجهاز
     device.status = status;
     await _crudController.update(device.id!, {'status': status});
-    _phoneCubit.getDevicesByUserId(userId!); // تحديث قائمة الأجهزة بعد التعديل
+    await _phoneCubit.getDevicesByUserId({
+      'page': currentPage,
+      'per_page': perPage,
+      'orderBy': 'date_receipt',
+      'dir': 'desc',
+      'user_id': userId,
+    }); // تحديث قائمة الأجهزة بعد التعديل
   }
 
   void notifyClient(Device device, double cost, String issue,
@@ -63,17 +123,22 @@ class _HomePages extends State<HomePages> {
     device.costToClient = cost;
     device.problem = issue;
     device.expectedDateOfDelivery = expectedDeliveryDate;
-    await _crudController.update(
-        device.id!, {
-          'status':'بانتظار استجابة العميل',
-          'cost_to_client':cost,
-          'problem':issue,
-          'Expected_date_of_delivery':expectedDeliveryDate.toString()
-        });
-    _phoneCubit.getDevicesByUserId(userId!); // تحديث قائمة الأجهزة بعد التعديل
+    await _crudController.update(device.id!, {
+      'status': 'بانتظار استجابة العميل',
+      'cost_to_client': cost,
+      'problem': issue,
+      'Expected_date_of_delivery': expectedDeliveryDate.toString()
+    });
+    _phoneCubit.getDevicesByUserId({
+      'page': currentPage,
+      'per_page': perPage,
+      'orderBy': 'date_receipt',
+      'dir': 'desc',
+      'user_id': userId,
+    }); // تحديث قائمة الأجهزة بعد التعديل
     // إرسال الإشعار
-    SnackBarAlert().alert("Notification sent to client",
-        color: const Color.fromRGBO(0, 200, 0, 1), title: "Notification");
+    SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+        color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
   }
 
   void logout() async {
@@ -92,17 +157,39 @@ class _HomePages extends State<HomePages> {
         child: Container(
           padding: const EdgeInsets.all(20),
           child: ListView(children: [
-            Row(children: [
-              ClipRRect(
+            Row(
+              children: [
+                ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.person))),
-              const Expanded(
-                  child: ListTile(
-                title: Text("Esraa Alazmeh"),
-                subtitle: Text("esraa@gmail.com"),
-              ))
-            ]),
+                    onPressed: () {},
+                    icon: const Icon(Icons.person),
+                  ),
+                ),
+                Expanded(
+                  child: FutureBuilder<String?>(
+                    future: InstanceSharedPrefrences().getName(),
+                    builder: (context, nameSnapshot) {
+                      return FutureBuilder<String?>(
+                        future: InstanceSharedPrefrences().getEmail(),
+                        builder: (context, emailSnapshot) {
+                          if (nameSnapshot.hasData && emailSnapshot.hasData) {
+                            return ListTile(
+                              title: Text(nameSnapshot.data!),
+                              subtitle: Text(emailSnapshot.data!),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
             ListTile(
               leading: const Icon(Icons.notifications_active_sharp),
               title: const Text("notifications"),
@@ -169,69 +256,97 @@ class _HomePages extends State<HomePages> {
                   }
                 },
                 builder: (context, state) {
-                  if (state is PhoneSuccess) {
+                  if (state is PhoneLoading || readyToBuild == false) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is PhoneSuccess) {
+                    if (firstTime) {
+                      totalCount = state.data.pagination?['total'];
+                      currentPage = state.data.pagination?['current_page'];
+                      pagesCount = state.data.pagination?['last_page'];
+                      devices.addAll(state.data.items!);
+                      firstTime = false;
+                    }
                     return ListView.builder(
-                      itemCount: state.device.length,
+                      controller: scrollController,
+                      itemCount: devices.length + 1,
                       itemBuilder: (context, index) {
-                        final device = state.device[index];
-                        return Card(
-                          color: const Color.fromARGB(255, 252, 234, 251),
-                          child: ListTile(
-                            title: Text(device.model),
-                            subtitle: Text(device.imei),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (device.status == 'قيد العمل') ...[
-                                  IconButton(
-                                    onPressed: () {
-                                      // هنا يتم عرض خطوات الإصلاح
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RepairSteps(),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(FontAwesomeIcons.list),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      // هنا يتم تحديد نتيجة العمل كجاهز
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const UpdateStatus(),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.check_circle),
-                                  ),
-                                ] else ...[
-                                  IconButton(
-                                    onPressed: () async {
-                                      if (device.status == 'يتم فحصه') {
-                                        // تغيير الحالة إلى "بانتظار استجابة العميل"
-                                        notifyClient(
-                                            device,
-                                            100.0,
-                                            "Issue details",
-                                            DateTime(2024, 6, 1));
-                                      } else {
-                                        // تغيير الحالة إلى "يتم فحصه"
-                                        await updateDeviceStatus(
-                                            device, 'يتم فحصه');
-                                      }
-                                    },
-                                    icon: const Icon(Icons.tips_and_updates),
-                                  ),
+                        if (index < devices.length) {
+                          final device = devices[index];
+                          return Card(
+                            color: const Color.fromARGB(255, 252, 234, 251),
+                            child: ListTile(
+                              title: Text(device.model),
+                              subtitle: Text(device.imei),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (device.status == 'قيد العمل') ...[
+                                    IconButton(
+                                      onPressed: () {
+                                        // هنا يتم عرض خطوات الإصلاح
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const RepairSteps(),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(FontAwesomeIcons.list),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        // هنا يتم تحديد نتيجة العمل كجاهز
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UpdateStatus(),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.check_circle),
+                                    ),
+                                  ] else ...[
+                                    IconButton(
+                                      onPressed: () async {
+                                        if (device.status == 'يتم فحصه') {
+                                          // تغيير الحالة إلى "بانتظار استجابة العميل"
+                                          notifyClient(
+                                              device,
+                                              100.0,
+                                              "Issue details",
+                                              DateTime(2024, 6, 1));
+                                        } else {
+                                          // تغيير الحالة إلى "يتم فحصه"
+                                          await updateDeviceStatus(
+                                              device, 'يتم فحصه');
+                                        }
+                                      },
+                                      icon: const Icon(Icons.tips_and_updates),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        } else if (currentPage <= pagesCount &&
+                            pagesCount > 1) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 32),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        } else {
+                          return devices.isEmpty
+                              ? const Center(child: Text('لا يوجد اجهزة'))
+                              : devices.length >= 20
+                                  ? const Center(child: Text('لا يوجد المزيد'))
+                                  : null;
+                        }
                       },
                     );
                   } else if (state is PhoneFailure) {
