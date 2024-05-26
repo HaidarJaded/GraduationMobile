@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graduation_mobile/bar/SearchAppBar.dart';
 
 import '../../login/loginScreen/loginPage.dart';
 
@@ -8,15 +9,7 @@ class HomeDelivery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        shadowColor: Colors.grey,
-        title: const Text(
-          "MYP",
-          style: TextStyle(fontFamily: AutofillHints.birthday, fontSize: 30),
-        ),
-      ),
+      appBar: SearchAppBar(),
       drawer: Drawer(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -38,10 +31,6 @@ class HomeDelivery extends StatelessWidget {
             const ListTile(
               leading: Icon(Icons.notifications_active_sharp),
               title: Text("notifications"),
-            ),
-            const ListTile(
-              leading: Icon(Icons.list_alt_rounded),
-              title: Text("Old Phone"),
             ),
             const ListTile(
               leading: Icon(Icons.help),
@@ -71,10 +60,19 @@ class HomeDelivery extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          GridView(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 2),
-            children: const [Card.filled()],
+          Expanded(
+            child: ListView.builder(itemBuilder: (context, index) {
+              return const Card(
+                  color: Color.fromARGB(255, 252, 234, 251),
+                  child: Column(children: [
+                    ExpansionTile(
+                      // key: ValueKey(),
+                      expandedAlignment: FractionalOffset.topRight,
+                      title: Text('الطلب الاول'),
+                      children: [],
+                    )
+                  ]));
+            }),
           )
         ],
       ),

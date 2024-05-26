@@ -10,7 +10,7 @@ class Api {
   Future<dynamic> get(
       {required String path, Map<String, dynamic>? queryParams}) async {
     try {
-      String? token =await InstanceSharedPrefrences().getToken();
+      String? token = await InstanceSharedPrefrences().getToken();
       var headers = <String, String>{
         'Accept': 'application/json',
         'Authorization': token != null ? 'Bearer $token' : '',
@@ -20,6 +20,7 @@ class Api {
         headers: headers,
       ));
       var response = await dio.get(path, queryParameters: queryParams);
+      print(queryParams);
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data;
       } else {
@@ -41,7 +42,7 @@ class Api {
     required dynamic body,
   }) async {
     try {
-      String? token =await InstanceSharedPrefrences().getToken();
+      String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': token != null ? 'Bearer $token' : '',
@@ -70,7 +71,7 @@ class Api {
   Future<dynamic> put(
       {required String path, required Map<String, dynamic> body}) async {
     try {
-      String? token =await InstanceSharedPrefrences().getToken();
+      String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -98,7 +99,7 @@ class Api {
 
   Future<void> delete({required String path, required int id}) async {
     try {
-      String? token =await InstanceSharedPrefrences().getToken();
+      String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',

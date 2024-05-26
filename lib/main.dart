@@ -4,15 +4,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
 import 'login/loginScreen/loginPage.dart';
-import 'pages/client/phone_cubit/phone_cubit.dart';
+import 'pages/client/cubit/phone_cubit/phone_cubit.dart';
 import 'the_center/center.dart';
 import 'the_center/cubit/the_center_cubit.dart';
 import 'package:get/get.dart';
@@ -80,7 +83,7 @@ class MyApp extends StatelessWidget {
         !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
       return;
     }
-    BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
+    // BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
     Get.off(() => const allDevices());
   }
 
@@ -102,6 +105,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => PhoneCubit(),
+          ),
+          BlocProvider(
+            create: (context) => DeviceDetailsCubit(CrudController()),
           ),
         ],
         child: GetMaterialApp(

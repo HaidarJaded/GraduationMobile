@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
-
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/delivery/home_delivery.dart';
 import '../../Controllers/auth_controller.dart';
 import '../../allDevices/cubit/all_devices_cubit.dart';
 import '../../allDevices/screen/allDevices.dart';
@@ -16,7 +17,6 @@ class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool failur = false;
-
   LoginPage({super.key});
 
   @override
@@ -28,19 +28,21 @@ class LoginPage extends StatelessWidget {
         }
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-          SnackBarAlert().alert("Login successfuly",
-              color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
-            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
+            SnackBarAlert().alert("Login successfuly",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "Successfuly");
+            // BlocProvider.of<PhoneCubit>(context).getDevicesByUserId(userId);
             // This will ensure that the current frame is complete before executing the navigation
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const allDevices()),
+              MaterialPageRoute(builder: (context) => const HomePages()),
               (route) => false,
             );
           });
         }
-
         if (state == LoginState.failure) {
-          return const Text('فشل تسجيل الدخول');
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            SnackBarAlert().alert('فشل تسجيل الدخول');
+          });
         }
         if (state == LoginState.initial) {
           return Scaffold(
