@@ -54,21 +54,25 @@ class LoginPageState extends State<LoginPage> {
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             InstanceSharedPrefrences().getRuleName().then((ruleName) {
-                    SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
-                        color: const Color.fromRGBO(0, 200, 0, 1),
-                        title: "مرحباً بعودتك");
-                    if (ruleName == 'فني') {
-                      Get.off(() => const HomePages());
-                    } else if (ruleName == 'عميل') {
-                      Get.off(() => const allDevices());
-                    } else if (ruleName == 'عامل توصيل') {
-                      Get.off(() => const allDevices());
-                    } else {
-                      SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
-                          color: const Color.fromRGBO(0, 200, 0, 1),
-                          title: "المعذرة");
-                    }
+              if (ruleName == 'فني') {
+                Get.off(() => const HomePages());
+              } else if (ruleName == 'عميل') {
+                Get.off(() => const allDevices());
+              } else if (ruleName == 'عامل توصيل') {
+                Get.off(() => const allDevices());
+              } else {
+                BlocProvider.of<loginCubit>(Get.context!).logout().then((value) {
+                SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
+                    color: const Color.fromRGBO(200, 200, 0, 1),
+                    title: "المعذرة");
+                Get.offAll(() => const LoginPage());                  
                 });
+                return;
+              }
+              SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
+                  color: const Color.fromRGBO(0, 200, 0, 1),
+                  title: "مرحباً بعودتك");
+            });
           });
         }
         if (state == LoginState.failure) {
