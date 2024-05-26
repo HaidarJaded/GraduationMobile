@@ -24,6 +24,7 @@ class Api {
         headers: headers,
       ));
       var response = await dio.get(path, queryParameters: queryParams);
+      print(queryParams);
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data;
       } else {

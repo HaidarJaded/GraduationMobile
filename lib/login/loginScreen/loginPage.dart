@@ -6,6 +6,11 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
+<<<<<<< HEAD
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/delivery/home_delivery.dart';
+=======
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
 import '../../Controllers/auth_controller.dart';
 import '../../allDevices/screen/allDevices.dart';
 import '../../sign-UpPage.dart/screen/signUp-pages.dart';
@@ -23,6 +28,9 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool failur = false;
+<<<<<<< HEAD
+  LoginPage({super.key});
+=======
 
   Future<void> checkLoginStatus() async {
     String? token = await InstanceSharedPrefrences().getToken();
@@ -43,6 +51,7 @@ class LoginPageState extends State<LoginPage> {
             {checkLoginStatus()}
         });
   }
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
 
   @override
   Widget build(BuildContext context) {
@@ -53,17 +62,34 @@ class LoginPageState extends State<LoginPage> {
         }
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+<<<<<<< HEAD
+            SnackBarAlert().alert("Login successfuly",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "Successfuly");
+            // BlocProvider.of<PhoneCubit>(context).getDevicesByUserId(userId);
+            // This will ensure that the current frame is complete before executing the navigation
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomePages()),
+              (route) => false,
+            );
+=======
             SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
                 color: const Color.fromRGBO(0, 200, 0, 1),
                 title: "مرحباً بعودتك");
             Get.off(() => const allDevices());
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
           });
         }
-
         if (state == LoginState.failure) {
+<<<<<<< HEAD
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            SnackBarAlert().alert('فشل تسجيل الدخول');
+          });
+=======
           emailController.text = '';
           passwordController.text = '';
           context.read<loginCubit>().resetState();
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
         }
         if (state == LoginState.initial) {
           return Scaffold(
