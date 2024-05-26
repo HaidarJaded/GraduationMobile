@@ -46,4 +46,22 @@ class InstanceSharedPrefrences {
     }
     return jsonDecode(profile)['rule']['name'];
   }
+
+  Future<String?> getName() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['name'];
+  }
+
+  Future<String?> getEmail() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['email'];
+  }
 }
