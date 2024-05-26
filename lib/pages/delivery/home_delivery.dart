@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:graduation_mobile/bar/SearchAppBar.dart';
-=======
 import 'package:get/get.dart';
->>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
 
 import '../../login/loginScreen/loginPage.dart';
 
