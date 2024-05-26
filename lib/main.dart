@@ -10,36 +10,24 @@ import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
+import 'package:graduation_mobile/cubit/phone_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-<<<<<<< HEAD
-import 'package:graduation_mobile/pages/client/Home_Page.dart';
-import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
-import 'Controllers/auth_controller.dart';
-import 'allDevices/cubit/all_devices_cubit.dart';
-import 'allDevices/screen/cubit/add_devices_cubit.dart';
-import 'login/loginScreen/loginPage.dart';
-import 'pages/client/cubit/phone_cubit/phone_cubit.dart';
-import 'the_center/center.dart';
-=======
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'package:graduation_mobile/order/cubit/order_cubit.dart';
-
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
-import 'pages/client/phone_cubit/phone_cubit.dart';
 import 'sign-UpPage.dart/sing-upCubit.dart';
-
->>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
 import 'the_center/cubit/the_center_cubit.dart';
 import 'package:get/get.dart';
 import 'package:connectivity/connectivity.dart';
 
 PageController pageController = PageController(initialPage: 0);
 int currentIndex = 0;
+
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   var notificationInfo = jsonDecode(message.data['notification']);
   NotificationController().showLocalNotificationWithActions(
@@ -116,55 +104,40 @@ Future<void> checkLoginStatus() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-<<<<<<< HEAD
-  Future<void> checkLoginStatus() async {
-    String? token = await InstanceSharedPrefrences().getToken();
-    if (token == null ||
-        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
-      return;
-    }
-    // BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
-    Get.off(() => const allDevices());
-  }
 
-=======
->>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => loginCubit()),
-          BlocProvider(
-            create: (context) => AllDevicesCubit(),
-          ),
-          BlocProvider(
-            create: (context) => TheCenterCubit(),
-            child: const Center(),
-          ),
-          BlocProvider(
-            create: (context) => AddDevicesCubit(),
-          ),
-          BlocProvider(
-            create: (context) => PhoneCubit(),
-          ),
-          BlocProvider(
-<<<<<<< HEAD
-            create: (context) => DeviceDetailsCubit(CrudController()),
-=======
-            create: (context) => RegistrationCubit(),
-          ),
-          BlocProvider(
-            create: (context) => SwitchBloc(),
-          ),
-          BlocProvider(
-            create: (context) => EditCubit(),
-          ),
-          BlocProvider(
-            create: (context) => OrderCubit(),
->>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
-          ),
-        ],
-        child: const GetMaterialApp(
-            debugShowCheckedModeBanner: false, home: LoginPage()));
+      providers: [
+        BlocProvider(create: (context) => loginCubit()),
+        BlocProvider(
+          create: (context) => AllDevicesCubit(),
+        ),
+        BlocProvider(
+          create: (context) => TheCenterCubit(),
+          child: const Center(),
+        ),
+        BlocProvider(
+          create: (context) => AddDevicesCubit(),
+        ),
+        BlocProvider(
+          create: (context) => PhoneCubit(),
+        ),
+        BlocProvider(
+          create: (context) => RegistrationCubit(),
+        ),
+        BlocProvider(
+          create: (context) => SwitchBloc(),
+        ),
+        BlocProvider(
+          create: (context) => EditCubit(),
+        ),
+        BlocProvider(
+          create: (context) => OrderCubit(),
+        ),
+      ],
+      child: const GetMaterialApp(
+          debugShowCheckedModeBanner: false, home: LoginPage()),
+    );
   }
 }
