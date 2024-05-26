@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
+import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
@@ -28,9 +29,10 @@ class CustomDrawer extends StatelessWidget {
     if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
       SnackBarAlert().alert("تم تسجيل الخروج بنجاح",
           color: const Color.fromRGBO(0, 200, 0, 1), title: "إلى اللقاء");
-      Future.delayed(const Duration(seconds: 2), () {
-        SystemNavigator.pop();
-      });
+      // Future.delayed(const Duration(seconds: 2), () {
+      //   SystemNavigator.pop();
+      // });
+      Get.offAll(() => const LoginPage());
     }
   }
 
