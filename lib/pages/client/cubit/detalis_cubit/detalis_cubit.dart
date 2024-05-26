@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/device_model.dart';

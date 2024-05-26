@@ -1,8 +1,8 @@
+// ignore_for_file: unnecessary_import, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation_mobile/helper/snack_bar_alert.dart';
-import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_state.dart';
 

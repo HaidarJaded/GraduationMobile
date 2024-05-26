@@ -130,16 +130,15 @@ class addInfoDevice extends StatelessWidget {
         }
         if (state is AddDevicesSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            SnackBarAlert().alert(
-              "تم الاضافة بنجاح",
-              color: const Color.fromRGBO(0, 200, 0, 1),
-              title: "اضافة جهاز جديد"
-            );
+            SnackBarAlert().alert("تم الاضافة بنجاح",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "اضافة جهاز جديد");
             Get.off(() => const allDevices());
             BlocProvider.of<AddDevicesCubit>(context).resetState();
-            SnackBarAlertWithButton().alert("",
+            SnackBarAlert().alert("",
                 title: "هل تود بارسال طلب؟",
-                yesButton: MaterialButton(
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                yesButton: TextButton(
                   onPressed: () {},
                   child: const Text(
                     "نعم",

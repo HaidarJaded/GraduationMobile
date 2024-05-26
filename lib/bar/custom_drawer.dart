@@ -17,7 +17,6 @@ import '../drawerScreen/oldPhone.dart';
 import '../order/cubit/order_cubit.dart';
 import '../order/screenOrder.dart';
 import '../the_center/center.dart';
-import 'CustomBottomNavigationBar.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -121,11 +120,10 @@ class CustomDrawer extends StatelessWidget {
                       onPressed: () {
                         BlocProvider.of<AllDevicesCubit>(context)
                             .getDeviceData();
-                        Get.offAll(center());
+                        Get.off(center());
                         // Navigator.of(context).push(MaterialPageRoute(
                         //     builder: (context) =>
                         //         const CustomBottomNavigationBar()));
-                        Get.off(() => const CustomBottomNavigationBar());
                       },
                     ),
                     const SizedBox(

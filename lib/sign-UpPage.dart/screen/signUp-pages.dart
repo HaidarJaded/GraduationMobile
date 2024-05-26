@@ -8,6 +8,7 @@ import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 
 import '../../allDevices/screen/TextFormField.dart';
 
+import '../../helper/snack_bar_alert.dart';
 import '../sing-upCubit.dart';
 // import 'package:my_phone/pages/login-pages.dart';
 // import 'package:my_phone/pages/signUp-pages.dart';
@@ -40,12 +41,14 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.success) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-            (route) => false,
-          );
+          SnackBarAlert().alert("تم انشاء حساب بنجاح",
+              color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بك");
+          Get.to(const LoginPage());
         });
       } else if (state == RegistrationState.failure) {
+        SnackBarAlert()
+            .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
+        Navigator.pop(context);
       } else if (state == RegistrationState.initial) {
         return Scaffold(
           backgroundColor: Colors.white,

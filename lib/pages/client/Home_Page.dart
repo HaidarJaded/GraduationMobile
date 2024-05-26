@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print, use_build_context_synchronously, avoid_unnecessary_containers
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -78,7 +78,7 @@ class _HomePages extends State<HomePages> {
       SnackBarAlert().alert("Logout successfuly",
           color: const Color.fromRGBO(0, 200, 0, 1), title: "Successfuly");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
     }
   }
 

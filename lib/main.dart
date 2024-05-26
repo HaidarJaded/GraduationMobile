@@ -10,13 +10,16 @@ import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
+
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
+import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
+
 import 'login/loginScreen/loginPage.dart';
 import 'pages/client/cubit/phone_cubit/phone_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -139,7 +142,8 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => SwitchBloc(),
-          ),          BlocProvider(
+          ),
+          BlocProvider(
             create: (context) => RegistrationCubit(),
           ),
           BlocProvider(
@@ -148,8 +152,13 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => OrderCubit(),
           ),
+          BlocProvider(
+            create: (context) => AllPhoneInCenterCubit(),
+          ),
         ],
         child: const GetMaterialApp(
-            debugShowCheckedModeBanner: false, home: LoginPage()));
+          debugShowCheckedModeBanner: false,
+          home: LoginPage(),
+        ));
   }
 }

@@ -126,7 +126,21 @@ class _allDevicesState extends State<allDevices> {
                 },
                 child: const Icon(Icons.add),
               ),
-              appBar: SearchAppBar(),
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+                title: const Text('MYP'),
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context,
+                          delegate:
+                              search(data: state.data.items as List<Device>));
+                    },
+                  ),
+                ],
+              ),
               drawer: const CustomDrawer(),
               // ignore: avoid_unnecessary_containers
               body: Container(
@@ -217,6 +231,32 @@ class _allDevicesState extends State<allDevices> {
                                               const Expanded(child: Text(":")),
                                               const Expanded(
                                                   child: Text("الحالة")),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Text(
+                                                      "${devices[i].customer.name + devices[i].customer.lastName}")),
+                                              const Expanded(child: Text(":")),
+                                              const Expanded(
+                                                  child: Text("اسم المالك")),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Text(
+                                                      "${devices[i].customer.phone}")),
+                                              const Expanded(child: Text(":")),
+                                              const Expanded(
+                                                  child: Text("رقم المالك")),
                                             ],
                                           ),
                                         ])))

@@ -1,36 +1,35 @@
-// ignore_for_file: file_names, camel_case_types, avoid_unnecessary_containers, unnecessary_import
+// ignore_for_file: file_names, unnecessary_import, camel_case_types
 
 import 'package:flutter/material.dart';
-
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
-import 'package:graduation_mobile/allDevices/screen/edit.dart';
+
+import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 
 import '../Controllers/crud_controller.dart';
 import '../allDevices/screen/cubit/edit_cubit.dart';
-import '../helper/shared_perferences.dart';
+import '../allDevices/screen/edit.dart';
 import '../models/device_model.dart';
 
 class allPhoneInCenter extends StatefulWidget {
   const allPhoneInCenter({super.key});
 
   @override
-  State<allPhoneInCenter> createState() => _allPhoneInCenterState();
+  State<allPhoneInCenter> createState() => _allPhoneInCenter();
 }
 
 int? selectedDeviceId;
-// ignore: non_constant_identifier_names
 
-class _allPhoneInCenterState extends State<allPhoneInCenter> {
+class _allPhoneInCenter extends State<allPhoneInCenter> {
   int perPage = 20;
   int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
   List<dynamic> devices = [];
   bool firstTime = true;
+  bool readyToBuild = false;
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
@@ -68,15 +67,22 @@ class _allPhoneInCenterState extends State<allPhoneInCenter> {
   @override
   void initState() {
     super.initState();
-    InstanceSharedPrefrences().getId().then((id) => {
-          BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
-            'page': 1,
-            'per_page': perPage,
-            'orderBy': 'date_receipt',
-            'dir': 'desc',
-            'client_id': id
-          })
-        });
+    readyToBuild = false;
+    InstanceSharedPrefrences()
+        .getId()
+        .then((id) => {
+              BlocProvider.of<AllPhoneInCenterCubit>(Get.context!)
+                  .getDeviceData({
+                'with': 'customer',
+                'page': 1,
+                'per_page': perPage,
+                'orderBy': 'date_receipt',
+                'dir': 'desc',
+                'client_id': id
+              })
+            })
+        .then((value) => readyToBuild = true);
+
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         setState(() {
@@ -91,11 +97,11 @@ class _allPhoneInCenterState extends State<allPhoneInCenter> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AllDevicesCubit, AllDevicesState>(
+    return BlocBuilder<AllPhoneInCenterCubit, AllPhoneInCenterState>(
         builder: (context, state) {
-      if (state is AllDevicesLoading) {
-        const Center(child: CircularProgressIndicator());
-      } else if (state is AllDevicesSucces) {
+      if (state is AllPhoneInCenterLoading || readyToBuild == false) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is AllPhoneInCenterSuccess) {
         if (firstTime) {
           totalCount = state.data.pagination?['total'];
           currentPage = state.data.pagination?['current_page'];
@@ -103,8 +109,10 @@ class _allPhoneInCenterState extends State<allPhoneInCenter> {
           devices.addAll(state.data.items!);
           firstTime = false;
         }
-        return Container(
-            child: Container(
+        return Scaffold(
+            // ignore: avoid_unnecessary_containers
+            body: Container(
+                child: Container(
           padding: const EdgeInsets.all(5),
           child: ListView.builder(
             controller: controller,
@@ -112,101 +120,129 @@ class _allPhoneInCenterState extends State<allPhoneInCenter> {
             itemBuilder: (context, i) {
               if (i < devices.length) {
                 return Card(
-                    // key: ValueKey(state.data[index].itemName),
-                    color: const Color.fromARGB(255, 252, 234, 251),
-                    child: Column(children: [
+                  // key: ValueKey(state.data[index].itemName),
+                  color: const Color.fromARGB(255, 252, 234, 251),
+                  child: Column(
+                    children: [
                       ExpansionTile(
-                          // key: ValueKey(),
-                          expandedAlignment: FractionalOffset.topRight,
-                          title: Text(
-                            state.data.items?[i].model,
-                          ),
-                          subtitle:
-                              // ignore: prefer_interpolation_to_compose_strings
-                              Text(state.data.items?[i].imei),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              if (state.data.items?[i].id != null) {
-                                selectedDeviceId = state.data.items?[i].id;
+                        // key: ValueKey(),
+                        expandedAlignment: FractionalOffset.topRight,
+                        title: Text(
+                          devices[i].model,
+                        ),
 
-                                BlocProvider.of<EditCubit>(context)
-                                    .exitIdDevice(id: selectedDeviceId!);
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return edit();
-                                  },
-                                );
-                              }
-                            },
-                          ),
-                          children: <Widget>[
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 25, top: 5, bottom: 5, right: 25),
-                                child: Container(
-                                    transformAlignment: Alignment.topRight,
-                                    decoration: const BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 242, 235, 247),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    padding: const EdgeInsets.all(10),
-                                    alignment: Alignment.topLeft,
-                                    child: Column(children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                                  "${state.data.items?[i].problem}")),
-                                          const Expanded(child: Text(":")),
-                                          const Expanded(child: Text("العطل")),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                                  "${state.data.items?[i].costToCustomer}")),
-                                          const Expanded(child: Text(":")),
-                                          const Expanded(
-                                              child: Text("التكلفة ")),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                                  "${state.data.items?[i].status}")),
-                                          const Expanded(child: Text(":")),
-                                          const Expanded(child: Text("الحالة")),
-                                        ],
-                                      ),
-                                    ])))
-                          ])
-                    ]));
+                        subtitle:
+                            // ignore: prefer_interpolation_to_compose_strings
+                            Text(devices[i].imei),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            if (devices[i].id != null) {
+                              selectedDeviceId = devices[i].id;
+
+                              BlocProvider.of<EditCubit>(context)
+                                  .exitIdDevice(id: selectedDeviceId!);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return edit();
+                                },
+                              );
+                            }
+                          },
+                        ),
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 25, top: 5, bottom: 5, right: 25),
+                              child: Container(
+                                  transformAlignment: Alignment.topRight,
+                                  decoration: const BoxDecoration(
+                                      color: Color.fromARGB(255, 242, 235, 247),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  padding: const EdgeInsets.all(10),
+                                  alignment: Alignment.topLeft,
+                                  child: Column(children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child:
+                                                Text("${devices[i].problem}")),
+                                        const Expanded(child: Text(":")),
+                                        const Expanded(child: Text("العطل")),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: Text(
+                                                "${devices[i].costToCustomer}")),
+                                        const Expanded(child: Text(":")),
+                                        const Expanded(child: Text("التكلفة ")),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child:
+                                                Text("${devices[i].status}")),
+                                        const Expanded(child: Text(":")),
+                                        const Expanded(child: Text("الحالة")),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: Text(
+                                                "${devices[i].customer.name + devices[i].customer.lastName}")),
+                                        const Expanded(child: Text(":")),
+                                        const Expanded(
+                                            child: Text("اسم المالك")),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: Text(
+                                                "${devices[i].customer.phone}")),
+                                        const Expanded(child: Text(":")),
+                                        const Expanded(
+                                            child: Text("رقم المالك")),
+                                      ],
+                                    ),
+                                  ])))
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              } else if (currentPage <= pagesCount && pagesCount > 1) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               } else {
-                if (currentPage <= pagesCount && pagesCount > 1) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
+                return devices.isEmpty
+                    ? const Center(child: Text('لا يوجد اجهزة'))
+                    : devices.length >= 20
+                        ? const Center(child: Text('لا يوجد المزيد'))
+                        : null;
               }
-              return devices.isEmpty
-                  ? const Center(child: Text('لا يوجد اجهزة'))
-                  : devices.length >= 20
-                      ? const Center(child: Text('لا يوجد المزيد'))
-                      : null;
             },
             // onReorder: (int oldIndex, int newIndex) {
             //   context
@@ -214,13 +250,13 @@ class _allPhoneInCenterState extends State<allPhoneInCenter> {
             //       .reorderDevices(oldIndex, newIndex);
             // },
           ),
-        ));
-      } else if (state is AllDevicesfailure) {
+        )));
+
+        // Example: Print the name of the second user
+      } else if (state is AllPhoneInCenterFailuer) {
         return Center(child: Text(state.errorMessage));
       }
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: Text("done"));
     });
   }
 }
