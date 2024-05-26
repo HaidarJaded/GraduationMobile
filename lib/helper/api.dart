@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/http_exception.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -9,6 +10,9 @@ class Api {
   final String baseUrl = "https://haidarjaded787.serv00.net/";
   Future<dynamic> get(
       {required String path, Map<String, dynamic>? queryParams}) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return;
+    }
     try {
       String? token = await InstanceSharedPrefrences().getToken();
       var headers = <String, String>{
@@ -27,7 +31,8 @@ class Api {
         throw HttpException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message']);
+      SnackBarAlert().alert(e.response?.data['message'] ??
+          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
       if (e.response?.statusCode == 401) {
         Get.offAll(() => const LoginPage());
       }
@@ -41,6 +46,9 @@ class Api {
     required String path,
     required dynamic body,
   }) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return;
+    }
     try {
       String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
@@ -58,7 +66,10 @@ class Api {
         throw HttpException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message']);
+      SnackBarAlert().alert(e.response?.data['message'] ??
+          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
+      SnackBarAlert().alert(e.response?.data['message'] ??
+          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
       if (e.response?.statusCode == 401) {
         Get.offAll(() => const LoginPage());
       }
@@ -72,6 +83,9 @@ class Api {
     required String path,
     required Map<String, dynamic> body,
   }) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return;
+    }
     try {
       String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
@@ -89,7 +103,8 @@ class Api {
         throw HttpException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message']);
+      SnackBarAlert().alert(e.response?.data['message'] ??
+          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
       if (e.response?.statusCode == 401) {
         Get.offAll(() => const LoginPage());
       }
@@ -100,6 +115,9 @@ class Api {
   }
 
   Future<void> delete({required String path, required int id}) async {
+    if (!await CheckConnection().thereIsAnInternet()) {
+      return;
+    }
     try {
       String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
@@ -115,10 +133,10 @@ class Api {
         throw HttpException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message']);
+      SnackBarAlert().alert(e.response?.data['message'] ??
+          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
       // if (e.response?.statusCode == 403) {
 
-      Get.offAll(() => const LoginPage());
       // }
       return;
     } catch (e) {

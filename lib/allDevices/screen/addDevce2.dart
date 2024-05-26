@@ -9,7 +9,6 @@ import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
-import '../cubit/all_devices_cubit.dart';
 import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
@@ -27,7 +26,7 @@ class addInfoDevice extends StatelessWidget {
   TextEditingController modelController = TextEditingController();
   TextEditingController ImeiController = TextEditingController();
   TextEditingController infoController = TextEditingController();
-  TextEditingController inCenterController = TextEditingController();
+  TextEditingController inCenterController = TextEditingController(text: '0');
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +130,13 @@ class addInfoDevice extends StatelessWidget {
         }
         if (state is AddDevicesSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
             SnackBarAlert().alert(
               "تم الاضافة بنجاح",
               color: const Color.fromRGBO(0, 200, 0, 1),
+              title: "اضافة جهاز جديد"
             );
             Get.off(() => const allDevices());
+            BlocProvider.of<AddDevicesCubit>(context).resetState();
             SnackBarAlertWithButton().alert("",
                 title: "هل تود بارسال طلب؟",
                 yesButton: MaterialButton(

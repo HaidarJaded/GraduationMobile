@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:graduation_mobile/bar/SearchAppBar.dart';
+import 'package:get/get.dart';
+
 import '../../login/loginScreen/loginPage.dart';
 
 class HomeDelivery extends StatelessWidget {
