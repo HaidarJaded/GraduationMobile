@@ -268,87 +268,98 @@ class _HomePages extends State<HomePages> {
                       devices.addAll(state.data.items!);
                       firstTime = false;
                     }
-                    return ListView.builder(
-                      controller: scrollController,
-                      itemCount: devices.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < devices.length) {
-                          final device = devices[index];
-                          return Card(
-                            color: const Color.fromARGB(255, 252, 234, 251),
-                            child: ListTile(
-                              title: Text(device.model),
-                              subtitle: Text(device.imei),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (device.status == 'قيد العمل') ...[
-                                    IconButton(
-                                      onPressed: () {
-                                        // هنا يتم عرض خطوات الإصلاح
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RepairSteps(),
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(FontAwesomeIcons.list),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        // هنا يتم تحديد نتيجة العمل كجاهز
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UpdateStatus(),
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.check_circle),
-                                    ),
-                                  ] else ...[
-                                    IconButton(
-                                      onPressed: () async {
-                                        if (device.status == 'يتم فحصه') {
-                                          // تغيير الحالة إلى "بانتظار استجابة العميل"
-                                          notifyClient(
-                                              device,
-                                              100.0,
-                                              "Issue details",
-                                              DateTime(2024, 6, 1));
-                                        } else {
-                                          // تغيير الحالة إلى "يتم فحصه"
-                                          await updateDeviceStatus(
-                                              device, 'يتم فحصه');
-                                        }
-                                      },
-                                      icon: const Icon(Icons.tips_and_updates),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          );
-                        } else if (currentPage <= pagesCount &&
-                            pagesCount > 1) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 32),
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        } else {
-                          return devices.isEmpty
-                              ? const Center(child: Text('لا يوجد اجهزة'))
-                              : devices.length >= 20
-                                  ? const Center(child: Text('لا يوجد المزيد'))
-                                  : null;
-                        }
-                      },
-                    );
+                    return RefreshIndicator(
+                        onRefresh: _refreshData,
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          controller: scrollController,
+                          itemCount: devices.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < devices.length) {
+                              final device = devices[index];
+                              return Card(
+                                color: const Color.fromARGB(255, 252, 234, 251),
+                                child: ListTile(
+                                  title: Text(device.model),
+                                  subtitle: Text(device.imei),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (device.status == 'قيد العمل') ...[
+                                        IconButton(
+                                          onPressed: () {
+                                            // هنا يتم عرض خطوات الإصلاح
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const RepairSteps(),
+                                              ),
+                                            );
+                                          },
+                                          icon:
+                                              const Icon(FontAwesomeIcons.list),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            // هنا يتم تحديد نتيجة العمل كجاهز
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const UpdateStatus(),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.check_circle),
+                                        ),
+                                      ] else ...[
+                                        IconButton(
+                                          onPressed: () async {
+                                            if (device.status == 'يتم فحصه') {
+                                              // تغيير الحالة إلى "بانتظار استجابة العميل"
+                                              notifyClient(
+                                                  device,
+                                                  100.0,
+                                                  "Issue details",
+                                                  DateTime(2024, 6, 1));
+                                            } else {
+                                              // تغيير الحالة إلى "يتم فحصه"
+                                              await updateDeviceStatus(
+                                                  device, 'يتم فحصه');
+                                            }
+                                          },
+                                          icon: const Icon(
+                                              Icons.tips_and_updates),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (currentPage <= pagesCount &&
+                                pagesCount > 1) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            } else {
+                              return devices.isNotEmpty
+                                  ? firstTime
+                                      ? const Center(
+                                          child: Text('لا يوجد اجهزة'))
+                                      : devices.length >= 20
+                                          ? const Center(
+                                              child: Text('لا يوجد المزيد'))
+                                          : null
+                                  : const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                            }
+                          },
+                        ));
                   } else if (state is PhoneFailure) {
                     return Center(
                       child:
@@ -377,5 +388,14 @@ class _HomePages extends State<HomePages> {
         child: const Icon(Icons.post_add_outlined),
       ),
     );
+  }
+
+  Future<void> _refreshData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    setState(() {
+      currentPage = 1;
+      devices.clear();
+      fetchDevices(currentPage);
+    });
   }
 }
