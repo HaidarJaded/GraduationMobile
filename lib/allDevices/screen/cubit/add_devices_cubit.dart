@@ -1,9 +1,8 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, depend_on_referenced_packages, avoid_print, unused_local_variable, prefer_interpolation_to_compose_strings, non_constant_identifier_names
 
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 
 import 'package:meta/meta.dart';
@@ -21,10 +20,6 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
     emit(AddDevicesLoading());
 
     try {
-      var body = jsonEncode({'national_id': nationalId});
-
-      // var result =
-      //     await Api().get(path: 'api/customers?national_id=$nationalId');
       final List<Customer>? result =
           (await _crudController.getAll({'national_id': nationalId})).items;
 
@@ -36,6 +31,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
     } catch (e) {
       emit(AddDevicesFailure(errorMessage: e));
     }
+    Get.back();
   }
 
   Future<dynamic> addNewDevicewithNewCustomer(
@@ -62,17 +58,19 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'client_id': client_id.toString(),
       'repaired_in_center': repairedInCenter.toString()
     });
-    print("lastnameCustomer" +
-        lastnameCustomer +
-        "repairedInCenter" +
-        repairedInCenter +
-        "nationalId" +
-        nationalId);
-    emit(AddDevicesSuccess());
+    if (respons != null) {
+      emit(AddDevicesSuccess());
+    } else {
+      emit(AddDevicesFailure(errorMessage: "Failed adding"));
+    }
+    Get.back();
+  }
+
+  void resetState() {
+    emit(AddDevicesInitial());
   }
 }
   
-
 //   Future<void> customeringo() async {
 //     try {
 //       final List<Customer>? data = await _crudController.getAll({});

@@ -1,4 +1,6 @@
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 
 class Order implements HasId {
   @override
@@ -14,7 +16,8 @@ class Order implements HasId {
   String? deliverTime;
   String createdAt;
   String updatedAt;
-
+  Client? client;
+  User? user;
   Order({
     required this.id,
     required this.deviceId,
@@ -27,6 +30,8 @@ class Order implements HasId {
     this.deliverTime,
     required this.createdAt,
     required this.updatedAt,
+    this.client,
+    this.user,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -42,6 +47,8 @@ class Order implements HasId {
       deliverTime: json['deliver_time'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
   }
 

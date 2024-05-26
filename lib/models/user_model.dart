@@ -67,6 +67,7 @@ class User implements HasId {
               ?.map((deviceData) => Device.fromJson(deviceData))
               .toList() ??
           [],
+      rule: json['rule'] != null ? Rule.fromJson(json['rule']) : null,
     );
   }
 

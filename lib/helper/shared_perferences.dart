@@ -37,5 +37,13 @@ class InstanceSharedPrefrences {
     await initial();
     prefs.clear();
   }
-  
+
+  Future<String?> getRuleName() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['rule']['name'];
+  }
 }

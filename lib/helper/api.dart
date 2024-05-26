@@ -29,7 +29,7 @@ class Api {
     } on DioException catch (e) {
       SnackBarAlert().alert(e.response?.data['message']);
       if (e.response?.statusCode == 401) {
-        Get.offAll(() => LoginPage());
+        Get.offAll(() => const LoginPage());
       }
       return null;
     } catch (e) {
@@ -60,7 +60,7 @@ class Api {
     } on DioException catch (e) {
       SnackBarAlert().alert(e.response?.data['message']);
       if (e.response?.statusCode == 401) {
-        Get.offAll(() => LoginPage());
+        Get.offAll(() => const LoginPage());
       }
       return null;
     } catch (e) {
@@ -68,8 +68,10 @@ class Api {
     }
   }
 
-  Future<dynamic> put(
-      {required String path, required Map<String, dynamic> body}) async {
+  Future<dynamic> put({
+    required String path,
+    required Map<String, dynamic> body,
+  }) async {
     try {
       String? token = await InstanceSharedPrefrences().getToken();
       Map<String, String> headers = {
@@ -89,7 +91,7 @@ class Api {
     } on DioException catch (e) {
       SnackBarAlert().alert(e.response?.data['message']);
       if (e.response?.statusCode == 401) {
-        Get.offAll(() => LoginPage());
+        Get.offAll(() => const LoginPage());
       }
       return null;
     } catch (e) {
@@ -116,7 +118,7 @@ class Api {
       SnackBarAlert().alert(e.response?.data['message']);
       // if (e.response?.statusCode == 403) {
 
-      Get.offAll(() => LoginPage());
+      Get.offAll(() => const LoginPage());
       // }
       return;
     } catch (e) {

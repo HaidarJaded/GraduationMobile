@@ -14,11 +14,13 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
   void reorderDevices(int oldIndex, int newIndex) {
     if (state is AllDevicesSucces) {
       final currentState = state as AllDevicesSucces;
-      final devicesList = List<Device>.from(currentState.device);
+      final devicesList = List<Device>.from(currentState.data.items!);
       final device = devicesList.removeAt(oldIndex);
       devicesList.insert(newIndex, device);
       final i = newIndex > oldIndex ? newIndex - 1 : newIndex;
-      emit(AllDevicesSucces(device: devicesList));
+      var returnedObject = ReturnedObject();
+      returnedObject.items = devicesList;
+      emit(AllDevicesSucces(data: returnedObject));
     }
   }
 
@@ -26,13 +28,13 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
 
   AllDevicesCubit() : super(AllDevicesInitial());
 
-  Future<void> getDeviceData() async {
+  Future<void> getDeviceData([Map<String, dynamic>? queryParams]) async {
     try {
-      ReturnedObject data =
-          await _crudController.getAll({});
-      final List? devices = data.items;
-      if (devices != null) {
-        emit(AllDevicesSucces(device: devices as List<Device>));
+      emit(AllDevicesLoading());
+      ReturnedObject data = await _crudController.getAll(queryParams);
+
+      if (data.items != null) {
+        emit(AllDevicesSucces(data: data));
       } else {
         emit(AllDevicesfailure(errorMessage: 'Error: Failed to fetch data'));
       }

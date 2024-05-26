@@ -1,16 +1,22 @@
-// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names
+// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names, empty_statements, deprecated_member_use, unnecessary_import
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
 import '../cubit/all_devices_cubit.dart';
+import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
 class addInfoDevice extends StatelessWidget {
-  addInfoDevice({super.key});
+  addInfoDevice({super.key, required customerNationalId}) {
+    nationalIdController = TextEditingController(text: customerNationalId);
+  }
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -25,8 +31,16 @@ class addInfoDevice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddDevicesCubit, AddDevicesState>(
+    return WillPopScope(onWillPop: () async {
+      Get.offAll(() => const allDevices());
+      BlocProvider.of<AddDevicesCubit>(context).resetState();
+
+      return false;
+    }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
+        if (state is AddDevicesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
         if (state is AddDevicesFound) {
           return Scaffold(
               body: Padding(
@@ -62,10 +76,6 @@ class addInfoDevice extends StatelessWidget {
                                 }
                                 return null;
                               },
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[أ-يa-zA-Z ]')),
-                              ],
                             ),
                             const SizedBox(
                               height: 10,
@@ -75,8 +85,8 @@ class addInfoDevice extends StatelessWidget {
                               icon: const Icon(Icons.numbers),
                               controller: ImeiController,
                               validator: (value) {
-                                if (value.length < 15) {
-                                  return 'يجب ألا يكون الرقم أقل من 15 أرقام';
+                                if (value.length != 15) {
+                                  return 'يجب ان يكون 15 رقم';
                                 }
                               },
                             ),
@@ -120,7 +130,23 @@ class addInfoDevice extends StatelessWidget {
                           ])))));
         }
         if (state is AddDevicesSuccess) {
-          return const Text("text");
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
+            SnackBarAlert().alert(
+              "تم الاضافة بنجاح",
+              color: const Color.fromRGBO(0, 200, 0, 1),
+            );
+            Get.off(() => const allDevices());
+            SnackBarAlertWithButton().alert("",
+                title: "هل تود بارسال طلب؟",
+                yesButton: MaterialButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "نعم",
+                    selectionColor: Colors.black,
+                  ),
+                ));
+          });
         }
         return Scaffold(
           body: Padding(
@@ -150,10 +176,6 @@ class addInfoDevice extends StatelessWidget {
                       labelText: "الاسم",
                       icon: const Icon(Icons.abc_rounded),
                       controller: nameController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'ادخل اسم صاحب الجهاز';
@@ -168,10 +190,6 @@ class addInfoDevice extends StatelessWidget {
                       labelText: "الكنية",
                       icon: const Icon(Icons.abc_rounded),
                       controller: lastNameController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "ادخل الكنية من فضلك";
@@ -209,8 +227,8 @@ class addInfoDevice extends StatelessWidget {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'ادخل رقم صاحب الجهاز';
-                        } else if (value.length < 10) {
-                          return 'يجب ألا يكون الرقم أقل من 10 أرقام';
+                        } else if (value.length != 10) {
+                          return 'يجب ان يكون 10 ارقام';
                         }
                         return null;
                       },
@@ -221,23 +239,16 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    textFormField(
-                      labelText: "الرقم الوطني",
-                      icon: const Icon(Icons.person_add_alt_1_outlined),
+                    TextFormField(
+                      readOnly: true,
+                      enabled: false,
                       controller: nationalIdController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'ادخل الرقم الوطني لصاحب الجهاز';
-                        } else if (value.length < 11) {
-                          return 'يجب ألا يكون الرقم أقل من 11 أرقام';
-                        }
-                        return null;
-                      },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.person_add_alt_1_outlined),
+                        labelText: "الرقم الوطني",
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-
                     const SizedBox(
                       height: 16,
                     ),
@@ -261,10 +272,6 @@ class addInfoDevice extends StatelessWidget {
                         }
                         return null;
                       },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp('[أ-يa-zA-Z ]')),
-                      ],
                     ),
                     const SizedBox(
                       height: 10,
@@ -274,8 +281,8 @@ class addInfoDevice extends StatelessWidget {
                       icon: const Icon(Icons.numbers),
                       controller: ImeiController,
                       validator: (value) {
-                        if (value.length < 15) {
-                          return 'يجب ألا يكون الرقم أقل من 15 أرقام';
+                        if (value.length != 15) {
+                          return 'يجب أن يكون 15 رقم';
                         }
                       },
                     ),
@@ -289,10 +296,30 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-                    textFormField(
-                        labelText: "الى السينتير",
-                        icon: const Icon(Icons.home_filled),
-                        controller: inCenterController),
+                    BlocBuilder<SwitchBloc, SwitchState>(
+                      builder: (context, state) {
+                        return Row(
+                          children: [
+                            Switch(
+                              value: state.inCenter,
+                              onChanged: (val) {
+                                BlocProvider.of<SwitchBloc>(context)
+                                    .add(ToggleSwitch(val));
+
+                                inCenterController.text = val ? '1' : '0';
+                              },
+                            ),
+                            Container(
+                              width: 60,
+                            ),
+                            const Text(
+                              "اضافة الى المركز",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
 
                     InkWell(
                       onTap: () async {
@@ -308,16 +335,8 @@ class addInfoDevice extends StatelessWidget {
                                   imei: ImeiController.text,
                                   info: infoController.text,
                                   repairedInCenter: inCenterController.text);
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            BlocProvider.of<AllDevicesCubit>(context)
-                                .getDeviceData();
-                            // This will ensure that the current frame is complete before executing the navigation
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => const allDevices()),
-                              (route) => false,
-                            );
-                          });
+
+                          ;
                         }
                       },
                       child: Container(
@@ -350,6 +369,6 @@ class addInfoDevice extends StatelessWidget {
           ),
         );
       },
-    );
+    ));
   }
 }

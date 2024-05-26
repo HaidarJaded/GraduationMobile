@@ -1,9 +1,12 @@
+import 'package:graduation_mobile/models/client_model.dart';
+import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 
 class CompletedDevice implements HasId {
   @override
   final int? id;
-  static String table="completed_devices";
+  static String table = "completed_devices";
   final String model;
   final String? imei;
   final String code;
@@ -26,6 +29,9 @@ class CompletedDevice implements HasId {
   final int repairedInCenter;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final Client? client;
+  final User? user;
+  final Customer? customer;
 
   CompletedDevice({
     this.id,
@@ -51,6 +57,9 @@ class CompletedDevice implements HasId {
     required this.repairedInCenter,
     required this.createdAt,
     required this.updatedAt,
+    this.client,
+    this.user,
+    this.customer,
   });
 
   factory CompletedDevice.fromJson(Map<String, dynamic> json) {
@@ -78,6 +87,10 @@ class CompletedDevice implements HasId {
       repairedInCenter: json['repaired_in_center'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
+      customer:
+          json['customer'] != null ? Customer.fromJson(json['customer']) : null,
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
   }
 

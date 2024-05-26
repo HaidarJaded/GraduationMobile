@@ -2,11 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+<<<<<<< HEAD
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+=======
+import 'package:get/get.dart';
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
 import 'package:graduation_mobile/pages/client/notification.dart';
 import 'package:graduation_mobile/pages/client/step.dart';
@@ -107,9 +111,7 @@ class _HomePages extends State<HomePages> {
               leading: const Icon(Icons.notifications_active_sharp),
               title: const Text("notifications"),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NotificationScreen();
-                }));
+                Get.to(NotificationScreen());
               },
             ),
             const ListTile(
@@ -124,6 +126,7 @@ class _HomePages extends State<HomePages> {
               leading: Icon(Icons.settings),
               title: Text("Settings"),
             ),
+<<<<<<< HEAD
             InkWell(
               onTap: logout,
               child: Container(
@@ -149,6 +152,16 @@ class _HomePages extends State<HomePages> {
                 ),
               ),
             ),
+=======
+            MaterialButton(
+              onPressed: () {
+                Get.to(const LoginPage());
+              },
+              minWidth: 10,
+              color: const Color(0xFF3E7FF8),
+              child: const Text("log out"),
+            )
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
           ]),
         ),
       ),
@@ -164,6 +177,7 @@ class _HomePages extends State<HomePages> {
             Expanded(
               child: BlocConsumer<PhoneCubit, PhoneState>(
                 listener: (context, state) {
+<<<<<<< HEAD
                   if (state is PhoneLoading) {
                     const Center(
                       child: CircularProgressIndicator(),
@@ -262,6 +276,46 @@ class _HomePages extends State<HomePages> {
               builder: (context) => const AddDetalis(),
             ),
           );
+=======
+              if (state is PhoneLoading) {
+                const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              // ignore: non_constant_identifier_names, avoid_types_as_parameter_names
+            }, builder: (context, State) {
+              return ListView.builder(itemBuilder: (context, index) {
+                return ExpansionTile(title: const Text("Phone"), children: [
+                  CustomCard(
+                    title: const Text('title'),
+                    subtitle: const Text('body'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Get.to(const UpdateStatus());
+                            },
+                            icon: const Icon(Icons.tips_and_updates)),
+                        IconButton(
+                          icon: const Icon(FontAwesomeIcons.list),
+                          onPressed: () {
+                            Get.to(const RepairSteps());
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ]);
+              });
+            }),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(const AddDetalis());
+>>>>>>> 314dd05dfbfbfd4865aac7b23c2af75636fa961e
         },
         child: const Icon(Icons.post_add_outlined),
       ),
