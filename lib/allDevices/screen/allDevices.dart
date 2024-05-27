@@ -136,7 +136,7 @@ class _allDevicesState extends State<allDevices> {
                       showSearch(
                           context: context,
                           delegate:
-                              search(data: state.data.items as List<Device>));
+                              search());
                     },
                   ),
                 ],
