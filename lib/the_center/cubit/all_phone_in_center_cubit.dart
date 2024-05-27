@@ -16,7 +16,7 @@ class AllPhoneInCenterCubit extends Cubit<AllPhoneInCenterState> {
     try {
       emit(AllPhoneInCenterLoading());
       ReturnedObject data = await _crudController
-          .getAll({'with': 'customer', 'repaired_in_center': '1'});
+          .getAll(queryParams);
 
       if (data.items != null) {
         emit(AllPhoneInCenterSuccess(data: data));

@@ -222,7 +222,7 @@ class _allDevicesState extends State<allDevices> {
                                                       children: [
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].problem}")),
+                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         const Expanded(
@@ -237,7 +237,7 @@ class _allDevicesState extends State<allDevices> {
                                                       children: [
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].costToCustomer}")),
+                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         const Expanded(

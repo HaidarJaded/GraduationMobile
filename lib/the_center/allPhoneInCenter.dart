@@ -167,8 +167,8 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                     Row(
                                       children: [
                                         Expanded(
-                                            child:
-                                                Text("${devices[i].problem}")),
+                                            child: Text(devices[i].problem ??
+                                                "لم يحدد بعد")),
                                         const Expanded(child: Text(":")),
                                         const Expanded(child: Text("العطل")),
                                       ],
@@ -180,7 +180,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       children: [
                                         Expanded(
                                             child: Text(
-                                                "${devices[i].costToCustomer}")),
+                                                "${devices[i].costToCustomer??"لم تحدد بعد"}")),
                                         const Expanded(child: Text(":")),
                                         const Expanded(child: Text("التكلفة ")),
                                       ],
@@ -192,7 +192,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       children: [
                                         Expanded(
                                             child:
-                                                Text("${devices[i].status}")),
+                                                Text("${devices[i].status??""}")),
                                         const Expanded(child: Text(":")),
                                         const Expanded(child: Text("الحالة")),
                                       ],
@@ -204,7 +204,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       children: [
                                         Expanded(
                                             child: Text(
-                                                "${devices[i].customer.name + devices[i].customer.lastName}")),
+                                                "${devices[i].customer?.name??""} ${devices[i].customer?.lastName??""}")),
                                         const Expanded(child: Text(":")),
                                         const Expanded(
                                             child: Text("اسم المالك")),
@@ -217,7 +217,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       children: [
                                         Expanded(
                                             child: Text(
-                                                "${devices[i].customer.phone}")),
+                                                devices[i].customer?.phone??"")),
                                         const Expanded(child: Text(":")),
                                         const Expanded(
                                             child: Text("رقم المالك")),
