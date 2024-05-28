@@ -46,6 +46,7 @@ dependencies:
   get: ^4.6.6
   awesome_notifications: ^0.9.3+1
   connectivity: ^3.0.6
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
