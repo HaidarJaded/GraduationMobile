@@ -31,7 +31,7 @@ class _orderState extends State<order> {
   bool hasSelectDevicesOrderPermission = false;
   bool hasSelectProductsOrderPermission = false;
 
-  void confirmOrder(OrderTypes orderType, int orderId) async {
+  Future confirmOrder(OrderTypes orderType, int orderId) async {
     if (orderType == OrderTypes.device) {
       var response = await Api().put(
           path: 'api/devices_orders/$orderId', body: {'deliver_to_client': 1});
@@ -174,7 +174,7 @@ class _orderState extends State<order> {
                                                           return MaterialButton(
                                                             onPressed:
                                                                 () async {
-                                                              confirmOrder(
+                                                             await confirmOrder(
                                                                   OrderTypes
                                                                       .device,
                                                                   order.devicesOrders.firstWhere(
