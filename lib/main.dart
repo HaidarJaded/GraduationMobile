@@ -14,6 +14,7 @@ import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import 'Controllers/auth_controller.dart';
@@ -104,20 +105,28 @@ Future<void> checkLoginStatus() async {
       !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
     return;
   }
-  Get.off(() => const allDevices());
+  InstanceSharedPrefrences().getRuleName().then((ruleName) {
+    if (ruleName == 'فني') {
+      Get.off(() => const HomePages());
+    } else if (ruleName == 'عميل') {
+      Get.off(() => const allDevices());
+    } else if (ruleName == 'عامل توصيل') {
+      Get.off(() => const allDevices());
+    } else {
+      BlocProvider.of<loginCubit>(Get.context!).logout().then((value) {
+        SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
+            color: const Color.fromRGBO(200, 200, 0, 1), title: "المعذرة");
+        Get.offAll(() => const LoginPage());
+      });
+      return;
+    }
+    SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
+        color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بعودتك");
+  });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<void> checkLoginStatus() async {
-    String? token = await InstanceSharedPrefrences().getToken();
-    if (token == null ||
-        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
-      return;
-    }
-    // BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
-    Get.off(() => const allDevices());
-  }
 
   @override
   Widget build(BuildContext context) {
