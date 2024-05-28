@@ -9,7 +9,10 @@ final class AddDevicesInitial extends AddDevicesState {}
 
 final class AddDevicesLoading extends AddDevicesState {}
 
-final class AddDevicesSuccess extends AddDevicesState {}
+final class AddDevicesSuccess extends AddDevicesState {
+  final int? deviceId;
+  AddDevicesSuccess({required this.deviceId});
+}
 
 final class AddDevicesNotFound extends AddDevicesState {}
 
