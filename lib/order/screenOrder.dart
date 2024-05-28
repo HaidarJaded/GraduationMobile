@@ -63,7 +63,8 @@ class _orderState extends State<order> {
       var response = await Api().get(path: 'api/devices_orders/$orderId');
       if (response != null) {
         var deliverToClient = response['body']['deliver_to_client'];
-        return deliverToClient == 1;
+        var orderType = response['body']['order_type'];
+        return deliverToClient == 1 || orderType == 'تسليم للمركز';
       }
     } else {
       var response = await Api().get(path: 'api/product_orders/$orderId');
@@ -154,6 +155,8 @@ class _orderState extends State<order> {
                                                         'IMEI: ${device.imei}'),
                                                     Text(
                                                         'Code: ${device.code}'),
+                                                    Text(
+                                                        'نوع الطلب: ${order.devicesOrders.firstWhere((deviceOrder) => deviceOrder['device_id'] == device.id, orElse: () => null)?['order_type']}'),
                                                     FutureBuilder(
                                                       future: isDeliverToClinet(
                                                           OrderTypes.device,
@@ -174,7 +177,7 @@ class _orderState extends State<order> {
                                                           return MaterialButton(
                                                             onPressed:
                                                                 () async {
-                                                             await confirmOrder(
+                                                              await confirmOrder(
                                                                   OrderTypes
                                                                       .device,
                                                                   order.devicesOrders.firstWhere(
@@ -195,26 +198,40 @@ class _orderState extends State<order> {
                                                         } else if (snapshot
                                                                 .hasData &&
                                                             snapshot.data!) {
-                                                          return const Card(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    12,
-                                                                    74,
-                                                                    207),
-                                                            child: Text(
-                                                              " تم استلامه  ",
-                                                              style: TextStyle(
+                                                          return order.devicesOrders.firstWhere(
+                                                                      (deviceOrder) =>
+                                                                          deviceOrder[
+                                                                              'device_id'] ==
+                                                                          device
+                                                                              .id,
+                                                                      orElse: () =>
+                                                                          null)?['order_type'] ==
+                                                                  'تسليم للمركز'
+                                                              ? const SizedBox()
+                                                              : const Card(
                                                                   color: Color
-                                                                      .fromRGBO(
+                                                                      .fromARGB(
                                                                           255,
-                                                                          255,
-                                                                          255,
-                                                                          1)),
-                                                            ),
-                                                          );
+                                                                          12,
+                                                                          74,
+                                                                          207),
+                                                                  child: Text(
+                                                                    " تم استلامه  ",
+                                                                    style: TextStyle(
+                                                                        color: Color.fromRGBO(
+                                                                            255,
+                                                                            255,
+                                                                            255,
+                                                                            1)),
+                                                                  ),
+                                                                );
                                                         }
-                                                        return const SizedBox(width: 25,height: 25,child: CircularProgressIndicator(),);
+                                                        return const SizedBox(
+                                                          width: 25,
+                                                          height: 25,
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
                                                       },
                                                     ),
                                                   ],
@@ -294,7 +311,12 @@ class _orderState extends State<order> {
                                                             ),
                                                           );
                                                         }
-                                                        return const SizedBox(width: 25,height: 25,child: CircularProgressIndicator(),);
+                                                        return const SizedBox(
+                                                          width: 25,
+                                                          height: 25,
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
                                                       },
                                                     ),
                                                   ],
