@@ -214,7 +214,7 @@ class _orderState extends State<order> {
                                                             ),
                                                           );
                                                         }
-                                                        return const SizedBox();
+                                                        return const SizedBox(width: 25,height: 25,child: CircularProgressIndicator(),);
                                                       },
                                                     ),
                                                   ],
@@ -294,7 +294,7 @@ class _orderState extends State<order> {
                                                             ),
                                                           );
                                                         }
-                                                        return const SizedBox();
+                                                        return const SizedBox(width: 25,height: 25,child: CircularProgressIndicator(),);
                                                       },
                                                     ),
                                                   ],
