@@ -5,9 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
+import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/qr_scanner.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 
 import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
@@ -27,6 +32,29 @@ class addInfoDevice extends StatelessWidget {
   TextEditingController ImeiController = TextEditingController();
   TextEditingController infoController = TextEditingController();
   TextEditingController inCenterController = TextEditingController(text: '0');
+
+  Future<bool> areThereDelivery() async {
+    List? deliveries = (await CrudController<User>()
+            .getAll({'rule*name': 'عامل توصيل', 'at_work': 1}))
+        .items;
+    if (deliveries == null) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> addingOrder(int deviceId) async {
+    var clientId = await InstanceSharedPrefrences().getId();
+    var response = await Api().post(path: 'api/orders', body: {
+      'devices_ids': {deviceId.toString(): "تسليم للمركز"},
+      'client_id': clientId,
+      'description': 'ارسال طلب للمركز'
+    });
+    if (response != null) {
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +107,23 @@ class addInfoDevice extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            textFormField(
-                              labelText: "Imei",
-                              icon: const Icon(Icons.numbers),
-                              controller: ImeiController,
-                              validator: (value) {
-                                if (value.length != 15) {
-                                  return 'يجب ان يكون 15 رقم';
-                                }
-                              },
-                            ),
+                            Row(children: [
+                              Expanded(
+                                  child: textFormField(
+                                labelText: "Imei",
+                                icon: const Icon(Icons.numbers),
+                                controller: ImeiController,
+                                validator: (value) {
+                                  if (value.length != 15) {
+                                    return 'يجب أن يكون 15 رقم';
+                                  }
+                                },
+                              )),
+                              IconButton(
+                                icon: const Icon(Icons.qr_code_scanner),
+                                onPressed: scanQR,
+                              )
+                            ]),
                             const SizedBox(
                               height: 10,
                             ),
@@ -130,22 +165,35 @@ class addInfoDevice extends StatelessWidget {
         }
         if (state is AddDevicesSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            SnackBarAlert().alert(
-              "تم الاضافة بنجاح",
-              color: const Color.fromRGBO(0, 200, 0, 1),
-              title: "اضافة جهاز جديد"
-            );
+            SnackBarAlert().alert("تم الاضافة بنجاح",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "اضافة جهاز جديد");
             Get.off(() => const allDevices());
             BlocProvider.of<AddDevicesCubit>(context).resetState();
-            SnackBarAlertWithButton().alert("",
-                title: "هل تود بارسال طلب؟",
-                yesButton: MaterialButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "نعم",
-                    selectionColor: Colors.black,
-                  ),
-                ));
+            User.hasPermission("اضافة طلب لجهاز").then((hasPermission) {
+              if (hasPermission) {
+                areThereDelivery().then((areThereDelivery) {
+                  SnackBarAlert().alert("هل تود بارسال طلب؟",
+                      title: "ارسال طلب لعامل توصيل",
+                      color: const Color.fromARGB(255, 3, 75, 134),
+                      yesButton: TextButton(
+                        onPressed: () async {
+                          Get.closeCurrentSnackbar();
+                          if (state.deviceId != null) {
+                            await addingOrder(state.deviceId!);
+                          }
+                        },
+                        child: const Text(
+                          "نعم",
+                          style: TextStyle(
+                              color: Color.fromRGBO(255, 255, 255, 1)),
+                          selectionColor: Color.fromRGBO(255, 255, 255, 1),
+                        ),
+                      ),
+                      duration: const Duration(seconds: 10));
+                });
+              }
+            });
           });
         }
         return Scaffold(
@@ -276,16 +324,24 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    textFormField(
-                      labelText: "Imei",
-                      icon: const Icon(Icons.numbers),
-                      controller: ImeiController,
-                      validator: (value) {
-                        if (value.length != 15) {
-                          return 'يجب أن يكون 15 رقم';
-                        }
-                      },
-                    ),
+                    Row(children: [
+                      Expanded(
+                          child: textFormField(
+                        labelText: "Imei",
+                        icon: const Icon(Icons.numbers),
+                        controller: ImeiController,
+                        validator: (value) {
+                          if (value.length != 15) {
+                            return 'يجب أن يكون 15 رقم';
+                          }
+                        },
+                      )),
+                      IconButton(
+                        icon: const Icon(Icons.qr_code_scanner),
+                        onPressed: scanQR,
+                      )
+                    ]),
+
                     const SizedBox(
                       height: 10,
                     ),
@@ -370,5 +426,10 @@ class addInfoDevice extends StatelessWidget {
         );
       },
     ));
+  }
+
+  void scanQR() async {
+    String scanedImei = await QrScanner().scanQR();
+    ImeiController.text = scanedImei;
   }
 }

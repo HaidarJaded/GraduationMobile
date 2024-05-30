@@ -157,16 +157,11 @@ class edit extends StatelessWidget {
         }
         if (state is EditSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            // SnackBarAlert().alert("updat successfuly",
-            //     color: const Color.fromRGBO(0, 200, 0, 1),
-            //     title: "Successfuly");
-            // Get.offAll(() => const allDevices());
-            SnackBarAlertWithButton().alert("add susessfuly",
-                title: "هل تود ارسال طلب توصيل؟",
-                yesButton: MaterialButton(
-                  onPressed: () {},
-                  child: const Text("yes"),
-                ));
+            SnackBarAlert().alert("updat successfuly",
+                color: const Color.fromRGBO(0, 200, 0, 1),
+                title: "Successfuly");
+            Get.offAll(() => const allDevices());
+
             BlocProvider.of<AllDevicesCubit>(context).getDeviceData();
           });
         }

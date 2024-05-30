@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/http_exception.dart';
@@ -24,7 +26,6 @@ class Api {
         headers: headers,
       ));
       var response = await dio.get(path, queryParameters: queryParams);
-      print(queryParams);
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data;
       } else {

@@ -1,6 +1,8 @@
+import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/rule_model.dart';
 
-class Client {
+class Client implements HasId {
+  @override
   final int? id;
   static String table = "clients";
   final String centerName;

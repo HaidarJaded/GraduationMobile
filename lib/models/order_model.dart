@@ -1,70 +1,85 @@
 import 'package:graduation_mobile/models/client_model.dart';
+import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
+import 'package:graduation_mobile/models/product_model.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 
 class Order implements HasId {
   @override
   int? id;
   static String table = "orders";
-  int deviceId;
-  int orderId;
-  int? serviceId;
-  String info;
-  String orderType;
-  int deliverToClient;
+  String? description;
+  int clientId;
+  int? userId;
+  DateTime date;
+  int done;
   int deliverToUser;
-  String? deliverTime;
-  String createdAt;
-  String updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   Client? client;
   User? user;
+  List<Device>? devices;
+  List<Product>? products;
+  dynamic productsOrders;
+  dynamic devicesOrders;
+
   Order({
-    required this.id,
-    required this.deviceId,
-    required this.orderId,
-    required this.info,
-    required this.orderType,
-    required this.deliverToClient,
+    this.id,
+    required this.clientId,
+    required this.date,
     required this.deliverToUser,
-    this.serviceId,
-    this.deliverTime,
-    required this.createdAt,
-    required this.updatedAt,
-    this.client,
+    this.description,
+    required this.done,
+    this.userId,
     this.user,
+    this.client,
+    this.createdAt,
+    this.updatedAt,
+    this.devices,
+    this.products,
+    this.devicesOrders,
+    this.productsOrders,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
-      deviceId: json['device_id'],
-      orderId: json['order_id'],
-      serviceId: json['service_id'],
-      info: json['info'],
-      orderType: json['order_type'],
-      deliverToClient: json['deliver_to_client'],
-      deliverToUser: json['deliver_to_user'],
-      deliverTime: json['deliver_time'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-      user: json['user'] != null ? User.fromJson(json['user']) : null,
-      client: json['client'] != null ? Client.fromJson(json['client']) : null,
-    );
+        id: json['id'],
+        description: json['description'],
+        clientId: json['client_id'],
+        userId: json['user_id'],
+        date: DateTime.parse(json['date']),
+        done: json['done'],
+        deliverToUser: json['deliver_to_user'],
+        createdAt: DateTime.tryParse(json['created_at'] ?? ''),
+        updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
+        user: json['user'] != null ? User.fromJson(json['user']) : null,
+        devices: json['devices'] != null
+            ? (json['devices'] as List)
+                .map((device) => Device.fromJson(device))
+                .toList()
+            : [],
+        products: json['products'] != null
+            ? (json['products'] as List)
+                .map((product) => Product.fromJson(product))
+                .toList()
+            : [],
+        devicesOrders: json['devices_orders'],
+        productsOrders: json['products_orders'],
+        client:
+            json['client'] != null ? Client.fromJson(json['client']) : null);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'device_id': deviceId,
-      'order_id': orderId,
-      'service_id': serviceId,
-      'info': info,
-      'order_type': orderType,
-      'deliver_to_client': deliverToClient,
+      'description': description,
+      'client_id': clientId,
+      'user_id': userId,
+      'date': date.toString(),
+      'done': done,
       'deliver_to_user': deliverToUser,
-      'deliver_time': deliverTime,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'created_at': createdAt.toString(),
+      'updated_at': updatedAt.toString(),
     };
   }
 }

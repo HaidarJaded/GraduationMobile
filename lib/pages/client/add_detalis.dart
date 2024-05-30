@@ -1,6 +1,9 @@
+// ignore_for_file: unnecessary_import, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_state.dart';
 

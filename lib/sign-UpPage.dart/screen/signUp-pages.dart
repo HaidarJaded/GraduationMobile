@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, file_names, use_super_parameters
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 
 import '../../allDevices/screen/TextFormField.dart';
 
+import '../../helper/snack_bar_alert.dart';
 import '../sing-upCubit.dart';
 // import 'package:my_phone/pages/login-pages.dart';
 // import 'package:my_phone/pages/signUp-pages.dart';
@@ -40,12 +42,14 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.success) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-            (route) => false,
-          );
+          SnackBarAlert().alert("تم انشاء حساب بنجاح",
+              color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بك");
+          Get.to(const LoginPage());
         });
       } else if (state == RegistrationState.failure) {
+        SnackBarAlert()
+            .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
+        Navigator.pop(context);
       } else if (state == RegistrationState.initial) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -61,9 +65,10 @@ class _SignUpPagesState extends State<SignUpPages> {
                     const SizedBox(
                       height: 70,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 200,
                       width: 200,
+                      child: Image.asset('assets/images/myp.PNG'),
                     ),
                     Text(
                       "Welcome To MyPhone",
@@ -200,6 +205,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                           return 'يجب ان يكون 11 رقم';
                         }
                       },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
