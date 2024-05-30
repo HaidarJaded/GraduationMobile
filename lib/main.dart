@@ -10,7 +10,6 @@ import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
-import 'package:graduation_mobile/cubit/phone_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
@@ -19,7 +18,6 @@ import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
 import 'login/loginScreen/loginPage.dart';
-import 'pages/client/cubit/phone_cubit/phone_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/order/cubit/order_cubit.dart';
 
@@ -133,9 +131,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => AddDevicesCubit(),
           ),
-          BlocProvider(
-            create: (context) => PhoneCubit(),
-          ),
+          // BlocProvider(
+          //   create: (context) => PhoneCubit(),
+          // ),
           BlocProvider(
             create: (context) => DeviceDetailsCubit(CrudController()),
           ),

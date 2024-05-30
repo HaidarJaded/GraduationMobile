@@ -17,3 +17,5 @@ final class DeviceDetalisFailure extends DeviceDetailsState {
 }
 
 final class DeviceDetalisLoading extends DeviceDetailsState {}
+
+final class DeviceDetalisEditing extends DeviceDetailsState {}

@@ -17,7 +17,6 @@ class PhoneCubit extends Cubit<PhoneState> {
       final List? userDevises = allDevices.items;
 
       if (userDevises != null) {
-        print(userDevises);
         emit(PhoneSuccess(device: userDevises as List<Device>));
       } else {
         emit(PhoneFailure(errorMessage: 'Failed to fetch data'));

@@ -8,7 +8,13 @@ class RepairSteps extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Repair Steps')),
+        title: const Text(
+          'جطوات التصليح',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: const Padding(
         padding: EdgeInsets.all(16.0),
@@ -58,7 +64,9 @@ class RepairSteps extends StatelessWidget {
       ),
       bottomNavigationBar: BottomAppBar(
         child: InkWell(
-          onTap: () async {},
+          onTap: () async {
+            
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(
               vertical: 14,
