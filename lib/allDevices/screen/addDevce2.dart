@@ -9,6 +9,7 @@ import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/qr_scanner.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/user_model.dart';
@@ -45,9 +46,7 @@ class addInfoDevice extends StatelessWidget {
   Future<bool> addingOrder(int deviceId) async {
     var clientId = await InstanceSharedPrefrences().getId();
     var response = await Api().post(path: 'api/orders', body: {
-      'devices_ids': {
-        deviceId.toString():"تسليم للمركز"
-      },
+      'devices_ids': {deviceId.toString(): "تسليم للمركز"},
       'client_id': clientId,
       'description': 'ارسال طلب للمركز'
     });
@@ -108,16 +107,23 @@ class addInfoDevice extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            textFormField(
-                              labelText: "Imei",
-                              icon: const Icon(Icons.numbers),
-                              controller: ImeiController,
-                              validator: (value) {
-                                if (value.length != 15) {
-                                  return 'يجب ان يكون 15 رقم';
-                                }
-                              },
-                            ),
+                            Row(children: [
+                              Expanded(
+                                  child: textFormField(
+                                labelText: "Imei",
+                                icon: const Icon(Icons.numbers),
+                                controller: ImeiController,
+                                validator: (value) {
+                                  if (value.length != 15) {
+                                    return 'يجب أن يكون 15 رقم';
+                                  }
+                                },
+                              )),
+                              IconButton(
+                                icon: const Icon(Icons.qr_code_scanner),
+                                onPressed: scanQR,
+                              )
+                            ]),
                             const SizedBox(
                               height: 10,
                             ),
@@ -179,9 +185,9 @@ class addInfoDevice extends StatelessWidget {
                         },
                         child: const Text(
                           "نعم",
-                          style: TextStyle(color: Color.fromRGBO(255,255,255, 1)
-                          ),
-                          selectionColor: Color.fromRGBO(255,255,255, 1),
+                          style: TextStyle(
+                              color: Color.fromRGBO(255, 255, 255, 1)),
+                          selectionColor: Color.fromRGBO(255, 255, 255, 1),
                         ),
                       ),
                       duration: const Duration(seconds: 10));
@@ -318,16 +324,24 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    textFormField(
-                      labelText: "Imei",
-                      icon: const Icon(Icons.numbers),
-                      controller: ImeiController,
-                      validator: (value) {
-                        if (value.length != 15) {
-                          return 'يجب أن يكون 15 رقم';
-                        }
-                      },
-                    ),
+                    Row(children: [
+                      Expanded(
+                          child: textFormField(
+                        labelText: "Imei",
+                        icon: const Icon(Icons.numbers),
+                        controller: ImeiController,
+                        validator: (value) {
+                          if (value.length != 15) {
+                            return 'يجب أن يكون 15 رقم';
+                          }
+                        },
+                      )),
+                      IconButton(
+                        icon: const Icon(Icons.qr_code_scanner),
+                        onPressed: scanQR,
+                      )
+                    ]),
+
                     const SizedBox(
                       height: 10,
                     ),
@@ -412,5 +426,10 @@ class addInfoDevice extends StatelessWidget {
         );
       },
     ));
+  }
+
+  void scanQR() async {
+    String scanedImei = await QrScanner().scanQR();
+    ImeiController.text = scanedImei;
   }
 }
