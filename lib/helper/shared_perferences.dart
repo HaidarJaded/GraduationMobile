@@ -64,4 +64,13 @@ class InstanceSharedPrefrences {
     }
     return jsonDecode(profile)['email'];
   }
+
+  Future<bool> isAccountActive() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return false;
+    }
+    return jsonDecode(profile)['account_active'] == 1;
+  }
 }
