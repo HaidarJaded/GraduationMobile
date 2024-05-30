@@ -24,6 +24,7 @@ import 'allDevices/cubit/all_devices_cubit.dart';
 import 'allDevices/screen/cubit/add_devices_cubit.dart';
 
 import 'login/loginScreen/loginPage.dart';
+import 'pages/client/cubit/phone_cubit/phone_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/order/cubit/order_cubit.dart';
 
@@ -35,7 +36,6 @@ import 'package:connectivity/connectivity.dart';
 
 PageController pageController = PageController(initialPage: 0);
 int currentIndex = 0;
-
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   var notificationInfo = jsonDecode(message.data['notification']);
   NotificationController().showLocalNotificationWithActions(
@@ -167,9 +167,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => AddDevicesCubit(),
           ),
-          // BlocProvider(
-          //   create: (context) => PhoneCubit(),
-          // ),
+          BlocProvider(
+            create: (context) => PhoneCubit(),
+          ),
           BlocProvider(
             create: (context) => DeviceDetailsCubit(CrudController()),
           ),
