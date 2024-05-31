@@ -11,7 +11,8 @@ final class AddDevicesLoading extends AddDevicesState {}
 
 final class AddDevicesSuccess extends AddDevicesState {
   final int? deviceId;
-  AddDevicesSuccess({required this.deviceId});
+  final bool isRepairedInCenter;
+  AddDevicesSuccess({required this.deviceId,required this.isRepairedInCenter});
 }
 
 final class AddDevicesNotFound extends AddDevicesState {}
