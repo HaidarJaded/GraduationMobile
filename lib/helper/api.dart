@@ -61,8 +61,11 @@ class Api {
         HttpExceptionsHandler().handleException(response.statusCode!);
       }
     } on DioException catch (e) {
-      HttpExceptionsHandler().handleException(
-          e.response!.statusCode!, e.response?.data['message']);
+      if (e.requestOptions.path != 'api/logout' &&
+          e.requestOptions.path != 'api/refresh_token') {
+        HttpExceptionsHandler().handleException(
+            e.response!.statusCode!, e.response?.data['message']);
+      }
       return null;
     } catch (e) {
       return null;

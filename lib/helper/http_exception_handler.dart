@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -15,11 +16,10 @@ class HttpExceptionsHandler {
         SnackBarAlert()
             .alert(message ?? 'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
       case 401:
-        if (await loginCubit().logout()) {
-          SnackBarAlert().alert(
-              'عذراً حدث خطأ ما يرجى إعادة تسجيل الدخول مجدداً ثم إعادة المحاولة لاحقاً');
-          Get.offAll(() => const LoginPage());
-        }
+        BlocProvider.of<loginCubit>(Get.context!).resetState();
+        SnackBarAlert().alert(
+            'عذراً حدث خطأ ما يرجى إعادة تسجيل الدخول مجدداً ثم إعادة المحاولة لاحقاً');
+        Get.offAll(() => const LoginPage());
       case 403:
         SnackBarAlert().alert('عذراً لا يوجد صلاحية تنفيد العملية');
         Get.back();
