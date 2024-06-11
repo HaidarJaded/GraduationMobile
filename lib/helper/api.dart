@@ -1,12 +1,9 @@
 // ignore_for_file: avoid_print
 
-import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
-import 'package:graduation_mobile/helper/http_exception.dart';
+import 'package:graduation_mobile/helper/http_exception_handler.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:dio/dio.dart';
-import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 
 class Api {
   final String baseUrl = "https://haidarjaded787.serv00.net/";
@@ -29,14 +26,11 @@ class Api {
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data;
       } else {
-        throw HttpException(response.statusCode!);
+        HttpExceptionsHandler().handleException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message'] ??
-          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
-      if (e.response?.statusCode == 401) {
-        Get.offAll(() => const LoginPage());
-      }
+      HttpExceptionsHandler().handleException(
+          e.response!.statusCode!, e.response?.data['message']);
       return null;
     } catch (e) {
       return null;
@@ -64,16 +58,11 @@ class Api {
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data?['body'];
       } else {
-        throw HttpException(response.statusCode!);
+        HttpExceptionsHandler().handleException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message'] ??
-          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
-      SnackBarAlert().alert(e.response?.data['message'] ??
-          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
-      if (e.response?.statusCode == 401) {
-        Get.offAll(() => const LoginPage());
-      }
+      HttpExceptionsHandler().handleException(
+          e.response!.statusCode!, e.response?.data['message']);
       return null;
     } catch (e) {
       return null;
@@ -101,14 +90,11 @@ class Api {
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         return response.data?['body'];
       } else {
-        throw HttpException(response.statusCode!);
+        HttpExceptionsHandler().handleException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message'] ??
-          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
-      if (e.response?.statusCode == 401) {
-        Get.offAll(() => const LoginPage());
-      }
+      HttpExceptionsHandler().handleException(
+          e.response!.statusCode!, e.response?.data['message']);
       return null;
     } catch (e) {
       return null;
@@ -131,14 +117,11 @@ class Api {
       ));
       var response = await dio.delete(path);
       if (!(response.statusCode! >= 200 && response.statusCode! < 300)) {
-        throw HttpException(response.statusCode!);
+        HttpExceptionsHandler().handleException(response.statusCode!);
       }
     } on DioException catch (e) {
-      SnackBarAlert().alert(e.response?.data['message'] ??
-          'عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
-      // if (e.response?.statusCode == 403) {
-
-      // }
+      HttpExceptionsHandler().handleException(
+          e.response!.statusCode!, e.response?.data['message']);
       return;
     } catch (e) {
       return;
