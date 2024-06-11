@@ -20,9 +20,9 @@ class DeviceInfoCard extends StatelessWidget {
       Text('التكلفة على الزبون: ${device.costToCustomer ?? 'لم تحدد بعد'}'),
       const Text('خطوات الاصلاح:'),
       Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: device.fixSteps == null
-            ? [const Text('لم تحدد بعد')]
+            ? [const Text('     لم تحدد بعد')]
             : device.fixSteps!
                 .split('\n')
                 .map((step) => Text('         - $step'))
