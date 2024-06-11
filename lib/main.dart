@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -37,11 +35,7 @@ import 'package:connectivity/connectivity.dart';
 PageController pageController = PageController(initialPage: 0);
 int currentIndex = 0;
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
-  var notificationInfo = jsonDecode(message.data['notification']);
-  NotificationController().showLocalNotificationWithActions(
-      notificationInfo?['title'] ?? "",
-      notificationInfo?['body'] ?? "",
-      message.data['actions']);
+  NotificationController().showLocalNotificationWithActions(message.data);
 }
 
 Future main() async {
@@ -53,11 +47,7 @@ Future main() async {
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    var notificationInfo = jsonDecode(message.data['notification']);
-    NotificationController().showLocalNotificationWithActions(
-        notificationInfo?['title'] ?? "",
-        notificationInfo?['body'] ?? "",
-        message.data['actions']);
+    NotificationController().showLocalNotificationWithActions(message.data);
   });
 
   firebaseMessaging.requestPermission();
@@ -189,7 +179,7 @@ class MyApp extends StatelessWidget {
             create: (context) => AllPhoneInCenterCubit(),
           ),
         ],
-        child: const GetMaterialApp(
+        child: const GetMaterialApp(textDirection: TextDirection.rtl,
           debugShowCheckedModeBanner: false,
           home: LoginPage(),
         ));

@@ -29,6 +29,7 @@ class LoginPageState extends State<LoginPage> {
   Future<void> checkLoginStatus() async {
     String? token = await InstanceSharedPrefrences().getToken();
     if (token == null ||
+        Get.currentRoute != '/' ||
         !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
       return;
     }
