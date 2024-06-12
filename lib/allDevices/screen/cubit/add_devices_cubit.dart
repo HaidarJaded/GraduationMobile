@@ -59,7 +59,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'repaired_in_center': repairedInCenter.toString()
     });
     if (respons != null) {
-      emit(AddDevicesSuccess(deviceId: respons['id']));
+      emit(AddDevicesSuccess(deviceId: respons['device']?['id'],isRepairedInCenter: repairedInCenter=='1'));
     } else {
       emit(AddDevicesFailure(errorMessage: "Failed adding"));
     }

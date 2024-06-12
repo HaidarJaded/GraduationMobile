@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../allDevices/screen/allDevices.dart';
 import '../drawerScreen/anyQuestion.dart';
 import '../drawerScreen/oldPhone.dart';
-import '../order/screenOrder.dart';
+import '../order/orders_page.dart';
 import '../the_center/center.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -196,7 +196,7 @@ class CustomDrawer extends StatelessWidget {
                               snapshot.data!) {
                             return MaterialButton(
                               onPressed: () {
-                                Get.offAll(() => const order());
+                                Get.offAll(() => const ordersPage());
                               },
                               // ignore: avoid_unnecessary_containers
                               child: Container(
