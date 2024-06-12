@@ -5,7 +5,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
-import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -54,20 +53,11 @@ class NotificationController {
             'actions': actions,
             'message': receivedAction.body
           };
-          Get.offAll(() => const allDevices());
-          showDialog(
-            context: Get.context!,
-            builder: (context) {
-              return SizedBox(
-                width: 50,
-                height: 50,
-                child: DeviceInfoCard(
-                  device: device,
-                  messageInfo: messageInfo,
-                ),
-              );
-            },
-          );
+          Get.offAll(() => DeviceInfoCard(
+                device: device,
+                messageInfo: messageInfo,
+                fromNotification: true,
+              ));
         }
         return;
       }

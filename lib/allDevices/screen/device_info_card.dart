@@ -1,12 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 
 class DeviceInfoCard extends StatelessWidget {
   final Device device;
   final dynamic messageInfo;
-  const DeviceInfoCard({super.key, required this.device, this.messageInfo});
+  final bool? fromNotification;
+  const DeviceInfoCard(
+      {super.key,
+      required this.device,
+      this.messageInfo,
+      this.fromNotification});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +38,8 @@ class DeviceInfoCard extends StatelessWidget {
       ),
       Text('حالة الجهاز: ${device.status}'),
     ];
+    contentList.add(const Divider());
     if (messageInfo != null) {
-      contentList.add(const Divider());
       contentList.add(Text(
         'الرسالة:${messageInfo['message']}',
       ));
@@ -40,16 +48,21 @@ class DeviceInfoCard extends StatelessWidget {
         return Row(
           children: [
             FloatingActionButton(
+                heroTag: Random().nextInt(100).toString(),
                 onPressed: () async {
                   String url = action['url'];
                   var requestBody = action['request_body'];
                   var requestMethod = action['method'];
                   if (requestMethod == 'POST') {
-                    await Api().post(path: url, body: requestBody);
+                    Api().post(path: url, body: requestBody);
                   } else if (requestMethod == 'PUT') {
-                    await Api().put(path: url, body: requestBody);
+                    Api().put(path: url, body: requestBody);
                   }
-                  Get.back();
+                  if (fromNotification == true) {
+                    Get.offAll(() => const allDevices());
+                  } else {
+                    Get.back();
+                  }
                 },
                 child: Text(action['title'])),
             const SizedBox(
@@ -59,10 +72,21 @@ class DeviceInfoCard extends StatelessWidget {
         );
       }).toList();
       contentList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [...actionButtons],
       ));
     }
-
+    if (fromNotification == true) {
+      contentList.add(const SizedBox(
+        height: 8,
+      ));
+      contentList.add(FloatingActionButton(
+        onPressed: () {
+          Get.off(() => const allDevices());
+        },
+        child: const Text('العودة للصفحة الرئيسية'),
+      ));
+    }
     return AlertDialog(
       title: Text(device.model),
       content: SingleChildScrollView(
