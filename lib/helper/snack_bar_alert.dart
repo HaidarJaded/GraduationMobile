@@ -8,12 +8,15 @@ class SnackBarAlert {
       {Color? color = const Color.fromRGBO(201, 0, 0, 0.911),
       String title = "Error",
       TextButton? yesButton,
-      TextButton? noButton}) {
+      TextButton? noButton,
+      Duration? duration=const Duration(seconds: 3)
+      }) {
     Get.snackbar(
       title,
       message,
       colorText: const Color.fromRGBO(255, 255, 255, 1),
       backgroundColor: color,
+      duration: duration,
       mainButton: yesButton,
       onTap: (snack) {
         noButton?.onPressed!();

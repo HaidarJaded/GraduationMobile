@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
@@ -18,7 +17,9 @@ import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
+import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
@@ -38,11 +39,7 @@ import 'package:connectivity/connectivity.dart';
 PageController pageController = PageController(initialPage: 0);
 int currentIndex = 0;
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
-  var notificationInfo = jsonDecode(message.data['notification']);
-  NotificationController().showLocalNotificationWithActions(
-      notificationInfo?['title'] ?? "",
-      notificationInfo?['body'] ?? "",
-      message.data['actions']);
+  NotificationController().showLocalNotificationWithActions(message.data);
 }
 
 Future main() async {
@@ -54,11 +51,7 @@ Future main() async {
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    var notificationInfo = jsonDecode(message.data['notification']);
-    NotificationController().showLocalNotificationWithActions(
-        notificationInfo?['title'] ?? "",
-        notificationInfo?['body'] ?? "",
-        message.data['actions']);
+    NotificationController().showLocalNotificationWithActions(message.data);
   });
 
   firebaseMessaging.requestPermission();
@@ -99,6 +92,7 @@ Future main() async {
       await checkLoginStatus();
     }
   });
+  FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
 
@@ -108,20 +102,49 @@ Future<void> checkLoginStatus() async {
       !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
     return;
   }
-  Get.off(() => const allDevices());
+  InstanceSharedPrefrences().getRuleName().then((ruleName) {
+    if (ruleName == 'فني') {
+      Get.off(() => const HomePages());
+      SnackBarAlert().alert(
+        "تم تسجيل الدخول بنجاح",
+        color: const Color.fromRGBO(0, 200, 0, 1),
+        title: "مرحباً بعودتك",
+      );
+    } else if (ruleName == 'عامل توصيل') {
+      Get.off(() => const allDevices());
+    } else if (ruleName == 'عميل') {
+      InstanceSharedPrefrences().isAccountActive().then((isAccountActive) {
+        if (isAccountActive) {
+          SnackBarAlert().alert(
+            "تم تسجيل الدخول بنجاح",
+            color: const Color.fromRGBO(0, 200, 0, 1),
+            title: "مرحباً بعودتك",
+          );
+          Get.off(() => const allDevices());
+        } else {
+          SnackBarAlert().alert(
+            "حسابك غير نشط. الرجاء التواصل مع مدير المركز.",
+            color: Colors.red,
+            title: "حساب غير نشط",
+          );
+          Get.off(() => const DisabledAccountPage());
+        }
+      });
+    } else {
+      BlocProvider.of<loginCubit>(Get.context!).logout().then((value) {
+        SnackBarAlert().alert(
+          "لا يوجد صلاحية الدخول للتطبيق",
+          color: const Color.fromRGBO(200, 200, 0, 1),
+          title: "المعذرة",
+        );
+        Get.offAll(() => const LoginPage());
+      });
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  Future<void> checkLoginStatus() async {
-    String? token = await InstanceSharedPrefrences().getToken();
-    if (token == null ||
-        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
-      return;
-    }
-    // BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData();
-    Get.off(() => const allDevices());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +193,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: const GetMaterialApp(
+          textDirection: TextDirection.rtl,
           debugShowCheckedModeBanner: false,
           home: LoginPage(),
         ));

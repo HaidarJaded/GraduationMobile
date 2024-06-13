@@ -3,20 +3,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
 import '../drawerScreen/anyQuestion.dart';
 import '../drawerScreen/oldPhone.dart';
-import '../order/cubit/order_cubit.dart';
-import '../order/screenOrder.dart';
+import '../order/orders_page.dart';
 import '../the_center/center.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -221,33 +220,41 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        BlocProvider.of<OrderCubit>(context).getOrder();
-
-                        Get.offAll(const order());
-                      },
-                      // ignore: avoid_unnecessary_containers
-                      child: Container(
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.list_alt_sharp,
-                              size: 23,
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              "order",
-                              style: TextStyle(
-                                fontSize: 18,
+                    FutureBuilder(
+                        future: User.hasPermission('الاسنعلام عن الطلبات'),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData &&
+                              snapshot.data!) {
+                            return MaterialButton(
+                              onPressed: () {
+                                Get.offAll(() => const ordersPage());
+                              },
+                              // ignore: avoid_unnecessary_containers
+                              child: Container(
+                                child: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.list_alt_sharp,
+                                      size: 23,
+                                    ),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text(
+                                      "order",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                            );
+                          }
+                          return const SizedBox();
+                        })),
                     const SizedBox(
                       height: 10,
                     ),

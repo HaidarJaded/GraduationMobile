@@ -89,8 +89,9 @@ class loginCubit extends Cubit<LoginState> {
       }
       final String token = responseBody['token'];
       InstanceSharedPrefrences().setToken(token);
-      emit(LoginState.success);
       getAndSaveFcm();
+      await refreshData();
+      emit(LoginState.success);
       return true;
     } catch (e) {
       return false;
@@ -127,5 +128,22 @@ class loginCubit extends Cubit<LoginState> {
 
   void noInternet() async {
     emit(LoginState.loading);
+  }
+
+  Future refreshData() async {
+    String? ruleName = await InstanceSharedPrefrences().getRuleName();
+    int? id = await InstanceSharedPrefrences().getId();
+    if (ruleName == null || id == null) {
+      return;
+    }
+    if (ruleName == 'عميل') {
+      var response = await Api().get(
+          path: 'api/clients/$id',
+          queryParams: {'with': 'permissions,rule.permissions'});
+      if (response == null) {
+        return;
+      }
+      await InstanceSharedPrefrences().setProfile(response['body']);
+    }
   }
 }

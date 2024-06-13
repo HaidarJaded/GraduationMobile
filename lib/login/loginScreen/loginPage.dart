@@ -8,6 +8,7 @@ import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
 import '../../Controllers/auth_controller.dart';
 import '../../allDevices/screen/allDevices.dart';
 import '../../sign-UpPage.dart/screen/signUp-pages.dart';
@@ -29,6 +30,7 @@ class LoginPageState extends State<LoginPage> {
   Future<void> checkLoginStatus() async {
     String? token = await InstanceSharedPrefrences().getToken();
     if (token == null ||
+        Get.currentRoute != '/' ||
         !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
       return;
     }
@@ -57,24 +59,45 @@ class LoginPageState extends State<LoginPage> {
             InstanceSharedPrefrences().getRuleName().then((ruleName) {
               if (ruleName == 'فني') {
                 Get.off(() => const HomePages());
-              } else if (ruleName == 'عميل') {
-                Get.off(() => const allDevices());
+                SnackBarAlert().alert(
+                  "تم تسجيل الدخول بنجاح",
+                  color: const Color.fromRGBO(0, 200, 0, 1),
+                  title: "مرحباً بعودتك",
+                );
               } else if (ruleName == 'عامل توصيل') {
                 Get.off(() => const Delivery_man());
+              } else if (ruleName == 'عميل') {
+                InstanceSharedPrefrences()
+                    .isAccountActive()
+                    .then((isAccountActive) {
+                  if (isAccountActive) {
+                    SnackBarAlert().alert(
+                      "تم تسجيل الدخول بنجاح",
+                      color: const Color.fromRGBO(0, 200, 0, 1),
+                      title: "مرحباً بعودتك",
+                    );
+                    Get.off(() => const allDevices());
+                  } else {
+                    SnackBarAlert().alert(
+                      "حسابك غير نشط. الرجاء التواصل مع مدير المركز.",
+                      color: Colors.red,
+                      title: "حساب غير نشط",
+                    );
+                    Get.off(() => const DisabledAccountPage());
+                  }
+                });
               } else {
                 BlocProvider.of<loginCubit>(Get.context!)
                     .logout()
                     .then((value) {
-                  SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
-                      color: const Color.fromRGBO(200, 200, 0, 1),
-                      title: "المعذرة");
+                  SnackBarAlert().alert(
+                    "لا يوجد صلاحية الدخول للتطبيق",
+                    color: const Color.fromRGBO(200, 200, 0, 1),
+                    title: "المعذرة",
+                  );
                   Get.offAll(() => const LoginPage());
                 });
-                return;
               }
-              SnackBarAlert().alert("تم تسجيل الدخول بنجاح",
-                  color: const Color.fromRGBO(0, 200, 0, 1),
-                  title: "مرحباً بعودتك");
             });
           });
         }

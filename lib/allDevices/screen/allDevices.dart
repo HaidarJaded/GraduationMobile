@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
 import 'package:graduation_mobile/allDevices/screen/edit.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
@@ -43,7 +44,8 @@ class _allDevicesState extends State<allDevices> {
         'per_page': perPage,
         'orderBy': 'date_receipt',
         'dir': 'desc',
-        'client_id': id
+        'client_id': id,
+        'with': 'customer'
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -78,7 +80,8 @@ class _allDevicesState extends State<allDevices> {
                 'per_page': perPage,
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
-                'client_id': id
+                'client_id': id,
+                'with': 'customer'
               })
             })
         .then((value) => readyToBuild = true);
@@ -133,10 +136,7 @@ class _allDevicesState extends State<allDevices> {
                   IconButton(
                     icon: const Icon(Icons.search),
                     onPressed: () {
-                      showSearch(
-                          context: context,
-                          delegate:
-                              search(data: state.data.items as List<Device>));
+                      showSearch(context: context, delegate: search());
                     },
                   ),
                 ],
@@ -222,7 +222,7 @@ class _allDevicesState extends State<allDevices> {
                                                       children: [
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].problem}")),
+                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         const Expanded(
@@ -237,7 +237,7 @@ class _allDevicesState extends State<allDevices> {
                                                       children: [
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].costToCustomer}")),
+                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         const Expanded(
@@ -260,6 +260,17 @@ class _allDevicesState extends State<allDevices> {
                                                                 Text("الحالة")),
                                                       ],
                                                     ),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          _showDeviceDetailsDialog(
+                                                              devices[i]);
+                                                        },
+                                                        child: const Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Text(
+                                                              'عرض جميع البيانات'),
+                                                        )),
                                                   ])))
                                         ],
                                       )
@@ -332,5 +343,20 @@ class _allDevicesState extends State<allDevices> {
       devices.clear();
       fetchDevices(currentPage);
     });
+  }
+
+  void _showDeviceDetailsDialog(dynamic device) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          width: 50,
+          height: 50,
+          child: DeviceInfoCard(
+            device: device,
+          ),
+        );
+      },
+    );
   }
 }

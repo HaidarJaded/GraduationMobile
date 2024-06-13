@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/bar/custom_drawer.dart';
 
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/the_center/center.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 
 import '../Controllers/crud_controller.dart';
@@ -122,10 +123,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
-                    showSearch(
-                        context: context,
-                        delegate:
-                            search(data: state.data.items as List<Device>));
+                    showSearch(context: context, delegate: search());
                   },
                 ),
               ],
@@ -149,7 +147,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                     .read<AllDevicesCubit>()
                                     .reorderDevices(item.id, newIndex, oldIndex)
                                     .then((value) {
-                                  Get.offAll(() => const allDevices());
+                                  Get.offAll(() => center());
                                 });
                               });
                             },
