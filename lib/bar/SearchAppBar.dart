@@ -194,7 +194,8 @@ class search extends SearchDelegate {
                                                       Row(
                                                         children: [
                                                           Expanded(
-                                                              child: Text("${filter[i].costToCustomer??"لم تحدد بعد"}")),
+                                                              child: Text(
+                                                                  "${filter[i].costToCustomer ?? "لم تحدد بعد"}")),
                                                           const Expanded(
                                                               child: Text(":")),
                                                           const Expanded(
@@ -208,7 +209,8 @@ class search extends SearchDelegate {
                                                       Row(
                                                         children: [
                                                           Expanded(
-                                                              child: Text("${filter[i].status}")),
+                                                              child: Text(
+                                                                  "${filter[i].status}")),
                                                           const Expanded(
                                                               child: Text(":")),
                                                           const Expanded(

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -64,7 +65,7 @@ class LoginPageState extends State<LoginPage> {
                   title: "مرحباً بعودتك",
                 );
               } else if (ruleName == 'عامل توصيل') {
-                Get.off(() => const allDevices());
+                Get.off(() => const Delivery_man());
               } else if (ruleName == 'عميل') {
                 InstanceSharedPrefrences()
                     .isAccountActive()
