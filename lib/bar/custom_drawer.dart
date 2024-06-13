@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, unused_local_variable
+// ignore_for_file: file_names, unused_local_variable, unnecessary_import
 
 import 'dart:convert';
 
@@ -109,6 +109,39 @@ class CustomDrawer extends StatelessWidget {
                             ),
                             Text(
                               "Center",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      onPressed: () {
+                        BlocProvider.of<AllDevicesCubit>(context)
+                            .getDeviceData();
+                        Get.off(center());
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         const CustomBottomNavigationBar()));
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    MaterialButton(
+                      // ignore: avoid_unnecessary_containers
+                      child: Container(
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.notification_add,
+                              size: 23,
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              "Notifications",
                               style: TextStyle(
                                 fontSize: 18,
                               ),

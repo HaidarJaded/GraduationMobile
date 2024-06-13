@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -59,13 +60,15 @@ class LoginPageState extends State<LoginPage> {
               } else if (ruleName == 'عميل') {
                 Get.off(() => const allDevices());
               } else if (ruleName == 'عامل توصيل') {
-                Get.off(() => const allDevices());
+                Get.off(() => const Delivery_man());
               } else {
-                BlocProvider.of<loginCubit>(Get.context!).logout().then((value) {
-                SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
-                    color: const Color.fromRGBO(200, 200, 0, 1),
-                    title: "المعذرة");
-                Get.offAll(() => const LoginPage());                  
+                BlocProvider.of<loginCubit>(Get.context!)
+                    .logout()
+                    .then((value) {
+                  SnackBarAlert().alert("لا يوجد صلاحية الدخول للتطبيق",
+                      color: const Color.fromRGBO(200, 200, 0, 1),
+                      title: "المعذرة");
+                  Get.offAll(() => const LoginPage());
                 });
                 return;
               }

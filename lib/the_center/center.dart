@@ -8,7 +8,7 @@ import 'package:graduation_mobile/the_center/allPhoneInCenter.dart';
 import 'package:graduation_mobile/the_center/cubit/the_center_cubit.dart';
 
 import '../bar/CustomBottomNavigationBar.dart';
-import '../bar/SearchAppBar.dart';
+
 import '../bar/custom_drawer.dart';
 import '../main.dart';
 import 'Service.dart';
@@ -20,7 +20,6 @@ class center extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           extendBody: true,
-          appBar: SearchAppBar(),
           drawer: const CustomDrawer(),
           body: PageView(
             physics: const NeverScrollableScrollPhysics(),

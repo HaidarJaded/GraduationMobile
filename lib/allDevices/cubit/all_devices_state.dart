@@ -14,5 +14,5 @@ class AllDevicesSucces extends AllDevicesState {
 class AllDevicesfailure extends AllDevicesState {
   // ignore: prefer_typing_uninitialized_variables
   var errorMessage;
-  AllDevicesfailure({required this.errorMessage});
+  AllDevicesfailure({this.errorMessage});
 }

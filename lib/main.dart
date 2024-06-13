@@ -7,13 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
+import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
 
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/models/device_model.dart';
+
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import 'Controllers/auth_controller.dart';
@@ -128,6 +132,9 @@ class MyApp extends StatelessWidget {
             create: (context) => AllDevicesCubit(),
           ),
           BlocProvider(
+            create: (context) => AllDevicesCubit<Device>(),
+          ),
+          BlocProvider(
             create: (context) => TheCenterCubit(),
             child: const Center(),
           ),
@@ -154,6 +161,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => AllPhoneInCenterCubit(),
+          ),
+          BlocProvider(
+            create: (context) => DeliveryManCubit(),
+          ),
+          BlocProvider(
+            create: (context) => NotificationCubit(),
           ),
         ],
         child: const GetMaterialApp(

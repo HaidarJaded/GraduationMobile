@@ -15,8 +15,7 @@ class AllPhoneInCenterCubit extends Cubit<AllPhoneInCenterState> {
   Future<void> getDeviceData([Map<String, dynamic>? queryParams]) async {
     try {
       emit(AllPhoneInCenterLoading());
-      ReturnedObject data = await _crudController
-          .getAll({'with': 'customer', 'repaired_in_center': '1'});
+      ReturnedObject data = await _crudController.getAll(queryParams);
 
       if (data.items != null) {
         emit(AllPhoneInCenterSuccess(data: data));
