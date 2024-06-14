@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class SnackBarAlert {
   void alert(String message,
       {Color? color = const Color.fromRGBO(201, 0, 0, 0.911),
-      String title = "Error",
+      String title = "خطأ",
       TextButton? yesButton,
       TextButton? noButton,
       Duration? duration=const Duration(seconds: 3)
