@@ -96,7 +96,7 @@ class _AddDetalisState extends State<AddDetalis> {
                       child: ListTile(
                         leading: const Icon(Icons.date_range),
                         title: const Text("تاريخ الاستلام"),
-                        subtitle: Text(device.dateReceipt.toIso8601String()),
+                        subtitle: Text(device.dateReceipt!.toIso8601String()),
                       ),
                     ),
 

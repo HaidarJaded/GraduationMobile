@@ -5,14 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/bar/custom_drawer.dart';
-
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-import 'package:graduation_mobile/the_center/center.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
-
 import '../Controllers/crud_controller.dart';
-import '../allDevices/cubit/all_devices_cubit.dart';
-import '../allDevices/screen/allDevices.dart';
 import '../allDevices/screen/cubit/edit_cubit.dart';
 import '../allDevices/screen/edit.dart';
 import '../bar/SearchAppBar.dart';
@@ -44,8 +39,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
       var data = await CrudController<Device>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
-        'dir': 'desc',
+        'orderBy': 'client_priority',
         'client_id': id
       });
       final List<Device>? devices = data.items;
@@ -82,7 +76,6 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 'page': 1,
                 'per_page': perPage,
                 'orderBy': 'client_priority',
-                // 'dir': 'desc',
                 'client_id': id
               })
             })
@@ -141,14 +134,15 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                             onReorder: (oldIndex, newIndex) async {
                               setState(() {
                                 final item = devices.removeAt(oldIndex);
+                                if (oldIndex < newIndex) {
+                                  newIndex -= 1;
+                                }
                                 devices.insert(newIndex, item);
 
                                 context
-                                    .read<AllDevicesCubit>()
-                                    .reorderDevices(item.id, newIndex, oldIndex)
-                                    .then((value) {
-                                  Get.offAll(() => center());
-                                });
+                                    .read<AllPhoneInCenterCubit>()
+                                    .reorderDevices(
+                                        item.id, newIndex, oldIndex);
                               });
                             },
                             children: List.generate(
