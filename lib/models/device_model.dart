@@ -1,6 +1,7 @@
 import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
+import 'package:graduation_mobile/models/order_model.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 
 class Device implements HasId {
@@ -21,7 +22,7 @@ class Device implements HasId {
   String? fixSteps;
   String status;
   int? clientApproval;
-  DateTime dateReceipt;
+  DateTime? dateReceipt;
   DateTime? expectedDateOfDelivery;
   int? deliverToClient;
   int? deliverToCustomer;
@@ -31,6 +32,7 @@ class Device implements HasId {
   Customer? customer;
   User? user;
   Client? client;
+  List<Order>? orders;
 
   Device({
     this.id,
@@ -58,7 +60,7 @@ class Device implements HasId {
     this.customer,
     this.user,
     this.client,
-  });
+    this.orders});
 
   factory Device.fromJson(Map<String, dynamic> json) {
     var device = Device(
@@ -77,7 +79,7 @@ class Device implements HasId {
       fixSteps: json['fix_steps'] as String?,
       status: json['status'],
       clientApproval: json['client_approval'],
-      dateReceipt: DateTime.parse(json['date_receipt']),
+      dateReceipt: DateTime.tryParse(json['date_receipt']??''),
       expectedDateOfDelivery:
           DateTime.tryParse(json['Expected_date_of_delivery'] ?? ''),
       deliverToClient: json['deliver_to_client'],
@@ -89,6 +91,9 @@ class Device implements HasId {
           json['customer'] != null ? Customer.fromJson(json['customer']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
       client: json['client'] != null ? Client.fromJson(json['client']) : null,
+      orders: json['orders'] != null
+          ? (json['orders'] as List).map((e) => Order.fromJson(e)).toList()
+          : null,
     );
     return device;
   }
@@ -110,7 +115,7 @@ class Device implements HasId {
       'fix_steps': fixSteps,
       'status': status.toString().split('.')[1],
       'client_approval': clientApproval,
-      'date_receipt': dateReceipt.toIso8601String(),
+      'date_receipt': dateReceipt?.toIso8601String(),
       'Expected_date_of_delivery': expectedDateOfDelivery?.toIso8601String(),
       'deliver_to_client': deliverToClient,
       'deliver_to_customer': deliverToCustomer,
