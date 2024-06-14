@@ -112,6 +112,7 @@ class CrudController<T extends HasId> {
       Order: (json) => Order.fromJson(json),
       Customer: (json) => Customer.fromJson(json),
       Client: (json) => Client.fromJson(json),
+      // Notification1: (json) => Notification1.fromJson(json),
     };
 
     final factoryFunction = modelFactories[T];

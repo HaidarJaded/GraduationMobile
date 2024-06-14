@@ -10,6 +10,7 @@ import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/user_model.dart';
+import 'package:graduation_mobile/order/add_order_form.dart';
 
 import 'package:graduation_mobile/order/cubit/order_cubit.dart';
 
@@ -126,6 +127,16 @@ class _orderState extends State<ordersPage> {
             }
           }
           return Scaffold(
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AddOrderForm();
+                      });
+                },
+                child: const Icon(Icons.add),
+              ),
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
               body: Container(

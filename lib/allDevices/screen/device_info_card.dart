@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
@@ -20,7 +21,23 @@ class DeviceInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> contentList = <Widget>[
       Text('IMEI: ${device.imei}'),
-      Text('Code: ${device.code}'),
+      Row(
+        children: [
+          SelectableText('Code: ${device.code}'),
+          IconButton(
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: device.code));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('تم النسخ بنجاح'),
+                    duration: Duration(milliseconds: 800),
+                    backgroundColor: Color.fromRGBO(0, 0, 250, 1),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.copy))
+        ],
+      ),
       Text('اسم الزبون: ${device.customer?.name ?? ''}'),
       Text('معلومات اضافية: ${device.info}'),
       Text('العطل: ${device.problem ?? 'لم يحدد بعد'}'),

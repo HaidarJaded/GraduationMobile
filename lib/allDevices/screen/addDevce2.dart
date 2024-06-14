@@ -118,6 +118,9 @@ class addInfoDevice extends StatelessWidget {
                                     return 'يجب أن يكون 15 رقم';
                                   }
                                 },
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
                               )),
                               IconButton(
                                 icon: const Icon(Icons.qr_code_scanner),
@@ -298,6 +301,9 @@ class addInfoDevice extends StatelessWidget {
                         labelText: "الرقم الوطني",
                         border: OutlineInputBorder(),
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                     ),
                     const SizedBox(
                       height: 16,
@@ -326,6 +332,7 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
+
                     Row(children: [
                       Expanded(
                           child: textFormField(
@@ -337,6 +344,9 @@ class addInfoDevice extends StatelessWidget {
                             return 'يجب أن يكون 15 رقم';
                           }
                         },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                       )),
                       IconButton(
                         icon: const Icon(Icons.qr_code_scanner),
