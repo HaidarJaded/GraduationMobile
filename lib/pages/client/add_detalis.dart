@@ -63,10 +63,6 @@ class _AddDetalisState extends State<AddDetalis> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.errormess)),
             );
-          } else if (state is DeviceDetalisSuccesses) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم التعديل بنجاح')),
-            );
           }
         },
         builder: (context, state) {
@@ -169,7 +165,12 @@ class _AddDetalisState extends State<AddDetalis> {
                               problem: _problemController.text,
                               expectedDateOfDelivery: _expectedDateOfDelivery,
                             );
-
+                            _deviceDetailsCubit.notifyClient(
+                                device,
+                                double.parse(_costController.text),
+                                _problemController.text,
+                                _expectedDateOfDelivery!);
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop();
                           }
                         },

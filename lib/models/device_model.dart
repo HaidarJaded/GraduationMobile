@@ -23,6 +23,7 @@ class Device implements HasId {
   int? clientApproval;
   DateTime dateReceipt;
   DateTime? expectedDateOfDelivery;
+  DateTime? clientDateWarranty;
   int? deliverToClient;
   int? deliverToCustomer;
   int? repairedInCenter;
@@ -50,6 +51,7 @@ class Device implements HasId {
     this.clientApproval,
     required this.dateReceipt,
     this.expectedDateOfDelivery,
+    this.clientDateWarranty,
     this.deliverToClient,
     this.deliverToCustomer,
     this.repairedInCenter,
@@ -80,6 +82,7 @@ class Device implements HasId {
       dateReceipt: DateTime.parse(json['date_receipt']),
       expectedDateOfDelivery:
           DateTime.tryParse(json['Expected_date_of_delivery'] ?? ''),
+      clientDateWarranty: DateTime.tryParse(json['client_date_warranty'] ?? ''),
       deliverToClient: json['deliver_to_client'],
       deliverToCustomer: json['deliver_to_customer'],
       repairedInCenter: json['repaired_in_center'],
@@ -92,6 +95,8 @@ class Device implements HasId {
     );
     return device;
   }
+
+  get deviceUserName => null;
 
   Map<String, dynamic> toJson() {
     return {

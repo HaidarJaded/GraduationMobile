@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/models/device_model.dart';
-import 'package:graduation_mobile/pages/client/step.dart';
 
 // Cubit States
 abstract class UpdateStatusState {}
@@ -33,7 +34,7 @@ class UpdateStatusCubit extends Cubit<UpdateStatusState> {
   UpdateStatusCubit(this.notificationController, this.crudController)
       : super(UpdateStatusInitial());
 
-  void updateStatus(String state, String? warrantyEndDate) async {
+  void updateStatus(int id, String state, String? warrantyEndDate) async {
     try {
       if (state == 'جاهز') {
         if (warrantyEndDate == null || warrantyEndDate.isEmpty) {
@@ -42,24 +43,16 @@ class UpdateStatusCubit extends Cubit<UpdateStatusState> {
         }
         emit(UpdateStatusReady(warrantyEndDate));
       } else if (state == 'لا يصلح') {
-        notificationController.showLocalNotificationWithActions(
-          'الجهاز لا يصلح للإصلاح',
-          'يرجى اختيار طريقة استلام الجهاز',
-          jsonEncode([
-            {
-              "title": "نعم",
-              "url": "/api/device/pickup",
-              "request_body": {},
-              "method": "POST"
-            },
-            {
-              "title": "لا",
-              "url": "/api/device/reject",
-              "request_body": {},
-              "method": "POST"
-            }
-          ]),
+        Map<String, dynamic> body = {
+          'status': state,
+          'clientDateWarranty': warrantyEndDate
+        };
+        print(body);
+        var response = await Api().put(
+          path: 'https://haidarjaded787.serv00.net/api/devices/$id',
+          body: body,
         );
+
         emit(UpdateStatusNotRepairable());
       } else {
         // Handle other states if necessary

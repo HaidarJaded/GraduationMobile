@@ -1,22 +1,25 @@
 // ignore_for_file: avoid_print
 
+import 'dart:ui';
+
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 
 import 'detalis_state.dart';
 
 class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
-  final CrudController<Device> crudController;
+  final CrudController<Device> _crudController;
 
-  DeviceDetailsCubit(this.crudController) : super(DeviceDetalisInitial());
+  DeviceDetailsCubit(this._crudController) : super(DeviceDetalisInitial());
 
   Future<void> fetchDeviceDetails(int deviceId) async {
     try {
       emit(DeviceDetalisLoading());
-      final device = await crudController.getById(deviceId, null);
+      final device = await _crudController.getById(deviceId, null);
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
       if (device != null) {
         emit(DeviceDetalisSuccesses(details: [device]));
@@ -32,6 +35,7 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   Future<void> EditDstalis({
     required int id,
     required double costToClient,
@@ -61,5 +65,21 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
       print('ddddddddddddddddddd $e');
       emit(DeviceDetalisFailure(errormess: e.toString()));
     }
+  }
+
+  void notifyClient(Device device, double costToClient, String problem,
+      DateTime expectedDeliveryDate) async {
+    // هنا يتم إشعار العميل بالتفاصيل
+    EditDstalis(id: device.id!, costToClient: costToClient, problem: problem);
+    await _crudController.update(device.id!, {
+      'status': 'بانتظار استجابة العميل',
+      'cost_to_client': costToClient,
+      'problem': problem,
+      'Expected_date_of_delivery': expectedDeliveryDate.toString()
+    });
+    print('notfication yes');
+    // إرسال الإشعار
+    SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+        color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
   }
 }
