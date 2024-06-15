@@ -6,10 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:graduation_mobile/Controllers/returned_object.dart';
-
-import 'package:graduation_mobile/helper/api.dart';
-
 import '../../Controllers/crud_controller.dart';
+import '../../helper/api.dart';
 import '../../models/device_model.dart';
 import '../../models/has_id.dart';
 
@@ -39,12 +37,17 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     if (state is AllDevicesSucces) {
       final currentState = state as AllDevicesSucces;
       final devicesList = List<Device>.from(currentState.data.items!);
+      // final device = devicesList.removeAt(oldIndex);
       print('device.id  $deviceId');
+      // devicesList.insert(newIndex, device);
 
       final newReturnedObject = ReturnedObject<Device>();
       newReturnedObject.items = devicesList.cast<Device>();
 
+      // emit(AllDevicesSucces(data: newReturnedObject));
+
       try {
+        emit(AllDevicesLoading());
         print(newIndex);
         if (oldIndex < newIndex) {
           newIndex -= 1;

@@ -22,7 +22,6 @@ class HttpExceptionsHandler {
         Get.offAll(() => const LoginPage());
       case 403:
         SnackBarAlert().alert('عذراً لا يوجد صلاحية تنفيد العملية');
-        Get.back();
       default:
         SnackBarAlert().alert('عذراً حدث خطأ ما يرجى إعادة المحاولة لاحقاً');
     }

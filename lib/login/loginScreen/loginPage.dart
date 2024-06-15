@@ -147,7 +147,6 @@ class LoginPageState extends State<LoginPage> {
                         controller: emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          // labelStyle: const TextStyle(fontFamily: "Roboto"),
                           prefixIcon: const Icon(Icons.email),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 15),
@@ -163,7 +162,6 @@ class LoginPageState extends State<LoginPage> {
                               .hasMatch(value)) {
                             return 'ادخل عنوان بريد إلكتروني صحيح';
                           }
-                          // Add more email validation if needed
                           return null;
                         },
                       ),
@@ -188,7 +186,6 @@ class LoginPageState extends State<LoginPage> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          // Add more password validation if needed
                           return null;
                         },
                       ),
@@ -239,7 +236,6 @@ class LoginPageState extends State<LoginPage> {
                                 child: CircularProgressIndicator(),
                               );
                               WidgetsBinding.instance.addPostFrameCallback((_) {
-                                // This will ensure that the current frame is complete before executing the navigation
                                 Get.to(const SignUpPages());
                               });
                             },
