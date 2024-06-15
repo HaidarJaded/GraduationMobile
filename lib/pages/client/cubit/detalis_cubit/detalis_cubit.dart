@@ -24,12 +24,10 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
       if (device != null) {
         emit(DeviceDetalisSuccesses(details: [device]));
       } else {
-        print('Device not found');
         emit(DeviceDetalisFailure(errormess: 'Device not found'));
       }
     } catch (e) {
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
-      print('error:');
       printError();
       emit(DeviceDetalisFailure(errormess: e.toString()));
     }
@@ -56,13 +54,10 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
       );
       if (response != null) {
         emit(DeviceDetalisEditing());
-        print('updating');
       } else {
-        print('no data');
         emit(DeviceDetalisFailure(errormess: 'Error updating'));
       }
     } catch (e) {
-      print('ddddddddddddddddddd $e');
       emit(DeviceDetalisFailure(errormess: e.toString()));
     }
   }
@@ -70,16 +65,24 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
   void notifyClient(Device device, double costToClient, String problem,
       DateTime expectedDeliveryDate) async {
     // هنا يتم إشعار العميل بالتفاصيل
-    EditDstalis(id: device.id!, costToClient: costToClient, problem: problem);
-    await _crudController.update(device.id!, {
-      'status': 'بانتظار استجابة العميل',
-      'cost_to_client': costToClient,
-      'problem': problem,
-      'Expected_date_of_delivery': expectedDeliveryDate.toString()
-    });
-    print('notfication yes');
-    // إرسال الإشعار
-    SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
-        color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
+    try {
+      EditDstalis(
+          id: device.id!,
+          costToClient: costToClient,
+          problem: problem,
+          expectedDateOfDelivery: expectedDeliveryDate);
+      await _crudController.update(device.id!, {
+        'status': 'بانتظار استجابة العميل',
+        'cost_to_client': costToClient,
+        'problem': problem,
+        'Expected_date_of_delivery': expectedDeliveryDate.toString()
+      });
+      print('notfication yes');
+      // إرسال الإشعار
+      SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+          color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
+    } catch (e) {
+      emit(DeviceDetalisFailure(errormess: 'Error notifyclient'));
+    }
   }
 }

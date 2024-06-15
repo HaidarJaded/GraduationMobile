@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
+import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_state.dart';
 import 'package:graduation_mobile/pages/client/step.dart';
 
 class UpdateStatus extends StatefulWidget {
-  UpdateStatus({super.key, this.device});
+  UpdateStatus({super.key, this.device, this.status});
   Device? device;
-
+  String? status;
   @override
   State<UpdateStatus> createState() => _UpdateStatusState();
 }

@@ -1,15 +1,18 @@
-part of 'status_cubit.dart';
+// Cubit States
+abstract class UpdateStatusState {}
 
-sealed class StatusState {}
+class UpdateStatusInitial extends UpdateStatusState {}
 
-final class StatusInitial extends StatusState {}
+class UpdateStatusReady extends UpdateStatusState {
+  final String warrantyEndDate;
 
-final class StatusLoading extends StatusState {}
+  UpdateStatusReady(this.warrantyEndDate);
+}
 
-final class StatusSuccess extends StatusState {}
+class UpdateStatusNotRepairable extends UpdateStatusState {}
 
-final class StatusFailure extends StatusState {
-  // ignore: prefer_typing_uninitialized_variables
-  var errorMessage;
-  StatusFailure({required this.errorMessage});
+class UpdateStatusError extends UpdateStatusState {
+  final String message;
+
+  UpdateStatusError(this.message);
 }

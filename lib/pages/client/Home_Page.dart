@@ -11,6 +11,7 @@ import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
+import 'package:graduation_mobile/pages/client/device_info.dart';
 import 'package:graduation_mobile/pages/client/notification.dart';
 import 'package:graduation_mobile/pages/client/updateStatus.dart';
 import '../../bar/SearchAppBar.dart';
@@ -25,16 +26,55 @@ class HomePages extends StatefulWidget {
 }
 
 class _HomePages extends State<HomePages> {
-  late CrudController<Device> _crudController;
-  late PhoneCubit _phoneCubit;
-  int? userId;
-  int perPage = 20;
   int currentPage = 1;
-  int pagesCount = 0;
-  int totalCount = 0;
   List<dynamic> devices = [];
   bool firstTime = true;
+  int pagesCount = 0;
+  int perPage = 20;
   bool readyToBuild = false;
+  final scrollController = ScrollController();
+  int totalCount = 0;
+  int? userId;
+
+  late CrudController<Device> _crudController;
+  late PhoneCubit _phoneCubit;
+
+  @override
+  void dispose() {
+    _phoneCubit.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    readyToBuild = false;
+    _phoneCubit = PhoneCubit();
+    InstanceSharedPrefrences().getId().then((id) {
+      userId = id;
+      _crudController = CrudController<Device>();
+      _phoneCubit
+          .getDevicesByUserId({
+            'page': currentPage,
+            'per_page': perPage,
+            'orderBy': 'date_receipt',
+            'dir': 'desc',
+            'user_id': userId,
+          } as Map<String, dynamic>?)
+          .then((value) => readyToBuild = true);
+    });
+    scrollController.addListener(() async {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        setState(() {
+          if (currentPage <= pagesCount) {
+            currentPage++;
+          }
+        });
+        await fetchDevices(currentPage);
+      }
+    });
+  }
 
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
@@ -68,44 +108,6 @@ class _HomePages extends State<HomePages> {
     }
   }
 
-  final scrollController = ScrollController();
-  @override
-  void initState() {
-    super.initState();
-    readyToBuild = false;
-    _phoneCubit = PhoneCubit();
-    InstanceSharedPrefrences().getId().then((id) {
-      userId = id;
-      _crudController = CrudController<Device>();
-      _phoneCubit
-          .getDevicesByUserId({
-            'page': currentPage,
-            'per_page': perPage,
-            'orderBy': 'date_receipt',
-            'dir': 'desc',
-            'user_id': userId,
-          } as Map<String, dynamic>?)
-          .then((value) => readyToBuild = true);
-    });
-    scrollController.addListener(() async {
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.offset) {
-        setState(() {
-          if (currentPage <= pagesCount) {
-            currentPage++;
-          }
-        });
-        await fetchDevices(currentPage);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _phoneCubit.close();
-    super.dispose();
-  }
-
   Future<void> updateDeviceStatus(Device device, String status) async {
     // هنا يتم تحديث حالة الجهاز
     device.status = status;
@@ -125,6 +127,48 @@ class _HomePages extends State<HomePages> {
           color: const Color.fromRGBO(0, 200, 0, 1), title: "إلى اللقاء");
       Get.offAll(() => const LoginPage());
     }
+  }
+
+  Future<void> _refreshData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    setState(() {
+      currentPage = 1;
+      devices.clear();
+      fetchDevices(currentPage);
+    });
+  }
+
+  void _showStatusDialog(String title, Device device, Function(String) onSave) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('هل تريد تغيير الحالة $title'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('لا'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('نعم'),
+              onPressed: () {
+                onSave(title);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddDetalis(
+                      device: device,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -256,16 +300,14 @@ class _HomePages extends State<HomePages> {
                           itemBuilder: (context, index) {
                             if (index < devices.length) {
                               final device = devices[index];
+                              if (device.status == 'لم يتم بدء العمل فيه') {
+                                updateDeviceStatus(device, 'يتم فحصه');
+                              }
                               return Card(
                                 color: const Color.fromARGB(255, 252, 234, 251),
                                 child: ExpansionTile(
                                   title: Text(device.model),
-                                  subtitle: Row(
-                                    children: [
-                                      Text(device.imei),
-                                      Text(device.status),
-                                    ],
-                                  ),
+                                  subtitle: Text(device.imei),
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -279,9 +321,12 @@ class _HomePages extends State<HomePages> {
                                                 builder: (context) =>
                                                     UpdateStatus(
                                                   device: device,
+                                                  status: device.status,
                                                 ),
                                               ),
                                             );
+                                            updateDeviceStatus(
+                                                device, device.status);
                                           },
                                           icon: const Icon(
                                               Icons.check_circle_outline),
@@ -291,11 +336,7 @@ class _HomePages extends State<HomePages> {
                                           IconButton(
                                             onPressed: () async {
                                               // تغيير الحالة إلى "بانتظار استجابة العميل"
-                                              _showStatusDialog(
-                                                  device.status,
-                                                  device,
-                                                  (newvalue) =>
-                                                      device.status = newvalue);
+
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -320,34 +361,18 @@ class _HomePages extends State<HomePages> {
                                                           const Color.fromARGB(
                                                               255, 4, 83, 173),
                                                       title: "اشعار العميل");
+                                                  updateDeviceStatus(
+                                                      device, device.status);
                                                 },
                                                 icon:
                                                     const Icon(Icons.alarm_on))
                                           ]
                                         ],
                                       ],
-                                      if (device.status ==
-                                          'لم يتم بدء العمل فيه') ...[
-                                        // تغيير الحالة إلى "يتم فحصه"
-                                        IconButton(
-                                            onPressed: () async {
-                                              print('gggggggggggggggggggggggg');
-                                              _showStatusDialog(
-                                                  device.status,
-                                                  device,
-                                                  (newvalue) =>
-                                                      device.status = newvalue);
-
-                                              await updateDeviceStatus(
-                                                  device, 'يتم فحصه');
-                                            },
-                                            icon: const Icon(Icons.edit))
-                                      ] else ...[
-                                        if (device.status == 'لا يصلح' ||
-                                            device.status ==
-                                                'لم يوافق على لعمل به')
-                                          ...[]
-                                      ]
+                                      if (device.status == 'لا يصلح' ||
+                                          device.status ==
+                                              'لم يوافق على لعمل به')
+                                        ...[]
                                     ],
                                   ),
                                   children: [
@@ -406,6 +431,26 @@ class _HomePages extends State<HomePages> {
                                                 ),
                                               ],
                                             ),
+                                            TextButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return SizedBox(
+                                                        width: 50,
+                                                        height: 50,
+                                                        child: DeviceInfo(
+                                                            device: device),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child:
+                                                      Text('عرض جميع البيانات'),
+                                                )),
                                           ],
                                         ),
                                       ),
@@ -452,48 +497,6 @@ class _HomePages extends State<HomePages> {
           ],
         ),
       ),
-    );
-  }
-
-  Future<void> _refreshData() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    setState(() {
-      currentPage = 1;
-      devices.clear();
-      fetchDevices(currentPage);
-    });
-  }
-
-  void _showStatusDialog(String title, Device device, Function(String) onSave) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('هل تريد تغيير الحالة $title'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('لا'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('نعم'),
-              onPressed: () {
-                onSave(title);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddDetalis(
-                      device: device,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

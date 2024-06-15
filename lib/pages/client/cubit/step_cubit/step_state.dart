@@ -1,17 +1,19 @@
-import 'package:graduation_mobile/pages/client/cubit/step_cubit/step_cubit.dart';
+import 'package:flutter/src/material/card.dart';
 
-sealed class Stepstate {
-  map(Function(dynamic step) param0) {}
+abstract class RepairStepsState {
+  map(Card Function(dynamic step) param0) {}
 }
 
-final class StepInitialState extends Stepstate {}
+class RepairStepsInitial extends RepairStepsState {}
 
-final class StepLoadingState extends Stepstate {}
+class RepairStepsLoading extends RepairStepsState {}
 
-final class StepSuccessState extends Stepstate {}
+class RepairStepsSuccess extends RepairStepsState {
+  final List<Map<String, String>> steps;
+  RepairStepsSuccess(this.steps);
+}
 
-final class StepFailureState extends Stepstate {
-  // ignore: prefer_typing_uninitialized_variables
-  var errormessage;
-  StepFailureState({required this.errormessage});
+class RepairStepsFailure extends RepairStepsState {
+  final String error;
+  RepairStepsFailure(this.error);
 }

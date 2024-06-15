@@ -6,33 +6,13 @@ import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/models/device_model.dart';
-
-// Cubit States
-abstract class UpdateStatusState {}
-
-class UpdateStatusInitial extends UpdateStatusState {}
-
-class UpdateStatusReady extends UpdateStatusState {
-  final String warrantyEndDate;
-
-  UpdateStatusReady(this.warrantyEndDate);
-}
-
-class UpdateStatusNotRepairable extends UpdateStatusState {}
-
-class UpdateStatusError extends UpdateStatusState {
-  final String message;
-
-  UpdateStatusError(this.message);
-}
+import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_state.dart';
 
 // Cubit
 class UpdateStatusCubit extends Cubit<UpdateStatusState> {
-  final NotificationController notificationController;
   final CrudController<Device> crudController;
 
-  UpdateStatusCubit(this.notificationController, this.crudController)
-      : super(UpdateStatusInitial());
+  UpdateStatusCubit(this.crudController) : super(UpdateStatusInitial());
 
   void updateStatus(int id, String state, String? warrantyEndDate) async {
     try {
@@ -42,7 +22,7 @@ class UpdateStatusCubit extends Cubit<UpdateStatusState> {
           return;
         }
         emit(UpdateStatusReady(warrantyEndDate));
-      } else if (state == 'لا يصلح') {
+      } else if (state == 'لا يصلح' || state == 'غير جاهز') {
         Map<String, dynamic> body = {
           'status': state,
           'clientDateWarranty': warrantyEndDate

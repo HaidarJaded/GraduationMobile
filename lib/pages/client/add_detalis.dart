@@ -84,8 +84,8 @@ class _AddDetalisState extends State<AddDetalis> {
                         color: const Color.fromARGB(255, 252, 234, 251),
                         child: ListTile(
                           leading: const Icon(Icons.emoji_symbols_sharp),
-                          title: const Text("رقم الجهاز"),
-                          subtitle: Text(device.id.toString()),
+                          title: const Text("رقم العميل"),
+                          subtitle: Text(device.clientId.toString()),
                         ),
                       ),
                       const SizedBox(height: 10),
