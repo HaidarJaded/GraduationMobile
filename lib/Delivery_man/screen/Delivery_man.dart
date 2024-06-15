@@ -36,9 +36,11 @@ class _Delivery_manState extends State<Delivery_man> {
       var data = await CrudController<Order>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
+        'orderBy': 'date',
+        'done': 0,
         'dir': 'desc',
-        'user_id': id
+        'user_id': id,
+        'with': 'client'
       });
       final List<Order>? order = data.items;
       if (order != null) {
@@ -71,9 +73,11 @@ class _Delivery_manState extends State<Delivery_man> {
               BlocProvider.of<DeliveryManCubit>(Get.context!).getorderData({
                 'page': 1,
                 'per_page': perPage,
-                'orderBy': 'date_receipt',
+                'orderBy': 'date',
+                'done': 0,
                 'dir': 'desc',
-                'user_id': id
+                'user_id': id,
+                'with': 'client'
               })
             })
         .then((value) => readyToBuild = true);
