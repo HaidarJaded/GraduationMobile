@@ -62,8 +62,8 @@ class Api {
       }
     } on DioException catch (e) {
       if (e.requestOptions.path != 'api/logout' &&
-          e.requestOptions.path != 'api/refresh_token'&&
-          e.requestOptions.path != 'api/login') {
+          e.requestOptions.path != 'api/refresh_token' &&
+          e.requestOptions.path != '/api/login') {
         HttpExceptionsHandler().handleException(
             e.response!.statusCode!, e.response?.data['message']);
       }
