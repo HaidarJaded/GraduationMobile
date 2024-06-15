@@ -12,7 +12,6 @@ import '../../Controllers/crud_controller.dart';
 
 import '../../bar/SearchAppBar.dart';
 import '../../bar/custom_drawer.dart';
-import '../../helper/shared_perferences.dart';
 
 class notificationsScreen extends StatefulWidget {
   const notificationsScreen({super.key});
@@ -34,13 +33,11 @@ class _notificationsScreenState extends State<notificationsScreen> {
       if (currentPage > pagesCount) {
         return;
       }
-      int? id = await InstanceSharedPrefrences().getId();
       var data = await CrudController<Notification1>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
+        'orderBy': 'created_at',
         'dir': 'desc',
-        'client_id': id
       });
       final List<Notification1>? notification = data.items;
       if (notification != null) {
