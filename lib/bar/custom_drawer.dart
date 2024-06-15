@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
 import '../drawerScreen/anyQuestion.dart';
+import '../drawerScreen/notification/notifications.dart';
 import '../drawerScreen/oldPhone.dart';
 import '../order/orders_page.dart';
 import '../the_center/center.dart';
@@ -151,10 +152,7 @@ class CustomDrawer extends StatelessWidget {
                       onPressed: () {
                         BlocProvider.of<AllDevicesCubit>(context)
                             .getDeviceData();
-                        Get.off(center());
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const CustomBottomNavigationBar()));
+                        Get.off(const notificationsScreen());
                       },
                     ),
                     const SizedBox(

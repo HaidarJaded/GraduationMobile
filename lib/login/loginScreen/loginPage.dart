@@ -52,7 +52,9 @@ class LoginPageState extends State<LoginPage> {
     return BlocBuilder<loginCubit, LoginState>(
       builder: (context, state) {
         if (state == LoginState.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()));
         }
         if (state == LoginState.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

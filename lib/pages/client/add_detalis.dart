@@ -41,7 +41,9 @@ class _AddDetalisState extends State<AddDetalis> {
           builder: (context, state) {
         if (state is DeviceDetalisLoading) {
           print('loading add');
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()));
         }
         if (state is DeviceDetalisSuccesses) {
           print('successes');

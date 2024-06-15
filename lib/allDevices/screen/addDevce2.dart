@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
@@ -66,7 +67,9 @@ class addInfoDevice extends StatelessWidget {
     }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
         if (state is AddDevicesLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()));
         }
         if (state is AddDevicesFound) {
           return Scaffold(

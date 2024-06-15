@@ -39,17 +39,12 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     if (state is AllDevicesSucces) {
       final currentState = state as AllDevicesSucces;
       final devicesList = List<Device>.from(currentState.data.items!);
-      // final device = devicesList.removeAt(oldIndex);
       print('device.id  $deviceId');
-      // devicesList.insert(newIndex, device);
 
       final newReturnedObject = ReturnedObject<Device>();
       newReturnedObject.items = devicesList.cast<Device>();
 
-      // emit(AllDevicesSucces(data: newReturnedObject));
-
       try {
-        emit(AllDevicesLoading());
         print(newIndex);
         if (oldIndex < newIndex) {
           newIndex -= 1;

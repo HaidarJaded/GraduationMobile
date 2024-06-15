@@ -12,7 +12,6 @@ import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dar
 
 import '../Controllers/crud_controller.dart';
 import '../allDevices/cubit/all_devices_cubit.dart';
-import '../allDevices/screen/allDevices.dart';
 import '../allDevices/screen/cubit/edit_cubit.dart';
 import '../allDevices/screen/edit.dart';
 import '../bar/SearchAppBar.dart';
@@ -142,12 +141,16 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                               setState(() {
                                 final item = devices.removeAt(oldIndex);
                                 devices.insert(newIndex, item);
-
                                 context
                                     .read<AllDevicesCubit>()
                                     .reorderDevices(item.id, newIndex, oldIndex)
                                     .then((value) {
-                                  Get.offAll(() => center());
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    BlocProvider.of<AllDevicesCubit>(context)
+                                        .getDeviceData();
+                                    Get.offAll(() => center());
+                                  });
                                 });
                               });
                             },

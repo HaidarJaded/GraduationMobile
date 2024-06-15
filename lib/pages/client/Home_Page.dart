@@ -250,16 +250,18 @@ class _HomePages extends State<HomePages> {
               child: BlocConsumer<PhoneCubit, PhoneState>(
                 listener: (context, state) {
                   if (state is PhoneLoading) {
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    Container(
+                        color: Colors.white,
+                        child:
+                            const Center(child: CircularProgressIndicator()));
                   }
                 },
                 builder: (context, state) {
                   if (state is PhoneLoading || readyToBuild == false) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return Container(
+                        color: Colors.white,
+                        child:
+                            const Center(child: CircularProgressIndicator()));
                   } else if (state is PhoneSuccess) {
                     if (firstTime) {
                       totalCount = state.data.pagination?['total'];

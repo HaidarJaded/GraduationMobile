@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +10,6 @@ import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
-
-import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
@@ -44,17 +41,17 @@ Future<void> backgroundMessageHandler(RemoteMessage message) async {
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  firebaseMessaging.requestPermission();
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  // firebaseMessaging.requestPermission();
 
-  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+  // FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    NotificationController().showLocalNotificationWithActions(message.data);
-  });
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   NotificationController().showLocalNotificationWithActions(message.data);
+  // });
 
-  firebaseMessaging.requestPermission();
+  // firebaseMessaging.requestPermission();
 
   AwesomeNotifications().initialize(
     'resource://drawable/sss', // Replace with your app icon

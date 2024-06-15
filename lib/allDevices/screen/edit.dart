@@ -151,9 +151,9 @@ class edit extends StatelessWidget {
               ));
         }
         if (state is Editloading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return Container(
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()));
         }
         if (state is EditSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
