@@ -67,19 +67,12 @@ class _notificationsScreenState extends State<notificationsScreen> {
   void initState() {
     super.initState();
     readyToBuild = false;
-    InstanceSharedPrefrences()
-        .getId()
-        .then((id) => {
-              BlocProvider.of<NotificationCubit>(Get.context!)
-                  .getNotificationData({
-                'page': 1,
-                'per_page': perPage,
-                'orderBy': 'date_receipt',
-                'dir': 'desc',
-                'client_id': id
-              })
-            })
-        .then((value) => readyToBuild = true);
+    BlocProvider.of<NotificationCubit>(Get.context!).getNotificationData({
+      'page': 1,
+      'per_page': perPage,
+      'orderBy': 'created_at',
+      'dir': 'desc',
+    }).then((value) => readyToBuild = true);
 
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
@@ -136,7 +129,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
                 child: Card(
                   elevation: 4.0,
                   child: ListTile(
-                    title: Text(notification[index]),
+                    title: Text(notification[index].title),
                     leading: const CircleAvatar(
                       child: Icon(Icons.notifications),
                     ),

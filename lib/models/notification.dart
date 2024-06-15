@@ -5,6 +5,7 @@ import 'package:graduation_mobile/models/has_id.dart';
 class Notification1 implements HasId {
   @override
   int? id;
+  String? StringId;
   static String table = "notifications";
   String? title;
   List? body;
@@ -19,16 +20,17 @@ class Notification1 implements HasId {
       this.notifiable_name,
       this.notifiable_type,
       this.read_at,
+      this.StringId,
       this.created_at});
   factory Notification1.fromJson(Map<String, dynamic> json) {
     var notification = Notification1(
-      id: json['id'],
+      StringId: json['id'],
       title: json['title'],
       body: json['body'],
       notifiable_name: json['notifiable_name'],
       notifiable_type: json['notifiable_type'],
-      read_at: DateTime.tryParse(json['read_at']),
-      created_at: DateTime.tryParse(json['created_at']),
+      read_at: DateTime.tryParse(json['read_at'] ?? ''),
+      created_at: DateTime.tryParse(json['created_at'] ?? ''),
     );
     return notification;
   }

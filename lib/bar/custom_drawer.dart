@@ -152,7 +152,7 @@ class CustomDrawer extends StatelessWidget {
                       onPressed: () {
                         BlocProvider.of<AllDevicesCubit>(context)
                             .getDeviceData();
-                        Get.off(const notificationsScreen());
+                        Get.off(() => const notificationsScreen());
                       },
                     ),
                     const SizedBox(
