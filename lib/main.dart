@@ -195,7 +195,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UpdateStatusCubit(CrudController()),
           ),
-          BlocProvider(create: (context) => RepairStepsCubit(CrudController())),
+          BlocProvider(create: (context) => RepairStepsCubit()),
         ],
         child: const GetMaterialApp(
           textDirection: TextDirection.rtl,

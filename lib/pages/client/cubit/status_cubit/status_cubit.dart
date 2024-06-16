@@ -21,10 +21,9 @@ class UpdateStatusCubit extends Cubit<UpdateStatusState> {
       } else if (state == 'لا يصلح' || state == 'غير جاهز') {
         Map<String, dynamic> body = {
           'status': state,
-          'clientDateWarranty': warrantyEndDate
+          'client_date_warranty': warrantyEndDate
         };
-        print(body);
-        var response = await Api().put(
+        Api().put(
           path: 'https://haidarjaded787.serv00.net/api/devices/$id',
           body: body,
         );
@@ -37,5 +36,9 @@ class UpdateStatusCubit extends Cubit<UpdateStatusState> {
     } catch (e) {
       emit(UpdateStatusError(e.toString()));
     }
+  }
+
+  void resetState() {
+    emit(UpdateStatusInitial());
   }
 }
