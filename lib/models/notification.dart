@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 
 class Notification1 implements HasId {
@@ -13,6 +14,7 @@ class Notification1 implements HasId {
   String? notifiable_type;
   DateTime? read_at;
   DateTime? created_at;
+  Client? client;
   Notification1(
       {this.id,
       this.title,

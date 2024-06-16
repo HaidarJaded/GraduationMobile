@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, unused_local_variable, avoid_print
+
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
