@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,6 @@ class _UpdateStatusState extends State<UpdateStatus> {
       body: BlocConsumer<UpdateStatusCubit, UpdateStatusState>(
         listener: (context, state) {
           if (state is UpdateStatusReady) {
-            // ignore: avoid_print
             print('جااااااااااااهز');
             Navigator.pushReplacement(
               context,

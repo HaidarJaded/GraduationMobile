@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, avoid_print
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';

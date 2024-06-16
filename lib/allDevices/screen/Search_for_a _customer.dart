@@ -14,7 +14,7 @@ class Search_for_a_customer extends StatelessWidget {
   TextEditingController nationalId = TextEditingController();
   final String title;
   bool exist = false;
-
+  int? id;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddDevicesCubit, AddDevicesState>(

@@ -136,7 +136,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
                 child: Card(
                   elevation: 4.0,
                   child: ListTile(
-                    title: Text(notification[index]),
+                    title: Text(notification[index].title),
                     leading: const CircleAvatar(
                       child: Icon(Icons.notifications),
                     ),

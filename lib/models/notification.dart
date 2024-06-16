@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 
 class Notification1 implements HasId {
@@ -12,6 +13,7 @@ class Notification1 implements HasId {
   String? notifiable_type;
   DateTime? read_at;
   DateTime? created_at;
+  Client? client;
   Notification1(
       {this.id,
       this.title,
@@ -19,7 +21,8 @@ class Notification1 implements HasId {
       this.notifiable_name,
       this.notifiable_type,
       this.read_at,
-      this.created_at});
+      this.created_at,
+      this.client});
   factory Notification1.fromJson(Map<String, dynamic> json) {
     var notification = Notification1(
       id: json['id'],
@@ -29,6 +32,7 @@ class Notification1 implements HasId {
       notifiable_type: json['notifiable_type'],
       read_at: DateTime.tryParse(json['read_at']),
       created_at: DateTime.tryParse(json['created_at']),
+      client: json['client'] != null ? Client.fromJson(json['client']) : null,
     );
     return notification;
   }

@@ -59,7 +59,38 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'repaired_in_center': repairedInCenter.toString()
     });
     if (respons != null) {
-      emit(AddDevicesSuccess(deviceId: respons['device']?['id'],isRepairedInCenter: repairedInCenter=='1'));
+      emit(AddDevicesSuccess(
+          deviceId: respons['device']?['id'],
+          isRepairedInCenter: repairedInCenter == '1'));
+    } else {
+      emit(AddDevicesFailure(errorMessage: "Failed adding"));
+    }
+    Get.back();
+  }
+
+  Future<dynamic> addNewDevice(
+      {required String model,
+      required String imei,
+      required String info,
+      required repairedInCenter,
+      required int cusomer_id}) async {
+    print("loading");
+    emit(AddDevicesLoading());
+    var client_id = await InstanceSharedPrefrences().getId();
+    print(client_id);
+    var respons = await Api().post(path: '/api/devices', body: {
+      'model': model,
+      'imei': imei,
+      'info': info,
+      'client_id': client_id.toString(),
+      'repaired_in_center': repairedInCenter.toString(),
+      'customer_id': cusomer_id.toString()
+    });
+    print('respons' + respons.toString());
+    if (respons != null) {
+      emit(AddDevicesSuccess(
+          deviceId: respons['device']?['id'],
+          isRepairedInCenter: repairedInCenter == '1'));
     } else {
       emit(AddDevicesFailure(errorMessage: "Failed adding"));
     }
