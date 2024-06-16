@@ -53,7 +53,7 @@ class RepairStepsCubit extends Cubit<RepairStepsState> {
             .map((step) => step['description'])
             .join('\n');
         device?.fixSteps = fixSteps;
-        Map<String, dynamic> body = {'fixSteps': fixSteps};
+        Map<String, dynamic> body = {'fix_steps': fixSteps};
         var response = await Api().put(
           path: 'https://haidarjaded787.serv00.net/api/devices/$id',
           body: body,
@@ -76,15 +76,11 @@ class RepairStepsCubit extends Cubit<RepairStepsState> {
     try {
       saveStepsToDevice(device: device, id: id, fixSteps: fixStep);
       print('save notfic');
-      Map<String, dynamic> body = {
+      await _crudController.update(id, {
         'status': 'جاهز',
-        'fixSteps': fixStep,
-        'clientDateWarranty': clientDateWarranty
-      };
-      var response = await Api().put(
-        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
-        body: body,
-      );
+        'fix_steps': fixStep,
+        'client_date_warranty': clientDateWarranty
+      });
 
       // await _crudController.update(device.id!, {
       //   'status': 'جاهز',
