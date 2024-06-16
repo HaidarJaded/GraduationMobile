@@ -15,6 +15,8 @@ import 'package:graduation_mobile/models/permission_model.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/models/service_model.dart';
 
+import '../models/notification.dart';
+
 class CrudController<T extends HasId> {
   CrudController();
 
@@ -112,7 +114,7 @@ class CrudController<T extends HasId> {
       Order: (json) => Order.fromJson(json),
       Customer: (json) => Customer.fromJson(json),
       Client: (json) => Client.fromJson(json),
-      // Notification1: (json) => Notification1.fromJson(json),
+      Notification1: (json) => Notification1.fromJson(json),
     };
 
     final factoryFunction = modelFactories[T];
@@ -131,7 +133,8 @@ class CrudController<T extends HasId> {
       Service: Service.table,
       Order: Order.table,
       Customer: Customer.table,
-      Client: Client.table
+      Client: Client.table,
+      Notification1: Notification1.table
     };
 
     final factoryTable = modelFactories[T];

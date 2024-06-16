@@ -12,7 +12,6 @@ import '../../Controllers/crud_controller.dart';
 
 import '../../bar/SearchAppBar.dart';
 import '../../bar/custom_drawer.dart';
-import '../../helper/shared_perferences.dart';
 
 class notificationsScreen extends StatefulWidget {
   const notificationsScreen({super.key});
@@ -34,13 +33,11 @@ class _notificationsScreenState extends State<notificationsScreen> {
       if (currentPage > pagesCount) {
         return;
       }
-      int? id = await InstanceSharedPrefrences().getId();
       var data = await CrudController<Notification1>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
+        'orderBy': 'created_at',
         'dir': 'desc',
-        'client_id': id
       });
       final List<Notification1>? notification = data.items;
       if (notification != null) {
@@ -67,19 +64,12 @@ class _notificationsScreenState extends State<notificationsScreen> {
   void initState() {
     super.initState();
     readyToBuild = false;
-    InstanceSharedPrefrences()
-        .getId()
-        .then((id) => {
-              BlocProvider.of<NotificationCubit>(Get.context!)
-                  .getNotificationData({
-                'page': 1,
-                'per_page': perPage,
-                'orderBy': 'date_receipt',
-                'dir': 'desc',
-                'client_id': id
-              })
-            })
-        .then((value) => readyToBuild = true);
+    BlocProvider.of<NotificationCubit>(Get.context!).getNotificationData({
+      'page': 1,
+      'per_page': perPage,
+      'orderBy': 'created_at',
+      'dir': 'desc',
+    }).then((value) => readyToBuild = true);
 
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
@@ -101,7 +91,9 @@ class _notificationsScreenState extends State<notificationsScreen> {
         return Scaffold(
             appBar: SearchAppBar(),
             drawer: const CustomDrawer(),
-            body: const Center(child: CircularProgressIndicator()));
+            body: Container(
+                color: Colors.white,
+                child: const Center(child: CircularProgressIndicator())));
       } else if (state is NotificationSucess) {
         if (firstTime) {
           totalCount = state.data.pagination?['total'];
@@ -118,51 +110,53 @@ class _notificationsScreenState extends State<notificationsScreen> {
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.search),
-                onPressed: () {},
+                onPressed: () {
+                  showSearch(context: context, delegate: search());
+                },
               ),
             ],
           ),
           drawer: const CustomDrawer(),
-          body: Container(
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              child: ListView.builder(
-                  controller: controller,
-                  itemCount: notification.length,
-                  itemBuilder: (context, i) {
-                    if (i < notification.length) {
-                      return const Card(
-                        color: Color.fromARGB(255, 252, 234, 251),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ClipOval(
-                                  child: Material(
-                                    color: Colors.blue,
-                                    child: SizedBox(
-                                      width: 56,
-                                      height: 56,
-                                      child: Icon(
-                                        Icons.notifications_active_sharp,
-                                        size: 30,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text("Notifications"),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                  }),
-            ),
+          body: ListView.builder(
+            itemCount: notification.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Card(
+                  elevation: 4.0,
+                  child: ListTile(
+                    title: Text(notification[index].title),
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.notifications),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         );
+      }
+      if (state is NotificationFailur) {
+        return Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+              title: const Text('MYP'),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(context: context, delegate: search());
+                  },
+                ),
+              ],
+            ),
+            drawer: const CustomDrawer(),
+            body: Center(child: Text("${state.errorMessage}")));
       }
       return Container();
     });

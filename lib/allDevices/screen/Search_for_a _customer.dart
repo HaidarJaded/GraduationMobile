@@ -14,13 +14,15 @@ class Search_for_a_customer extends StatelessWidget {
   TextEditingController nationalId = TextEditingController();
   final String title;
   bool exist = false;
-
+  int? id;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddDevicesCubit, AddDevicesState>(
         builder: (context, state) {
       if (state is AddDevicesLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return Container(
+            color: Colors.white,
+            child: const Center(child: CircularProgressIndicator()));
       }
       if (state is AddDevicesFound) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -80,7 +82,8 @@ class Search_for_a_customer extends StatelessWidget {
                     child: const Text("اضف معلومات الجهاز")),
                 MaterialButton(
                     onPressed: () {
-                      BlocProvider.of<AddDevicesCubit>(Get.context!).resetState();
+                      BlocProvider.of<AddDevicesCubit>(Get.context!)
+                          .resetState();
                       Get.back();
                     },
                     color: const Color.fromARGB(255, 200, 188, 202),

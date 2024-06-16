@@ -1,23 +1,30 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_state.dart';
 import 'package:graduation_mobile/pages/client/step.dart';
 
-class UpdateStatus extends StatefulWidget {
-  UpdateStatus({super.key, this.device, this.status});
-  Device? device;
-  String? status;
+class UpdateStatusPage extends StatefulWidget {
+  const UpdateStatusPage({super.key, this.device, this.status});
+  final Device? device;
+  final String? status;
   @override
-  State<UpdateStatus> createState() => _UpdateStatusState();
+  State<UpdateStatusPage> createState() => _UpdateStatusState();
 }
 
-class _UpdateStatusState extends State<UpdateStatus> {
+class _UpdateStatusState extends State<UpdateStatusPage> {
   String? state;
   DateTime? _datecontroller;
+  @override
+  void dispose() {
+    super.dispose();
+    BlocProvider.of<UpdateStatusCubit>(Get.context!).resetState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +45,6 @@ class _UpdateStatusState extends State<UpdateStatus> {
       body: BlocConsumer<UpdateStatusCubit, UpdateStatusState>(
         listener: (context, state) {
           if (state is UpdateStatusReady) {
-            // ignore: avoid_print
-            print('جااااااااااااهز');
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -57,7 +62,6 @@ class _UpdateStatusState extends State<UpdateStatus> {
           }
         },
         builder: (context, state) {
-          print(state);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -149,15 +153,19 @@ class _UpdateStatusState extends State<UpdateStatus> {
                 ],
                 const SizedBox(height: 75.0),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (this.state != null) {
-                      // تأكد من تمرير القيمة الصحيحة للمعامل id هنا
                       context.read<UpdateStatusCubit>().updateStatus(
                             widget.device!.id
                                 as int, // بافتراض أن `widget.device` غير null ولديها خاصية `id`
                             this.state!,
                             _datecontroller?.toIso8601String(),
                           );
+                      if (state is! UpdateStatusReady &&
+                          state is! UpdateStatusError &&
+                          state is! UpdateStatusInitial) {
+                        Get.off(() => const HomePages());
+                      }
                     }
                   },
                   child: Container(

@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
-import 'package:graduation_mobile/helper/api.dart';
+
 import 'package:graduation_mobile/models/device_model.dart';
 
 class DeviceInfo extends StatelessWidget {
@@ -67,7 +63,7 @@ class DeviceInfo extends StatelessWidget {
                 .map((step) => Text('         - $step'))
                 .toList(),
       ),
-      SizedBox(
+      const SizedBox(
         height: 5,
       ),
       Text('حالة الجهاز: ${device.status}'),

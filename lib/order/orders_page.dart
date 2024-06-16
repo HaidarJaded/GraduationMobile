@@ -113,9 +113,9 @@ class _orderState extends State<ordersPage> {
         if (state is OrderLoading) {
           return Scaffold(
               appBar: SearchAppBar(),
-              body: const Center(
-                child: CircularProgressIndicator(),
-              ));
+              body: Container(
+                  color: Colors.white,
+                  child: const Center(child: CircularProgressIndicator())));
         }
         if (state is OrderSucess) {
           if (widget.orderId != null) {

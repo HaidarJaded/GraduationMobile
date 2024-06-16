@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_state.dart';
@@ -165,13 +167,7 @@ class _AddDetalisState extends State<AddDetalis> {
                               problem: _problemController.text,
                               expectedDateOfDelivery: _expectedDateOfDelivery,
                             );
-                            _deviceDetailsCubit.notifyClient(
-                                device,
-                                double.parse(_costController.text),
-                                _problemController.text,
-                                _expectedDateOfDelivery!);
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).pop();
+                            Get.off(() => const HomePages());
                           }
                         },
                         child: Container(

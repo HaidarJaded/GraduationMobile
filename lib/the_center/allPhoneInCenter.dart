@@ -138,7 +138,6 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                   newIndex -= 1;
                                 }
                                 devices.insert(newIndex, item);
-
                                 context
                                     .read<AllPhoneInCenterCubit>()
                                     .reorderDevices(

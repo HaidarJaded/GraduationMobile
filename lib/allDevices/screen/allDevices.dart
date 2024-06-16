@@ -106,7 +106,9 @@ class _allDevicesState extends State<allDevices> {
           return Scaffold(
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
-              body: const Center(child: CircularProgressIndicator()));
+              body: Container(
+                  color: Colors.white,
+                  child: const Center(child: CircularProgressIndicator())));
         } else if (state is AllDevicesSucces) {
           if (firstTime) {
             totalCount = state.data.pagination?['total'];

@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
+import 'package:graduation_mobile/Delivery_man/screen/drawerDelivery.dart';
 import 'package:graduation_mobile/Delivery_man/screen/orders.dart';
-import 'package:graduation_mobile/bar/custom_drawer.dart';
+
 import 'package:graduation_mobile/models/order_model.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/shared_perferences.dart';
@@ -94,6 +95,8 @@ class _Delivery_manState extends State<Delivery_man> {
     });
   }
 
+  int? clientId;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DeliveryManCubit, DeliveryManState>(
@@ -104,7 +107,9 @@ class _Delivery_manState extends State<Delivery_man> {
                 backgroundColor: const Color.fromARGB(255, 87, 42, 170),
                 title: const Text('MYP'),
               ),
-              body: const Center(child: CircularProgressIndicator()));
+              body: Container(
+                  color: Colors.white,
+                  child: const Center(child: CircularProgressIndicator())));
         }
         if (state is DeliveryManSucces) {
           if (firstTime) {
@@ -120,7 +125,7 @@ class _Delivery_manState extends State<Delivery_man> {
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
             ),
-            drawer: CustomDrawer(),
+            drawer: draweDelivery(),
             body: Container(
               child: Container(
                 padding: const EdgeInsets.all(5),
@@ -132,10 +137,14 @@ class _Delivery_manState extends State<Delivery_man> {
                         return Column(
                           children: [
                             MaterialButton(
+                                color: Color.fromARGB(255, 247, 236, 240),
                                 onPressed: () {
-                                  Get.off(orders());
+                                  Get.off(orders(
+                                    Client_id: order[i].client?.id ?? "",
+                                  ));
                                 },
                                 minWidth: 300,
+                                height: 50,
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: Column(
@@ -143,14 +152,14 @@ class _Delivery_manState extends State<Delivery_man> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${order[i].client?.centerName ?? ""}",
+                                        "${order[i].client?.centerName ?? ''}",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
                                         ),
                                       ),
                                       Text(
-                                        "${order[i].client?.phone ?? ""}",
+                                        "${order[i].client?.address ?? ""}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black),

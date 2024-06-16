@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
@@ -18,7 +19,10 @@ import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
 class addInfoDevice extends StatelessWidget {
-  addInfoDevice({super.key, required customerNationalId}) {
+  addInfoDevice({
+    super.key,
+    required customerNationalId,
+  }) {
     nationalIdController = TextEditingController(text: customerNationalId);
   }
   GlobalKey<FormState> myform = GlobalKey<FormState>();
@@ -66,7 +70,9 @@ class addInfoDevice extends StatelessWidget {
     }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
         if (state is AddDevicesLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()));
         }
         if (state is AddDevicesFound) {
           return Scaffold(
@@ -137,9 +143,46 @@ class addInfoDevice extends StatelessWidget {
                             const SizedBox(
                               height: 30,
                             ),
+                            BlocBuilder<SwitchBloc, SwitchState>(
+                              builder: (context, state) {
+                                return Row(
+                                  children: [
+                                    Switch(
+                                      value: state.inCenter,
+                                      onChanged: (val) {
+                                        BlocProvider.of<SwitchBloc>(context)
+                                            .add(ToggleSwitch(val));
+
+                                        inCenterController.text =
+                                            val ? '1' : '0';
+                                      },
+                                    ),
+                                    Container(
+                                      width: 60,
+                                    ),
+                                    const Text(
+                                      "اضافة الى المركز",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                             InkWell(
                               onTap: () async {
-                                if (myform.currentState?.validate() ?? false) {}
+                                if (myform.currentState?.validate() ?? false) {
+                                  BlocProvider.of<AddDevicesCubit>(context)
+                                      .addNewDevice(
+                                          model: modelController.text,
+                                          imei: ImeiController.text,
+                                          info: infoController.text,
+                                          repairedInCenter:
+                                              inCenterController.text,
+                                          cusomer_id: state.result[0].id!);
+
+                                  ;
+                                }
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -200,6 +243,9 @@ class addInfoDevice extends StatelessWidget {
               });
             }
           });
+        }
+        if (state is AddDevicesFailure) {
+          return Text("${state.errormessage}");
         }
         return Scaffold(
           body: Padding(

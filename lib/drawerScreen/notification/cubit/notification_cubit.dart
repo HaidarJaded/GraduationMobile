@@ -12,10 +12,11 @@ class NotificationCubit extends Cubit<NotificationState> {
   NotificationCubit() : super(NotificationInitial());
   final CrudController<Notification1> _crudController =
       CrudController<Notification1>();
+
   Future<void> getNotificationData([Map<String, dynamic>? queryParams]) async {
     try {
-      emit(NotificationLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
+      emit(NotificationLoading());
 
       if (data.items != null) {
         emit(NotificationSucess(data: data));
