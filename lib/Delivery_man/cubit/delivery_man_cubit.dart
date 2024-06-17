@@ -12,11 +12,8 @@ class DeliveryManCubit extends Cubit<DeliveryManState> {
   DeliveryManCubit() : super(DeliveryManInitial());
   Future<void> getorderData([Map<String, dynamic>? queryParams]) async {
     try {
-      print(1);
       emit(DeliveryManLoading());
-      print(2);
       ReturnedObject data = await _crudController.getAll(queryParams);
-      print(data.items);
       if (data.items != null) {
         emit(DeliveryManSucces(data: data));
         print(data);
