@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_shadowing_type_parameters
+// ignore_for_file: avoid_shadowing_type_parameters, equal_keys_in_map
 
 import 'dart:async';
 
@@ -115,6 +115,7 @@ class CrudController<T extends HasId> {
       Customer: (json) => Customer.fromJson(json),
       Client: (json) => Client.fromJson(json),
       Notification1: (json) => Notification1.fromJson(json),
+      CompletedDevice: (json) => CompletedDevice.fromJson(json)
     };
 
     final factoryFunction = modelFactories[T];
@@ -134,7 +135,8 @@ class CrudController<T extends HasId> {
       Order: Order.table,
       Customer: Customer.table,
       Client: Client.table,
-      Notification1: Notification1.table
+      Notification1: Notification1.table,
+      CompletedDevice: CompletedDevice.table
     };
 
     final factoryTable = modelFactories[T];

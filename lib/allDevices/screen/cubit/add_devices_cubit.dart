@@ -77,7 +77,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
     print("loading");
     emit(AddDevicesLoading());
     var client_id = await InstanceSharedPrefrences().getId();
-    print(client_id);
+
     var respons = await Api().post(path: '/api/devices', body: {
       'model': model,
       'imei': imei,
@@ -86,7 +86,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'repaired_in_center': repairedInCenter.toString(),
       'customer_id': cusomer_id.toString()
     });
-    print('respons' + respons.toString());
+
     if (respons != null) {
       emit(AddDevicesSuccess(
           deviceId: respons['device']?['id'],
