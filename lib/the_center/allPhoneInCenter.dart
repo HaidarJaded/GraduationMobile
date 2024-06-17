@@ -213,15 +213,15 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                                       child: Column(children: [
                                                         Row(
                                                           children: [
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].problem}")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
                                                             const Expanded(
                                                                 child: Text(
                                                                     "العطل")),
+                                                            const Expanded(
+                                                                child:
+                                                                    Text(":")),
+                                                            Expanded(
+                                                                child: Text(
+                                                                    "${devices[i].problem}")),
                                                           ],
                                                         ),
                                                         const SizedBox(
@@ -229,15 +229,15 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                                         ),
                                                         Row(
                                                           children: [
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].costToCustomer}")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
                                                             const Expanded(
                                                                 child: Text(
                                                                     "التكلفة ")),
+                                                            const Expanded(
+                                                                child:
+                                                                    Text(":")),
+                                                            Expanded(
+                                                                child: Text(
+                                                                    "${devices[i].costToCustomer}")),
                                                           ],
                                                         ),
                                                         const SizedBox(
@@ -245,15 +245,15 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                                         ),
                                                         Row(
                                                           children: [
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].status}")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
                                                             const Expanded(
                                                                 child: Text(
                                                                     "الحالة")),
+                                                            const Expanded(
+                                                                child:
+                                                                    Text(":")),
+                                                            Expanded(
+                                                                child: Text(
+                                                                    "${devices[i].status}")),
                                                           ],
                                                         ),
                                                         const SizedBox(

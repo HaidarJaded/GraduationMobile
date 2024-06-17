@@ -11,6 +11,7 @@ import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
+import 'package:graduation_mobile/drawerScreen/oldPhone/cubit/completed_device_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
@@ -192,6 +193,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => NotificationCubit(),
+          ),
+          BlocProvider(
+            create: (context) => CompletedDeviceCubit(),
           ),
           BlocProvider(
             create: (context) => UpdateStatusCubit(CrudController()),

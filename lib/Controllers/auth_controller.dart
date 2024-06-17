@@ -144,6 +144,36 @@ class loginCubit extends Cubit<LoginState> {
         return;
       }
       await InstanceSharedPrefrences().setProfile(response['body']);
+      final rulePermissions = List<Map<String, dynamic>>.from(
+          response['body']['rule']['permissions']);
+
+      final directPermissions =
+          List<Map<String, dynamic>>.from(response['body']['permissions']);
+      final List<String> permissions = [];
+      permissions
+          .addAll(rulePermissions.map((permission) => permission['name']));
+      permissions
+          .addAll(directPermissions.map((permission) => permission['name']));
+      await User.saveUserPermissions(permissions);
+    } else if (ruleName == 'فني' || ruleName == 'عامل توصيل') {
+      var response = await Api().get(
+          path: 'api/users/$id',
+          queryParams: {'with': 'permissions,rule.permissions'});
+      if (response == null) {
+        return;
+      }
+      await InstanceSharedPrefrences().setProfile(response['body']);
+      final rulePermissions = List<Map<String, dynamic>>.from(
+          response['body']['rule']['permissions']);
+
+      final directPermissions =
+          List<Map<String, dynamic>>.from(response['body']['permissions']);
+      final List<String> permissions = [];
+      permissions
+          .addAll(rulePermissions.map((permission) => permission['name']));
+      permissions
+          .addAll(directPermissions.map((permission) => permission['name']));
+      await User.saveUserPermissions(permissions);
     }
   }
 }

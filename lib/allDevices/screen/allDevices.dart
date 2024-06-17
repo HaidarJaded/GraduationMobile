@@ -45,7 +45,8 @@ class _allDevicesState extends State<allDevices> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'client_id': id,
-        'with': 'customer'
+        'with': 'customer',
+        'deliver_to_client': 0,
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -81,7 +82,8 @@ class _allDevicesState extends State<allDevices> {
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': id,
-                'with': 'customer'
+                'with': 'customer',
+                'deliver_to_client': 0,
               })
             })
         .then((value) => readyToBuild = true);
@@ -222,14 +224,14 @@ class _allDevicesState extends State<allDevices> {
                                                   child: Column(children: [
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("العطل")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -237,14 +239,14 @@ class _allDevicesState extends State<allDevices> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child: Text(
                                                                 "التكلفة ")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -252,14 +254,14 @@ class _allDevicesState extends State<allDevices> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].status}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("الحالة")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${devices[i].status}")),
                                                       ],
                                                     ),
                                                     TextButton(

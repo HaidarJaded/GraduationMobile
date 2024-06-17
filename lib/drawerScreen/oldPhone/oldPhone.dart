@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
-import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
+
+import 'package:graduation_mobile/drawerScreen/oldPhone/cubit/completed_device_cubit.dart';
 
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-import 'package:graduation_mobile/models/device_model.dart';
-import '../../bar/custom_drawer.dart';
-import '../../bar/SearchAppBar.dart';
-import '../allDevices/cubit/all_devices_cubit.dart';
+import 'package:graduation_mobile/models/completed_device_model.dart';
 
-import '../allDevices/screen/search_for_a _customer.dart';
+import '../../../bar/custom_drawer.dart';
+import '../../../bar/SearchAppBar.dart';
+
+import 'completedDeviceInfoCard.dart';
 
 class oldPhone extends StatefulWidget {
   const oldPhone({super.key});
@@ -27,33 +28,33 @@ class _oldPhoneState extends State<oldPhone> {
   int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
-  List<dynamic> devices = [];
+  List<dynamic> completedDevice = [];
   bool firstTime = true;
   bool readyToBuild = false;
-  Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
+  Future<void> fetchCompletedDevice([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
         return;
       }
       int? id = await InstanceSharedPrefrences().getId();
-      var data = await CrudController<Device>().getAll({
+      var data = await CrudController<CompletedDevice>().getAll({
         'page': currentPage,
         'per_page': perPage,
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'client_id': id,
-        'with': 'customer',
-        'deliver_to_client': 1
+        'deliver_to_client': 1,
+        'with': 'customer'
       });
-      final List<Device>? devices = data.items;
-      if (devices != null) {
+      final List<CompletedDevice>? completedDevice = data.items;
+      if (completedDevice != null) {
         int currentPage = data.pagination?['current_page'];
         int lastPage = data.pagination?['last_page'];
         int totalCount = data.pagination?['total'];
         setState(() {
           this.currentPage = currentPage;
           pagesCount = lastPage;
-          this.devices.addAll(devices);
+          this.completedDevice.addAll(completedDevice);
           this.totalCount = totalCount;
         });
         return;
@@ -73,16 +74,21 @@ class _oldPhoneState extends State<oldPhone> {
     InstanceSharedPrefrences()
         .getId()
         .then((id) => {
-              BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
+              BlocProvider.of<CompletedDeviceCubit>(Get.context!)
+                  .getCompletedDeviceData({
                 'page': 1,
                 'per_page': perPage,
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': id,
+                'deliver_to_client': 1,
                 'with': 'customer'
               })
             })
         .then((value) => readyToBuild = true);
+    CrudController<CompletedDevice>().getAll({}).then((value) {
+      print(value.items);
+    });
 
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
@@ -91,44 +97,31 @@ class _oldPhoneState extends State<oldPhone> {
             currentPage++;
           }
         });
-        await fetchDevices(currentPage);
+        await fetchCompletedDevice(currentPage);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AllDevicesCubit, AllDevicesState>(
+    return BlocBuilder<CompletedDeviceCubit, CompletedDeviceState>(
       builder: (context, state) {
-        if (state is AllDevicesLoading || readyToBuild == false) {
+        if (state is CompletedDeviceLoading || readyToBuild == false) {
           return Scaffold(
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
               body: Container(
                   color: Colors.white,
                   child: const Center(child: CircularProgressIndicator())));
-        } else if (state is AllDevicesSucces) {
+        } else if (state is CompletedDeviceSucces) {
           if (firstTime) {
             totalCount = state.data.pagination?['total'];
             currentPage = state.data.pagination?['current_page'];
             pagesCount = state.data.pagination?['last_page'];
-            devices.addAll(state.data.items!);
+            completedDevice.addAll(state.data.items!);
             firstTime = false;
           }
           return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Search_for_a_customer(
-                        title: "اضف جهاز",
-                      );
-                    },
-                  );
-                },
-                child: const Icon(Icons.add),
-              ),
               appBar: AppBar(
                 backgroundColor: const Color.fromARGB(255, 87, 42, 170),
                 title: const Text('MYP'),
@@ -151,27 +144,23 @@ class _oldPhoneState extends State<oldPhone> {
                           child: ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
                             controller: controller,
-                            itemCount: devices.length + 1,
+                            itemCount: completedDevice.length + 1,
                             itemBuilder: (context, i) {
-                              if (i < devices.length) {
+                              if (i < completedDevice.length) {
                                 return Card(
-                                  // key: ValueKey(state.data[index].itemName),
                                   color:
                                       const Color.fromARGB(255, 252, 234, 251),
                                   child: Column(
                                     children: [
                                       ExpansionTile(
-                                        // key: ValueKey(),
                                         expandedAlignment:
                                             FractionalOffset.topRight,
                                         title: Text(
-                                          devices[i].model,
+                                          completedDevice[i].model,
                                         ),
-
                                         subtitle:
                                             // ignore: prefer_interpolation_to_compose_strings
-                                            Text(devices[i].imei),
-
+                                            Text(completedDevice[i].imei),
                                         children: <Widget>[
                                           Padding(
                                               padding: const EdgeInsets
@@ -202,14 +191,14 @@ class _oldPhoneState extends State<oldPhone> {
                                                   child: Column(children: [
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("العطل")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].problem}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -217,14 +206,14 @@ class _oldPhoneState extends State<oldPhone> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child: Text(
                                                                 "التكلفة ")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].costToCustomer}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -232,20 +221,21 @@ class _oldPhoneState extends State<oldPhone> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${devices[i].status}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("الحالة")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].status}")),
                                                       ],
                                                     ),
                                                     TextButton(
                                                         onPressed: () {
-                                                          _showDeviceDetailsDialog(
-                                                              devices[i]);
+                                                          _showCompletedDeviceDetailsDialog(
+                                                              completedDevice[
+                                                                  i]);
                                                         },
                                                         child: const Align(
                                                           alignment: Alignment
@@ -268,11 +258,11 @@ class _oldPhoneState extends State<oldPhone> {
                                   ),
                                 );
                               } else {
-                                return devices.isNotEmpty
+                                return completedDevice.isNotEmpty
                                     ? firstTime
                                         ? const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                        : devices.length >= 20
+                                        : completedDevice.length >= 20
                                             ? const Center(
                                                 child: Text('لا يوجد المزيد'))
                                             : null
@@ -281,39 +271,16 @@ class _oldPhoneState extends State<oldPhone> {
                                       );
                               }
                             },
-                            // onReorder: (int oldIndex, int newIndex) {
-                            //   context
-                            //       .read<AllDevicesCubit>()
-                            //       .reorderDevices(oldIndex, newIndex);
-                            // },
                           )))));
 
           // Example: Print the name of the second user
-        } else if (state is AllDevicesfailure) {
+        } else if (state is CompletedDeviceFailure) {
           return Scaffold(
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
               body: Center(child: Text(state.errorMessage)));
         }
-        return Scaffold(
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Search_for_a_customer(
-                      title: "اضف جهاز",
-                    );
-                  },
-                );
-              },
-              child: const Icon(Icons.add),
-            ),
-            appBar: SearchAppBar(),
-            drawer: const CustomDrawer(),
-            body: const Center(
-              child: CircularProgressIndicator(),
-            ));
+        return Container();
       },
     );
   }
@@ -322,20 +289,20 @@ class _oldPhoneState extends State<oldPhone> {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       currentPage = 1;
-      devices.clear();
-      fetchDevices(currentPage);
+      completedDevice.clear();
+      fetchCompletedDevice(currentPage);
     });
   }
 
-  void _showDeviceDetailsDialog(dynamic device) {
+  void _showCompletedDeviceDetailsDialog(dynamic completedDevice) {
     showDialog(
       context: context,
       builder: (context) {
         return SizedBox(
           width: 50,
           height: 50,
-          child: DeviceInfoCard(
-            device: device,
+          child: completedDeviceInfoCard(
+            completedDevice: completedDevice,
           ),
         );
       },
