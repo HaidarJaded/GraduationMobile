@@ -86,6 +86,9 @@ class _oldPhoneState extends State<oldPhone> {
               })
             })
         .then((value) => readyToBuild = true);
+    CrudController<CompletedDevice>().getAll({}).then((value) {
+      print(value.items);
+    });
 
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
@@ -188,14 +191,14 @@ class _oldPhoneState extends State<oldPhone> {
                                                   child: Column(children: [
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${completedDevice[i].problem ?? "لم يحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("العطل")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].problem}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -203,14 +206,14 @@ class _oldPhoneState extends State<oldPhone> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${completedDevice[i].costToCustomer ?? "لم تحدد بعد"}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child: Text(
                                                                 "التكلفة ")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].costToCustomer}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -218,14 +221,14 @@ class _oldPhoneState extends State<oldPhone> {
                                                     ),
                                                     Row(
                                                       children: [
-                                                        Expanded(
-                                                            child: Text(
-                                                                "${completedDevice[i].status}")),
-                                                        const Expanded(
-                                                            child: Text(":")),
                                                         const Expanded(
                                                             child:
                                                                 Text("الحالة")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice[i].status}")),
                                                       ],
                                                     ),
                                                     TextButton(

@@ -16,7 +16,7 @@ class CompletedDevice implements HasId {
   final String userName;
   final int? customerId;
   final String? info;
-  final String problem;
+  final String? problem;
   final double? costToClient;
   final double? costToCustomer;
   final String status;
@@ -44,7 +44,7 @@ class CompletedDevice implements HasId {
     required this.userName,
     this.customerId,
     this.info,
-    required this.problem,
+    this.problem,
     this.costToClient,
     this.costToCustomer,
     required this.status,
@@ -75,8 +75,8 @@ class CompletedDevice implements HasId {
       customerId: json['customer_id'],
       info: json['info'],
       problem: json['problem'],
-      costToClient: (json['cost_to_client'] as num?)!.toDouble(),
-      costToCustomer: (json['cost_to_customer'] as num?)!.toDouble(),
+      costToClient: (json['cost_to_client'] as num?)?.toDouble(),
+      costToCustomer: (json['cost_to_customer'] as num?)?.toDouble(),
       status: json['status'],
       fixSteps: json['fix_steps'],
       deliverToClient: json['deliver_to_client'],
