@@ -45,7 +45,8 @@ class _allDevicesState extends State<allDevices> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'client_id': id,
-        'with': 'customer'
+        'with': 'customer',
+        'deliver_to_client': 0,
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -81,7 +82,8 @@ class _allDevicesState extends State<allDevices> {
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': id,
-                'with': 'customer'
+                'with': 'customer',
+                'deliver_to_client': 0,
               })
             })
         .then((value) => readyToBuild = true);

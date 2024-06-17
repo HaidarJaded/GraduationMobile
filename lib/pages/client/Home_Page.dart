@@ -6,10 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
 import 'package:graduation_mobile/pages/client/device_info.dart';
 import 'package:graduation_mobile/pages/client/notification.dart';
@@ -60,7 +62,8 @@ class _HomePages extends State<HomePages> {
             'orderBy': 'date_receipt',
             'dir': 'desc',
             'user_id': userId,
-            'with': 'client'
+            'with': 'client',
+            'deliver_to_client': 0,
           } as Map<String, dynamic>?)
           .then((value) => readyToBuild = true);
     });
@@ -88,7 +91,8 @@ class _HomePages extends State<HomePages> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'user_id': userId,
-        'with': 'client'
+        'with': 'client',
+        'deliver_to_client': 0,
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -367,7 +371,37 @@ class _HomePages extends State<HomePages> {
                                       if (device.status == 'لا يصلح' ||
                                           device.status ==
                                               'لم يوافق على لعمل به')
-                                        ...[]
+                                        ...[],
+                                      FutureBuilder(
+                                          future:
+                                              User.hasPermission('تسليم جهاز'),
+                                          builder: ((BuildContext context,
+                                              AsyncSnapshot<bool> snapshot) {
+                                            if (snapshot.hasData &&
+                                                snapshot.data!) {
+                                              return TextButton(
+                                                onPressed: () {
+                                                  _showConfirmProcessDialog(
+                                                      device.id, () {
+                                                    setState(() {
+                                                      devices.remove(device);
+                                                    });
+                                                    Api().put(
+                                                        path:
+                                                            'api/devices/${device.id}',
+                                                        body: {
+                                                          'deliver_to_client': 1
+                                                        });
+                                                    Get.back();
+                                                  });
+                                                },
+                                                child:
+                                                    const Text('تسليم الجهاز'),
+                                              );
+                                            } else {
+                                              return const SizedBox(); // Placeholder widget if permission check is pending or user doesn't have permission
+                                            }
+                                          }))
                                     ],
                                   ),
                                   children: [
@@ -494,4 +528,28 @@ class _HomePages extends State<HomePages> {
       ),
     );
   }
+}
+
+void _showConfirmProcessDialog(int deviceId, Function() action) {
+  showDialog(
+    context: Get.context!,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text(
+            'هل انت متأكد من رغبتك بتسليم الجهاز؟\n لا يمكن التراجع عن الخطوة'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('لا'),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          TextButton(
+            onPressed: action,
+            child: const Text('نعم'),
+          ),
+        ],
+      );
+    },
+  );
 }

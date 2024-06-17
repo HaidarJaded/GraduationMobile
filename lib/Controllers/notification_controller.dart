@@ -5,8 +5,10 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
 import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/order/orders_page.dart';
@@ -40,9 +42,16 @@ class NotificationController {
       if (receivedAction.buttonKeyPressed.isEmpty) {
         if (payload.containsKey('order_id')) {
           int orderId = int.parse(payload['order_id']);
-          Get.offAll(() => ordersPage(
-                orderId: orderId,
-              ));
+          String? ruleName = await InstanceSharedPrefrences().getRuleName();
+          if (ruleName == 'عميل') {
+            Get.offAll(() => ordersPage(
+                  orderId: orderId,
+                ));
+          } else if (ruleName == 'عامل توصيل') {
+            Get.offAll(() => Delivery_man(
+                  orderId: orderId,
+                ));
+          }
         } else if (payload.containsKey('device_id')) {
           Device? device = await CrudController<Device>()
               .getById(int.parse(payload['device_id']), {});

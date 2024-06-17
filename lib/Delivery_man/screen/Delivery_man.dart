@@ -7,63 +7,28 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
 import 'package:graduation_mobile/Delivery_man/screen/drawerDelivery.dart';
-import 'package:graduation_mobile/Delivery_man/screen/orders.dart';
+import 'package:graduation_mobile/Delivery_man/screen/delivery_orders_page.dart';
+import 'package:collection/collection.dart';
 
 import 'package:graduation_mobile/models/order_model.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/shared_perferences.dart';
 
 class Delivery_man extends StatefulWidget {
-  const Delivery_man({super.key});
+  final int? orderId;
+
+  const Delivery_man({super.key, this.orderId});
 
   @override
   State<Delivery_man> createState() => _Delivery_manState();
 }
 
 class _Delivery_manState extends State<Delivery_man> {
-  int perPage = 20;
-  int currentPage = 1;
-  int pagesCount = 0;
-  int totalCount = 0;
-  List<dynamic> order = [];
+  Map<int?, List<dynamic>> orders = {};
   bool firstTime = true;
   bool readyToBuild = false;
-  Future<void> fetchOrder([int page = 1, int perPage = 20]) async {
-    try {
-      if (currentPage > pagesCount) {
-        return;
-      }
-      int? id = await InstanceSharedPrefrences().getId();
-      var data = await CrudController<Order>().getAll({
-        'page': currentPage,
-        'per_page': perPage,
-        'orderBy': 'date',
-        'done': 0,
-        'dir': 'desc',
-        'user_id': id,
-        'with': 'client'
-      });
-      final List<Order>? order = data.items;
-      if (order != null) {
-        int currentPage = data.pagination?['current_page'];
-        int lastPage = data.pagination?['last_page'];
-        int totalCount = data.pagination?['total'];
-        setState(() {
-          this.currentPage = currentPage;
-          pagesCount = lastPage;
-          this.order.addAll(order);
-          this.totalCount = totalCount;
-        });
-        return;
-      }
-      return;
-    } catch (e) {
-      Get.snackbar("title", e.toString());
-      return;
-    }
-  }
-
   final controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -72,27 +37,16 @@ class _Delivery_manState extends State<Delivery_man> {
         .getId()
         .then((id) => {
               BlocProvider.of<DeliveryManCubit>(Get.context!).getorderData({
-                'page': 1,
-                'per_page': perPage,
                 'orderBy': 'date',
                 'done': 0,
                 'dir': 'desc',
+                'with':
+                    'devices,products,devices_orders,products_orders,client',
                 'user_id': id,
-                'with': 'client'
+                'all_data': 1,
               })
             })
         .then((value) => readyToBuild = true);
-
-    controller.addListener(() async {
-      if (controller.position.maxScrollExtent == controller.offset) {
-        setState(() {
-          if (currentPage <= pagesCount) {
-            currentPage++;
-          }
-        });
-        await fetchOrder(currentPage);
-      }
-    });
   }
 
   int? clientId;
@@ -113,10 +67,7 @@ class _Delivery_manState extends State<Delivery_man> {
         }
         if (state is DeliveryManSucces) {
           if (firstTime) {
-            totalCount = state.data.pagination?['total'];
-            currentPage = state.data.pagination?['current_page'];
-            pagesCount = state.data.pagination?['last_page'];
-            order.addAll(state.data.items!);
+            orders = groupBy(state.data.items!, (order) => order.client?.id);
             firstTime = false;
           }
 
@@ -128,53 +79,62 @@ class _Delivery_manState extends State<Delivery_man> {
             drawer: draweDelivery(),
             body: Container(
               child: Container(
-                padding: const EdgeInsets.all(5),
-                child: ListView.builder(
-                    controller: controller,
-                    itemCount: order.length + 1,
-                    itemBuilder: (context, i) {
-                      if (i < order.length) {
-                        return Column(
-                          children: [
-                            MaterialButton(
-                                color: Color.fromARGB(255, 247, 236, 240),
-                                onPressed: () {
-                                  Get.off(orders(
-                                    Client_id: order[i].client?.id ?? "",
-                                  ));
-                                },
-                                minWidth: 300,
-                                height: 50,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${order[i].client?.centerName ?? ''}",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                  padding: const EdgeInsets.all(5),
+                  child: RefreshIndicator(
+                      onRefresh: _refreshData,
+                      child: ListView.builder(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          controller: controller,
+                          itemCount: orders.length,
+                          itemBuilder: (context, i) {
+                            if (i < orders.length) {
+                              int? key = orders.keys.elementAt(i);
+                              List<Order>? groupedItems =
+                                  orders[key]?.cast<Order>();
+                              String? centerName =
+                                  groupedItems?.first.client?.centerName;
+                              String? clientAddress =
+                                  groupedItems?.first.client?.address;
+                              return Column(
+                                children: [
+                                  MaterialButton(
+                                      color: Color.fromARGB(255, 247, 236, 240),
+                                      onPressed: () {
+                                        Get.to(() => DeliveryOrdersPage(
+                                              clientOrders: groupedItems!,
+                                            ));
+                                      },
+                                      minWidth: 300,
+                                      height: 50,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              centerName ?? '',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              clientAddress ?? " ",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black),
+                                            )
+                                          ],
                                         ),
-                                      ),
-                                      Text(
-                                        "${order[i].client?.address ?? ""}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                            const SizedBox(
-                              height: 10,
-                            )
-                          ],
-                        );
-                      }
-                    }),
-              ),
+                                      )),
+                                  const SizedBox(
+                                    height: 10,
+                                  )
+                                ],
+                              );
+                            }
+                          }))),
             ),
           );
         }
@@ -192,5 +152,30 @@ class _Delivery_manState extends State<Delivery_man> {
         return Container();
       },
     );
+  }
+
+  Future<void> _refreshData() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      int? id = await InstanceSharedPrefrences().getId();
+      var data = await CrudController<Order>().getAll({
+        'orderBy': 'date',
+        'done': 0,
+        'dir': 'desc',
+        'with': 'devices,products,devices_orders,products_orders,client',
+        'user_id': id,
+        'all_data': 1,
+      });
+      final List<Order>? orders = data.items;
+      if (orders != null) {
+        setState(() {
+          this.orders.clear();
+          this.orders.addAll(groupBy(orders, (order) => order.client?.id));
+        });
+      }
+    } catch (e) {
+      Get.snackbar("title", e.toString());
+      return;
+    }
   }
 }
