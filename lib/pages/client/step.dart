@@ -1,11 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
-
 import 'cubit/step_cubit/step_cubit.dart';
 
 class RepairSteps extends StatefulWidget {
@@ -38,11 +35,7 @@ class _RepairSteps extends State<RepairSteps> {
 
   void _sendToCustomer(BuildContext context) async {
     try {
-      await context.read<RepairStepsCubit>().saveStepsToDevice(
-          device: widget.device,
-          id: widget.device.id as int,
-          fixSteps: _stepController.text);
-      context.read<RepairStepsCubit>().notifyClient(
+      context.read<RepairStepsCubit>().saveStepsAndChangeDeviceStatus(
           widget.device,
           widget.device.id as int,
           _stepController.text,

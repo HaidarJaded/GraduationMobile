@@ -23,9 +23,9 @@ class CompletedDevice implements HasId {
   final String? fixSteps;
   final int deliverToClient;
   final int deliverToCustomer;
-  final DateTime dateReceipt;
-  final DateTime dateDelivery;
-  final DateTime dateWarranty;
+  final DateTime? dateReceipt;
+  final DateTime? dateDelivery;
+  final DateTime? dateWarranty;
   final int repairedInCenter;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -51,9 +51,9 @@ class CompletedDevice implements HasId {
     this.fixSteps,
     this.deliverToClient = 1,
     this.deliverToCustomer = 0,
-    required this.dateReceipt,
-    required this.dateDelivery,
-    required this.dateWarranty,
+    this.dateReceipt,
+    this.dateDelivery,
+    this.dateWarranty,
     required this.repairedInCenter,
     required this.createdAt,
     required this.updatedAt,
@@ -75,15 +75,15 @@ class CompletedDevice implements HasId {
       customerId: json['customer_id'],
       info: json['info'],
       problem: json['problem'],
-      costToClient: json['cost_to_client'],
-      costToCustomer: json['cost_to_customer'],
+      costToClient: (json['cost_to_client'] as num?)!.toDouble(),
+      costToCustomer: (json['cost_to_customer'] as num?)!.toDouble(),
       status: json['status'],
       fixSteps: json['fix_steps'],
       deliverToClient: json['deliver_to_client'],
       deliverToCustomer: json['deliver_to_customer'],
-      dateReceipt: DateTime.parse(json['date_receipt']),
-      dateDelivery: DateTime.parse(json['date_delivery']),
-      dateWarranty: DateTime.parse(json['date_warranty']),
+      dateReceipt: DateTime.tryParse(json['date_receipt'] ?? ''),
+      dateDelivery: DateTime.tryParse(json['date_delivery'] ?? ''),
+      dateWarranty: DateTime.tryParse(json['date_warranty'] ?? ''),
       repairedInCenter: json['repaired_in_center'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
@@ -113,9 +113,9 @@ class CompletedDevice implements HasId {
       'fix_steps': fixSteps,
       'deliver_to_client': deliverToClient,
       'deliver_to_customer': deliverToCustomer,
-      'date_receipt': dateReceipt.toIso8601String(),
-      'date_delivery': dateDelivery.toIso8601String(),
-      'date_warranty': dateWarranty.toIso8601String(),
+      'date_receipt': dateReceipt?.toIso8601String(),
+      'date_delivery': dateDelivery?.toIso8601String(),
+      'date_warranty': dateWarranty?.toIso8601String(),
       'repaired_in_center': repairedInCenter,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),

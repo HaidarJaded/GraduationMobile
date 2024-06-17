@@ -43,16 +43,27 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
     emit(DeviceDetalisLoading());
     try {
       Map<String, dynamic> body = {
-        'costToClient': costToClient,
+        'cost_to_client': costToClient,
+        'expected_date_of_delivery': expectedDateOfDelivery?.toIso8601String(),
         'problem': problem,
-        'expectedDateOfDelivery': expectedDateOfDelivery?.toIso8601String(),
       };
-
-      var response = await Api().put(
+      //save device info
+      var infoRedponse = await Api().put(
         path: 'https://haidarjaded787.serv00.net/api/devices/$id',
         body: body,
       );
-      if (response != null) {
+      if (infoRedponse == null) return;
+      //save device status
+      var statusResponse = await Api().put(
+        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
+        body: {
+          'status': 'بانتظار استجابة العميل',
+        },
+      );
+      if (statusResponse != null) {
+        SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+            color: const Color.fromARGB(255, 4, 83, 173),
+            title: "اشعار العميل");
         emit(DeviceDetalisEditing());
       } else {
         emit(DeviceDetalisFailure(errormess: 'Error updating'));
@@ -62,27 +73,27 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
     }
   }
 
-  void notifyClient(Device device, double costToClient, String problem,
-      DateTime expectedDeliveryDate) async {
-    // هنا يتم إشعار العميل بالتفاصيل
-    try {
-      EditDstalis(
-          id: device.id!,
-          costToClient: costToClient,
-          problem: problem,
-          expectedDateOfDelivery: expectedDeliveryDate);
-      await _crudController.update(device.id!, {
-        'status': 'بانتظار استجابة العميل',
-        'cost_to_client': costToClient,
-        'problem': problem,
-        'Expected_date_of_delivery': expectedDeliveryDate.toString()
-      });
-      print('notfication yes');
-      // إرسال الإشعار
-      SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
-          color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
-    } catch (e) {
-      emit(DeviceDetalisFailure(errormess: 'Error notifyclient'));
-    }
-  }
+  // void notifyClient(Device device, double costToClient, String problem,
+  //     DateTime expectedDeliveryDate) async {
+  //   // هنا يتم إشعار العميل بالتفاصيل
+  //   try {
+  //     EditDstalis(
+  //         id: device.id!,
+  //         costToClient: costToClient,
+  //         problem: problem,
+  //         expectedDateOfDelivery: expectedDeliveryDate);
+  //     await _crudController.update(device.id!, {
+  //       'status': 'بانتظار استجابة العميل',
+  //       'cost_to_client': costToClient,
+  //       'problem': problem,
+  //       'Expected_date_of_delivery': expectedDeliveryDate.toString()
+  //     });
+  //     print('notfication yes');
+  //     // إرسال الإشعار
+  //     SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+  //         color: const Color.fromARGB(255, 4, 83, 173), title: "اشعار العميل");
+  //   } catch (e) {
+  //     emit(DeviceDetalisFailure(errormess: 'Error notifyclient'));
+  //   }
+  // }
 }

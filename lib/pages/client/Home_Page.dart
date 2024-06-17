@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
 import 'package:graduation_mobile/pages/client/device_info.dart';
 import 'package:graduation_mobile/pages/client/notification.dart';
-import 'package:graduation_mobile/pages/client/updateStatus.dart';
+import 'package:graduation_mobile/pages/client/update_status_page.dart';
 import '../../bar/SearchAppBar.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
@@ -60,6 +60,7 @@ class _HomePages extends State<HomePages> {
             'orderBy': 'date_receipt',
             'dir': 'desc',
             'user_id': userId,
+            'with': 'client'
           } as Map<String, dynamic>?)
           .then((value) => readyToBuild = true);
     });
@@ -87,6 +88,7 @@ class _HomePages extends State<HomePages> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'user_id': userId,
+        'with': 'client'
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -110,15 +112,10 @@ class _HomePages extends State<HomePages> {
 
   Future<void> updateDeviceStatus(Device device, String status) async {
     // هنا يتم تحديث حالة الجهاز
-    device.status = status;
+    setState(() {
+      device.status = status;
+    });
     await _crudController.update(device.id!, {'status': status});
-    await _phoneCubit.getDevicesByUserId({
-      'page': currentPage,
-      'per_page': perPage,
-      'orderBy': 'date_receipt',
-      'dir': 'desc',
-      'user_id': userId,
-    } as Map<String, dynamic>?); // تحديث قائمة الأجهزة بعد التعديل
   }
 
   void logout() async {
@@ -138,32 +135,22 @@ class _HomePages extends State<HomePages> {
     });
   }
 
-  void _showStatusDialog(String title, Device device, Function(String) onSave) {
+  void _showStatusDialog(String status, Device device, Function() action) {
     showDialog(
-      context: context,
+      context: Get.context!,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('هل تريد تغيير الحالة $title'),
+          title: Text('هل تريد تغيير حالة الجهاز الى $status'),
           actions: <Widget>[
             TextButton(
               child: const Text('لا'),
               onPressed: () {
-                Navigator.pop(context);
+                Get.back();
               },
             ),
             TextButton(
+              onPressed: action,
               child: const Text('نعم'),
-              onPressed: () {
-                onSave(title);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddDetalis(
-                      device: device,
-                    ),
-                  ),
-                );
-              },
             ),
           ],
         );
@@ -302,9 +289,6 @@ class _HomePages extends State<HomePages> {
                           itemBuilder: (context, index) {
                             if (index < devices.length) {
                               final device = devices[index];
-                              if (device.status == 'لم يتم بدء العمل فيه') {
-                                updateDeviceStatus(device, 'يتم فحصه');
-                              }
                               return Card(
                                 color: const Color.fromARGB(255, 252, 234, 251),
                                 child: ExpansionTile(
@@ -313,6 +297,20 @@ class _HomePages extends State<HomePages> {
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      if (device.status ==
+                                          'لم يتم بدء العمل فيه') ...[
+                                        IconButton(
+                                            onPressed: () {
+                                              _showStatusDialog(
+                                                  'يتم فحصه', device, () {
+                                                updateDeviceStatus(
+                                                    device, 'يتم فحصه');
+                                                Get.back();
+                                              });
+                                            },
+                                            icon:
+                                                const Icon(Icons.saved_search))
+                                      ],
                                       if (device.status == 'قيد العمل') ...[
                                         IconButton(
                                           onPressed: () {
@@ -321,14 +319,12 @@ class _HomePages extends State<HomePages> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    UpdateStatus(
+                                                    UpdateStatusPage(
                                                   device: device,
                                                   status: device.status,
                                                 ),
                                               ),
                                             );
-                                            updateDeviceStatus(
-                                                device, device.status);
                                           },
                                           icon: const Icon(
                                               Icons.check_circle_outline),
@@ -338,7 +334,6 @@ class _HomePages extends State<HomePages> {
                                           IconButton(
                                             onPressed: () async {
                                               // تغيير الحالة إلى "بانتظار استجابة العميل"
-
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -358,13 +353,11 @@ class _HomePages extends State<HomePages> {
                                             IconButton(
                                                 onPressed: () {
                                                   SnackBarAlert().alert(
-                                                      "تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+                                                      "تم ارسال اشعار للعميل مسبقاً انتظر الاستجابة رجاءاً",
                                                       color:
                                                           const Color.fromARGB(
                                                               255, 4, 83, 173),
                                                       title: "اشعار العميل");
-                                                  updateDeviceStatus(
-                                                      device, device.status);
                                                 },
                                                 icon:
                                                     const Icon(Icons.alarm_on))
