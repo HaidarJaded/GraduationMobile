@@ -10,11 +10,13 @@ import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
+import 'package:graduation_mobile/pages/client/app_bar.dart';
+import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
 import 'package:graduation_mobile/pages/client/device_info.dart';
 import 'package:graduation_mobile/pages/client/notification.dart';
 import 'package:graduation_mobile/pages/client/update_status_page.dart';
-import '../../bar/SearchAppBar.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
 
@@ -35,6 +37,7 @@ class _HomePages extends State<HomePages> {
   final scrollController = ScrollController();
   int totalCount = 0;
   int? userId;
+  User? user;
 
   late CrudController<Device> _crudController;
   late PhoneCubit _phoneCubit;
@@ -161,7 +164,29 @@ class _HomePages extends State<HomePages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchAppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+        title: const Text('MYP'),
+        actions: [
+          BlocBuilder<SwitchCubit, SwitchState>(builder: (context, state) {
+            bool switchValue = state is SwitchInitial
+                ? state.switchValue
+                : (state as SwitchChanged).switchValue;
+
+            return Switch(
+              value: switchValue,
+              onChanged: (value) {
+                var widget;
+                context.read<SwitchCubit>().toggleSwitch(userId!);
+                if (user != null) {
+                  user!.atWork = value ? 1 : 0;
+                }
+                print(value);
+              },
+            );
+          })
+        ],
+      ),
       drawer: Drawer(
         child: Container(
           padding: const EdgeInsets.all(20),

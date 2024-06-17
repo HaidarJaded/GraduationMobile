@@ -34,7 +34,15 @@ class DeviceInfo extends StatelessWidget {
               icon: const Icon(Icons.copy))
         ],
       ),
-      Text('اسم العميل: ${device.client?.name ?? ''}'),
+      Row(
+        children: [
+          const Text(
+            'اسم العميل:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(' ${device.client?.name ?? ''}'),
+        ],
+      ),
       const SizedBox(
         height: 5,
       ),

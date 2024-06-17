@@ -16,7 +16,7 @@ class User implements HasId {
   final int? ruleId;
   final String phone;
   final String? address;
-  final int atWork;
+  late final int atWork;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? password;

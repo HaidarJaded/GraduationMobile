@@ -99,6 +99,7 @@ class Api {
     } on DioException catch (e) {
       HttpExceptionsHandler().handleException(
           e.response!.statusCode!, e.response?.data['message']);
+      print(e);
       return null;
     } catch (e) {
       return null;
