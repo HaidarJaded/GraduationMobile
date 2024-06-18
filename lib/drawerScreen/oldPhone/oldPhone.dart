@@ -86,10 +86,6 @@ class _oldPhoneState extends State<oldPhone> {
               })
             })
         .then((value) => readyToBuild = true);
-    CrudController<CompletedDevice>().getAll({}).then((value) {
-      print(value.items);
-    });
-
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         setState(() {

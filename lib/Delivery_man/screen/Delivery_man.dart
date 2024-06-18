@@ -28,6 +28,10 @@ class _Delivery_manState extends State<Delivery_man> {
   bool firstTime = true;
   bool readyToBuild = false;
   final controller = ScrollController();
+  int getIndexOfId(List items, int id) {
+    int index = items.indexWhere((element) => element.id == id);
+    return index;
+  }
 
   @override
   void initState() {
@@ -70,7 +74,34 @@ class _Delivery_manState extends State<Delivery_man> {
             orders = groupBy(state.data.items!, (order) => order.client?.id);
             firstTime = false;
           }
-
+          if (widget.orderId != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              int? clientId = orders.entries
+                  .firstWhereOrNull(
+                    (entry) =>
+                        entry.value.any((order) => order.id == widget.orderId),
+                  )
+                  ?.key;
+              if (clientId != null) {
+                var clientOrders = orders[clientId] ?? [];
+                int index = getIndexOfId(clientOrders, widget.orderId!);
+                if (index != -1) {
+                  var order = clientOrders[index];
+                  clientOrders.removeAt(index);
+                  clientOrders.insert(0, order);
+                }
+                Get.to(() => DeliveryOrdersPage(
+                      clientOrders: orders[clientId]!.cast<Order>(),
+                      clientName: (orders[clientId]!.cast<Order>())
+                              .first
+                              .client
+                              ?.name ??
+                          'عميل',
+                      orderIdFromNotification: widget.orderId,
+                    ));
+              }
+            });
+          }
           return Scaffold(
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
@@ -95,6 +126,8 @@ class _Delivery_manState extends State<Delivery_man> {
                                   groupedItems?.first.client?.centerName;
                               String? clientAddress =
                                   groupedItems?.first.client?.address;
+                              String? clientName =
+                                  groupedItems?.first.client?.name;
                               return Column(
                                 children: [
                                   MaterialButton(
@@ -102,6 +135,7 @@ class _Delivery_manState extends State<Delivery_man> {
                                       onPressed: () {
                                         Get.to(() => DeliveryOrdersPage(
                                               clientOrders: groupedItems!,
+                                              clientName: clientName ?? 'عميل',
                                             ));
                                       },
                                       minWidth: 300,
