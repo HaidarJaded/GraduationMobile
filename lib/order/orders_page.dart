@@ -57,25 +57,13 @@ class _orderState extends State<ordersPage> {
         color: const Color.fromARGB(255, 51, 48, 247));
   }
 
-  Future<bool> isDeliverToClinet(OrderTypes orderType, int? orderId) async {
-    if (orderId == null) {
+  Future<bool> isDeliverToClinet(OrderTypes orderType, var orderItem) async {
+    if (orderItem == null) {
       return false;
     }
-    if (orderType == OrderTypes.device) {
-      var response = await Api().get(path: 'api/devices_orders/$orderId');
-      if (response != null) {
-        var deliverToClient = response['body']['deliver_to_client'];
-        var orderType = response['body']['order_type'];
-        return deliverToClient == 1 || orderType == 'تسليم للمركز';
-      }
-    } else {
-      var response = await Api().get(path: 'api/product_orders/$orderId');
-      if (response != null) {
-        var deliverToClient = response['body']['deliver_to_client'];
-        return deliverToClient == 1;
-      }
-    }
-    return false;
+    var deliverToClient = orderItem['deliver_to_client'];
+    var orderType = orderItem['order_type'];
+    return deliverToClient == 1 || orderType == 'تسليم للمركز';
   }
 
   Future checkPermission() async {
@@ -190,31 +178,45 @@ class _orderState extends State<ordersPage> {
                                                                       'device_id'] ==
                                                                   device.id,
                                                               orElse: () =>
-                                                                  null)?['id']),
+                                                                  null)),
                                                   builder: (context, snapshot) {
                                                     if (snapshot.connectionState ==
                                                             ConnectionState
                                                                 .done &&
                                                         snapshot.hasData &&
                                                         !snapshot.data!) {
-                                                      return MaterialButton(
-                                                        onPressed: () async {
-                                                          await confirmOrder(
-                                                              OrderTypes.device,
-                                                              order.devicesOrders.firstWhere(
+                                                      if (order.devicesOrders.firstWhere(
                                                                   (deviceOrder) =>
                                                                       deviceOrder[
                                                                           'device_id'] ==
                                                                       device.id,
                                                                   orElse: () =>
-                                                                      null));
-                                                        },
-                                                        color: const Color
-                                                            .fromRGBO(
-                                                            150, 150, 150, 0.5),
-                                                        child: const Text(
-                                                            "تأكيد استلام الطلب"),
-                                                      );
+                                                                      null)[
+                                                              'deliver_to_user'] ==
+                                                          1) {
+                                                        return MaterialButton(
+                                                          onPressed: () async {
+                                                            await confirmOrder(
+                                                                OrderTypes
+                                                                    .device,
+                                                                order.devicesOrders.firstWhere(
+                                                                    (deviceOrder) =>
+                                                                        deviceOrder[
+                                                                            'device_id'] ==
+                                                                        device
+                                                                            .id,
+                                                                    orElse: () =>
+                                                                        null));
+                                                          },
+                                                          color: const Color
+                                                              .fromRGBO(150,
+                                                              150, 150, 0.5),
+                                                          child: const Text(
+                                                              "تأكيد استلام الطلب"),
+                                                        );
+                                                      } else {
+                                                        return const SizedBox();
+                                                      }
                                                     } else if (snapshot
                                                             .hasData &&
                                                         snapshot.data!) {
@@ -280,33 +282,44 @@ class _orderState extends State<ordersPage> {
                                                                       'product_id'] ==
                                                                   product.id,
                                                               orElse: () =>
-                                                                  null)?['id']),
+                                                                  null)),
                                                   builder: (context, snapshot) {
                                                     if (snapshot.connectionState ==
                                                             ConnectionState
                                                                 .done &&
                                                         snapshot.hasData &&
                                                         !snapshot.data!) {
-                                                      return MaterialButton(
-                                                        onPressed: () async {
-                                                          confirmOrder(
-                                                              OrderTypes
-                                                                  .product,
-                                                              order.productsOrders.firstWhere(
-                                                                  (productOrder) =>
-                                                                      productOrder[
-                                                                          'product_id'] ==
-                                                                      product
-                                                                          .id,
-                                                                  orElse: () =>
-                                                                      null));
-                                                        },
-                                                        color: const Color
-                                                            .fromRGBO(
-                                                            150, 150, 150, 0.5),
-                                                        child: const Text(
-                                                            "تأكيد استلام الطلب"),
-                                                      );
+                                                      if (order.productsOrders.firstWhere(
+                                                              (productOrder) =>
+                                                                  productOrder[
+                                                                      'product_id'] ==
+                                                                  product.id,
+                                                              orElse: () =>
+                                                                  null)['deliver_to_user'] ==
+                                                          1) {
+                                                        return MaterialButton(
+                                                          onPressed: () async {
+                                                            confirmOrder(
+                                                                OrderTypes
+                                                                    .product,
+                                                                order.productsOrders.firstWhere(
+                                                                    (productOrder) =>
+                                                                        productOrder[
+                                                                            'product_id'] ==
+                                                                        product
+                                                                            .id,
+                                                                    orElse: () =>
+                                                                        null));
+                                                          },
+                                                          color: const Color
+                                                              .fromRGBO(150,
+                                                              150, 150, 0.5),
+                                                          child: const Text(
+                                                              "تأكيد استلام الطلب"),
+                                                        );
+                                                      } else {
+                                                        return const SizedBox();
+                                                      }
                                                     } else if (snapshot
                                                             .hasData &&
                                                         snapshot.data!) {
