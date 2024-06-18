@@ -93,6 +93,7 @@ class search extends SearchDelegate {
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': idSnapShot.data,
+                'deliver_to_client': 0,
                 'all_data': 1
               }),
               builder: (context, snapshot) {
