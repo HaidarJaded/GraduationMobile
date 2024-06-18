@@ -11,7 +11,6 @@ class SwitchCubit extends Cubit<SwitchState> {
     final newState = !(state is SwitchInitial
         ? (state as SwitchInitial).switchValue
         : (state as SwitchChanged).switchValue);
-    print(newState);
     Map<String, dynamic> body = {'at_work': newState};
 
     try {
@@ -21,9 +20,8 @@ class SwitchCubit extends Cubit<SwitchState> {
       );
       emit(SwitchChanged(newState));
     } catch (e) {
-      print('حدث خطأ أثناء تحديث الحالة: $e');
       // إذا حدث خطأ، نعيد الحالة السابقة
-      emit(state);
+      emit(SwitchFailure(errormessage: 'Error:${e.toString()}'));
     }
   }
 }

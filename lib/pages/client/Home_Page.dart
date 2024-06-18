@@ -13,11 +13,11 @@ import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
-import 'package:graduation_mobile/pages/client/app_bar.dart';
 import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
-import 'package:graduation_mobile/pages/client/device_info.dart';
-import 'package:graduation_mobile/pages/client/notification.dart';
+import 'package:graduation_mobile/pages/client/drawer/notificationScreen.dart';
+import 'package:graduation_mobile/pages/client/drawer/old_phone_user.dart';
 import 'package:graduation_mobile/pages/client/update_status_page.dart';
+import 'package:graduation_mobile/pages/client/widget/device_info.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
 
@@ -179,7 +179,6 @@ class _HomePages extends State<HomePages> {
             return Switch(
               value: switchValue,
               onChanged: (value) {
-                var widget;
                 context.read<SwitchCubit>().toggleSwitch(userId!);
                 if (user != null) {
                   user!.atWork = value ? 1 : 0;
@@ -234,9 +233,12 @@ class _HomePages extends State<HomePages> {
                 Get.to(NotificationScreen());
               },
             ),
-            const ListTile(
-              leading: Icon(Icons.list_alt_rounded),
-              title: Text("Old Phone"),
+            ListTile(
+              leading: const Icon(Icons.list_alt_rounded),
+              title: const Text("Old Phone"),
+              onTap: () {
+                Get.to(const oldPhoneUser());
+              },
             ),
             const ListTile(
               leading: Icon(Icons.help),
@@ -394,38 +396,40 @@ class _HomePages extends State<HomePages> {
                                       ],
                                       if (device.status == 'لا يصلح' ||
                                           device.status ==
-                                              'لم يوافق على لعمل به')
-                                        ...[],
-                                      FutureBuilder(
-                                          future:
-                                              User.hasPermission('تسليم جهاز'),
-                                          builder: ((BuildContext context,
-                                              AsyncSnapshot<bool> snapshot) {
-                                            if (snapshot.hasData &&
-                                                snapshot.data!) {
-                                              return TextButton(
-                                                onPressed: () {
-                                                  _showConfirmProcessDialog(
-                                                      device.id, () {
-                                                    setState(() {
-                                                      devices.remove(device);
+                                              'لم يوافق على لعمل به' ||
+                                          device.status == 'جاهز') ...[
+                                        FutureBuilder(
+                                            future: User.hasPermission(
+                                                'تسليم جهاز'),
+                                            builder: ((BuildContext context,
+                                                AsyncSnapshot<bool> snapshot) {
+                                              if (snapshot.hasData &&
+                                                  snapshot.data!) {
+                                                return IconButton(
+                                                  onPressed: () {
+                                                    _showConfirmProcessDialog(
+                                                        device.id, () {
+                                                      setState(() {
+                                                        devices.remove(device);
+                                                      });
+                                                      Api().put(
+                                                          path:
+                                                              'api/devices/${device.id}',
+                                                          body: {
+                                                            'deliver_to_client':
+                                                                1
+                                                          });
+                                                      Get.back();
                                                     });
-                                                    Api().put(
-                                                        path:
-                                                            'api/devices/${device.id}',
-                                                        body: {
-                                                          'deliver_to_client': 1
-                                                        });
-                                                    Get.back();
-                                                  });
-                                                },
-                                                child:
-                                                    const Text('تسليم الجهاز'),
-                                              );
-                                            } else {
-                                              return const SizedBox(); // Placeholder widget if permission check is pending or user doesn't have permission
-                                            }
-                                          }))
+                                                  },
+                                                  icon: const Icon(Icons
+                                                      .local_shipping_outlined),
+                                                );
+                                              } else {
+                                                return const SizedBox(); // Placeholder widget if permission check is pending or user doesn't have permission
+                                              }
+                                            }))
+                                      ],
                                     ],
                                   ),
                                   children: [

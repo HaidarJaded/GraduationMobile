@@ -15,7 +15,7 @@ class SwitchChanged extends SwitchState {
 }
 
 class SwitchFailure extends SwitchState {
-  final String errormessage;
+  String errormessage;
 
-  SwitchFailure(this.errormessage);
+  SwitchFailure({required this.errormessage});
 }
