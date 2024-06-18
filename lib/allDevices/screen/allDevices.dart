@@ -290,24 +290,19 @@ class _allDevicesState extends State<allDevices> {
                                   ),
                                 );
                               } else {
-                                return devices.isNotEmpty
+                                return devices.isEmpty
                                     ? firstTime
                                         ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                        : devices.length >= 20
-                                            ? const Center(
-                                                child: Text('لا يوجد المزيد'))
-                                            : null
-                                    : const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
+                                    : devices.length >= 20
+                                        ? const Center(
+                                            child: Text('لا يوجد المزيد'))
+                                        : null;
                               }
                             },
-                            // onReorder: (int oldIndex, int newIndex) {
-                            //   context
-                            //       .read<AllDevicesCubit>()
-                            //       .reorderDevices(oldIndex, newIndex);
-                            // },
                           )))));
 
           // Example: Print the name of the second user
