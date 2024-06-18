@@ -33,28 +33,28 @@ class _orderState extends State<ordersPage> {
   bool hasSelectDevicesOrderPermission = false;
   bool hasSelectProductsOrderPermission = false;
 
-  Future confirmOrder(OrderTypes orderType, int orderId) async {
+  Future confirmOrder(OrderTypes orderType, var orderItem) async {
     if (orderType == OrderTypes.device) {
       var response = await Api().put(
-          path: 'api/devices_orders/$orderId', body: {'deliver_to_client': 1});
+          path: 'api/devices_orders/${orderItem['id']}',
+          body: {'deliver_to_client': 1});
       if (response == null) {
         return;
       }
     } else {
       var response = await Api().put(
-          path: 'api/product_orders/$orderId', body: {'deliver_to_client': 1});
+          path: 'api/product_orders/${orderItem['id']}',
+          body: {'deliver_to_client': 1});
       if (response == null) {
         return;
       }
     }
+    setState(() {
+      orderItem['deliver_to_client'] = 1;
+    });
     SnackBarAlert().alert("شكراً جزيلا لتعاونك",
         title: "تم استلام الجهاز",
         color: const Color.fromARGB(255, 51, 48, 247));
-    BlocProvider.of<OrderCubit>(Get.context!).getOrder({
-      'with': 'devices,products,devices_orders,products_orders',
-      'done': 0,
-      'all_data': 1
-    });
   }
 
   Future<bool> isDeliverToClinet(OrderTypes orderType, int? orderId) async {
@@ -207,7 +207,7 @@ class _orderState extends State<ordersPage> {
                                                                           'device_id'] ==
                                                                       device.id,
                                                                   orElse: () =>
-                                                                      null)?['id']);
+                                                                      null));
                                                         },
                                                         color: const Color
                                                             .fromRGBO(
@@ -299,7 +299,7 @@ class _orderState extends State<ordersPage> {
                                                                       product
                                                                           .id,
                                                                   orElse: () =>
-                                                                      null)?['id']);
+                                                                      null));
                                                         },
                                                         color: const Color
                                                             .fromRGBO(
