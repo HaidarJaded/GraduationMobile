@@ -1,9 +1,9 @@
 // ignore: file_names
 // ignore: file_names
-// ignore_for_file: file_names, duplicate_ignore
+// ignore_for_file: file_names, duplicate_ignore, unnecessary_const
 
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
+
 import 'package:graduation_mobile/bar/CustomNvItem.dart';
 import 'package:graduation_mobile/bar/WaveClipper.dart';
 

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, unnecessary_import, camel_case_types, unnecessary_this
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +32,7 @@ class _serviceScreeenState extends State<ServiceScreeen> {
       if (currentPage > pagesCount) {
         return;
       }
-      int? id = await InstanceSharedPrefrences().getId();
+
       var data = await CrudController<Service1>().getAll({
         'page': 1,
         'per_page': perPage,
@@ -110,7 +110,7 @@ class _serviceScreeenState extends State<ServiceScreeen> {
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
             ),
-            drawer: CustomDrawer(),
+            drawer: const CustomDrawer(),
             body: GridView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
               controller: controller,

@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, body_might_complete_normally_nullable, unnecessary_import, avoid_unnecessary_containers, file_names, prefer_const_constructors
+// ignore_for_file: camel_case_types, body_might_complete_normally_nullable, unnecessary_import, avoid_unnecessary_containers, file_names, prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

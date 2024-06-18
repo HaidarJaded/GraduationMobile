@@ -1,5 +1,5 @@
 // ignore: depend_on_referenced_packages
-// ignore_for_file: unused_local_variable, unnecessary_brace_in_string_interps, avoid_print, unnecessary_import
+// ignore_for_file: unused_local_variable, unnecessary_brace_in_string_interps, avoid_print, unnecessary_import, no_leading_underscores_for_local_identifiers
 
 import 'package:bloc/bloc.dart';
 
@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/returned_object.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/api.dart';
-import '../../helper/shared_perferences.dart';
 import '../../models/device_model.dart';
 import '../../models/has_id.dart';
 
@@ -70,24 +69,6 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
       } catch (e) {
         print('Error: $e');
       }
-    }
-  }
-
-  Future<bool> deliverToCustomer({required int id}) async {
-    final CrudController<Device> _crudController = CrudController<Device>();
-
-    try {
-      int? client_id = await InstanceSharedPrefrences().getId();
-      ReturnedObject data = await _crudController
-          .getAll({'id': id, 'client_id': client_id, 'deliver_to_client': 1});
-      if (data.items != null) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      return false;
     }
   }
 }

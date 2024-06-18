@@ -23,8 +23,8 @@ class center extends StatelessWidget {
           drawer: const CustomDrawer(),
           body: SafeArea(
             child: Padding(
-              padding:
-                  EdgeInsets.only(bottom: 1), // Adjust the padding as needed
+              padding: const EdgeInsets.only(
+                  bottom: 1), // Adjust the padding as needed
               child: PageView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: pageController,
