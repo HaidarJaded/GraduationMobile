@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/returned_object.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/api.dart';
+import '../../helper/shared_perferences.dart';
 import '../../models/device_model.dart';
 import '../../models/has_id.dart';
 
@@ -70,25 +71,23 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
         print('Error: $e');
       }
     }
+  }
 
-    // Future<void> _updateDeviceOrder(Device lastDevice, Device newDevice) async {
-    //   try {
-    //     emit(AllDevicesLoading());
-    //     final response1 = await Api().put(
-    //       path: 'https://haidarjaded787.serv00.net/api/devices/${lastDevice.id}',
-    //       body: {'id': newDevice.id},
-    //     );
-    //     final respone2 = await Api().put(
-    //         path: 'api/devices/${newDevice.id}', body: {'id': lastDevice.id});
+  Future<bool> deliverToCustomer({required int id}) async {
+    final CrudController<Device> _crudController = CrudController<Device>();
 
-    //     if (response1 == null) {
-    //       throw Exception('Failed to update device order');
-    //     } else {
-    //       print('Device order updated successfully');
-    //     }
-    //   } catch (e) {
-    //     print('Error: $e');
-    //   }
-    // }
+    try {
+      int? client_id = await InstanceSharedPrefrences().getId();
+      ReturnedObject data = await _crudController
+          .getAll({'id': id, 'client_id': client_id, 'deliver_to_client': 1});
+      if (data.items != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

@@ -21,10 +21,20 @@ class center extends StatelessWidget {
         return Scaffold(
           extendBody: true,
           drawer: const CustomDrawer(),
-          body: PageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: pageController,
-            children: const <Widget>[allPhoneInCenter(), Goods(), Service1()],
+          body: SafeArea(
+            child: Padding(
+              padding:
+                  EdgeInsets.only(bottom: 1), // Adjust the padding as needed
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: const <Widget>[
+                  allPhoneInCenter(),
+                  ServiceScreeen(),
+                  Goods(),
+                ],
+              ),
+            ),
           ),
           bottomNavigationBar: const CustomBottomNavigationBar(),
         );
