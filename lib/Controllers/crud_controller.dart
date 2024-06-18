@@ -110,7 +110,7 @@ class CrudController<T extends HasId> {
       User: (json) => User.fromJson(json),
       CompletedDevice: (json) => CompletedDevice.fromJson(json),
       Permission: (json) => Permission.fromJson(json),
-      Service: (json) => Service.fromJson(json),
+      Service1: (json) => Service1.fromJson(json),
       Order: (json) => Order.fromJson(json),
       Customer: (json) => Customer.fromJson(json),
       Client: (json) => Client.fromJson(json),
@@ -131,7 +131,7 @@ class CrudController<T extends HasId> {
       User: User.table,
       CompletedDevice: CompletedDevice.table,
       Permission: Permission.table,
-      Service: Service.table,
+      Service1: Service1.table,
       Order: Order.table,
       Customer: Customer.table,
       Client: Client.table,
@@ -155,8 +155,8 @@ class CrudController<T extends HasId> {
       return (item as CompletedDevice).toJson();
     } else if (item is Permission) {
       return (item as Permission).toJson();
-    } else if (item is Service) {
-      return (item as Service).toJson();
+    } else if (item is Service1) {
+      return (item as Service1).toJson();
     } else if (item is Order) {
       return (item as Order).toJson();
     } else if (item is Customer) {

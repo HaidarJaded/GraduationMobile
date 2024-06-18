@@ -1,5 +1,5 @@
 // ignore: depend_on_referenced_packages
-// ignore_for_file: unused_local_variable, unnecessary_brace_in_string_interps, avoid_print, unnecessary_import
+// ignore_for_file: unused_local_variable, unnecessary_brace_in_string_interps, avoid_print, unnecessary_import, no_leading_underscores_for_local_identifiers
 
 import 'package:bloc/bloc.dart';
 
@@ -70,25 +70,5 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
         print('Error: $e');
       }
     }
-
-    // Future<void> _updateDeviceOrder(Device lastDevice, Device newDevice) async {
-    //   try {
-    //     emit(AllDevicesLoading());
-    //     final response1 = await Api().put(
-    //       path: 'https://haidarjaded787.serv00.net/api/devices/${lastDevice.id}',
-    //       body: {'id': newDevice.id},
-    //     );
-    //     final respone2 = await Api().put(
-    //         path: 'api/devices/${newDevice.id}', body: {'id': lastDevice.id});
-
-    //     if (response1 == null) {
-    //       throw Exception('Failed to update device order');
-    //     } else {
-    //       print('Device order updated successfully');
-    //     }
-    //   } catch (e) {
-    //     print('Error: $e');
-    //   }
-    // }
   }
 }

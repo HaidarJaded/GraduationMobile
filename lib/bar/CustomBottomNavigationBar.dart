@@ -1,8 +1,9 @@
 // ignore: file_names
 // ignore: file_names
-// ignore_for_file: file_names, duplicate_ignore
+// ignore_for_file: file_names, duplicate_ignore, unnecessary_const
 
 import 'package:flutter/material.dart';
+
 import 'package:graduation_mobile/bar/CustomNvItem.dart';
 import 'package:graduation_mobile/bar/WaveClipper.dart';
 
@@ -40,6 +41,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   height: 60,
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
+                    color: const Color.fromARGB(255, 252, 234, 251),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
