@@ -85,6 +85,7 @@ class _AddOrderFormState extends State<AddOrderForm> {
                 'client_id': clientId,
                 'code': deviceCodeController.text,
                 'with': 'orders',
+                'deliver_to_client': 0,
               });
               Device? device =
                   response.items!.isEmpty ? null : response.items![0];
@@ -92,7 +93,9 @@ class _AddOrderFormState extends State<AddOrderForm> {
                 SnackBarAlert().alert("الرجاء ادخال كود صالح");
                 return;
               }
-              if (device.orders != null && device.orders!.isNotEmpty) {
+              if (device.orders != null &&
+                  device.orders!.isNotEmpty &&
+                  device.orders!.where((order) => order.done == 0).isNotEmpty) {
                 SnackBarAlert().alert("الجهاز المطلوب موجود في الطلبات مسبقاً");
                 return;
               }
@@ -126,7 +129,9 @@ class _AddOrderFormState extends State<AddOrderForm> {
               Map<String, dynamic> requestBody = {
                 'devices_ids': {device.id.toString(): _selectedOrderType},
                 'client_id': clientId,
-                'description': 'توصيل طلب الى العميل'
+                'description': _selectedOrderType == 'تسليم للعميل'
+                    ? 'توصيل طلب الى العميل'
+                    : 'توصيل طلب للمركز'
               };
               var addingOrderResponse =
                   await Api().post(path: 'api/orders', body: requestBody);

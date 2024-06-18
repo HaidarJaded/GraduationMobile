@@ -9,9 +9,14 @@ import 'package:graduation_mobile/models/order_model.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 
 class DeliveryOrdersPage extends StatefulWidget {
-  DeliveryOrdersPage({super.key, required this.clientOrders});
+  DeliveryOrdersPage(
+      {super.key,
+      required this.clientOrders,
+      required this.clientName,
+      this.orderIdFromNotification});
   List<Order> clientOrders;
-
+  String clientName;
+  int? orderIdFromNotification;
   @override
   State<DeliveryOrdersPage> createState() => _ordersState();
 }
@@ -72,7 +77,7 @@ class _ordersState extends State<DeliveryOrdersPage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 87, 42, 170),
-          title: const Text('ClientName'),
+          title: Text(widget.clientName),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.search),
@@ -104,6 +109,8 @@ class _ordersState extends State<DeliveryOrdersPage> {
                             if (snapshot.connectionState ==
                                 ConnectionState.done) {
                               return ExpansionTile(
+                                initiallyExpanded:
+                                    order.id == widget.orderIdFromNotification,
                                 title: Text(order.description ?? "طلب"),
                                 children: [
                                   if (order.devices != null &&
