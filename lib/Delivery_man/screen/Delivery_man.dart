@@ -6,13 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
-import 'package:graduation_mobile/Delivery_man/cubit/switch_delivery_cubit/switch_delivery_cubit.dart';
 import 'package:graduation_mobile/Delivery_man/screen/drawerDelivery.dart';
 import 'package:graduation_mobile/Delivery_man/screen/delivery_orders_page.dart';
 import 'package:collection/collection.dart';
+import 'package:graduation_mobile/helper/api.dart';
 
 import 'package:graduation_mobile/models/order_model.dart';
-import 'package:graduation_mobile/models/user_model.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/shared_perferences.dart';
 
@@ -31,7 +30,7 @@ class _Delivery_manState extends State<Delivery_man> {
   bool readyToBuild = false;
   final controller = ScrollController();
   int? userId;
-  User? user;
+  bool isAtWork = false;
   int getIndexOfId(List items, int id) {
     int index = items.indexWhere((element) => element.id == id);
     return index;
@@ -41,6 +40,11 @@ class _Delivery_manState extends State<Delivery_man> {
   void initState() {
     super.initState();
     readyToBuild = false;
+    InstanceSharedPrefrences().isAtWork().then((isAtWork) {
+      setState(() {
+        this.isAtWork = isAtWork;
+      });
+    });
     InstanceSharedPrefrences()
         .getId()
         .then((id) => {
@@ -69,26 +73,6 @@ class _Delivery_manState extends State<Delivery_man> {
               appBar: AppBar(
                 backgroundColor: const Color.fromARGB(255, 87, 42, 170),
                 title: const Text('MYP'),
-                actions: [
-                  BlocBuilder<SwitchDeliveryCubit, SwitchDeliveryState>(
-                      builder: (context, state) {
-                    bool switchValue = state is SwitchDeliveryInitial
-                        ? state.switchValue
-                        : (state as SwitchDeliveryChanged).switchValue;
-
-                    return Switch(
-                      value: switchValue,
-                      onChanged: (value) {
-                        context
-                            .read<SwitchDeliveryCubit>()
-                            .toggleSwitch(userId!);
-                        if (user != null) {
-                          user!.atWork = value ? 1 : 0;
-                        }
-                      },
-                    );
-                  })
-                ],
               ),
               body: Container(
                   color: Colors.white,
@@ -131,6 +115,23 @@ class _Delivery_manState extends State<Delivery_man> {
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
+              actions: [
+                Switch(
+                  value: isAtWork,
+                  onChanged: (newStatus) async {
+                    setState(() {
+                      isAtWork = newStatus;
+                    });
+                    if (await editAtWork(newStatus ? 1 : 0)) {
+                      InstanceSharedPrefrences().editAtWork(newStatus ? 1 : 0);
+                    } else {
+                      setState(() {
+                        isAtWork = !newStatus;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
             drawer: draweDelivery(),
             body: Container(
@@ -141,58 +142,61 @@ class _Delivery_manState extends State<Delivery_man> {
                       child: ListView.builder(
                           physics: AlwaysScrollableScrollPhysics(),
                           controller: controller,
-                          itemCount: orders.length,
+                          itemCount: orders.length + 1,
                           itemBuilder: (context, i) {
-                            if (i < orders.length) {
-                              int? key = orders.keys.elementAt(i);
-                              List<Order>? groupedItems =
-                                  orders[key]?.cast<Order>();
-                              String? centerName =
-                                  groupedItems?.first.client?.centerName;
-                              String? clientAddress =
-                                  groupedItems?.first.client?.address;
-                              String? clientName =
-                                  groupedItems?.first.client?.name;
-                              return Column(
-                                children: [
-                                  MaterialButton(
-                                      color: Color.fromARGB(255, 247, 236, 240),
-                                      onPressed: () {
-                                        Get.to(() => DeliveryOrdersPage(
-                                              clientOrders: groupedItems!,
-                                              clientName: clientName ?? 'عميل',
-                                            ));
-                                      },
-                                      minWidth: 300,
-                                      height: 50,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              centerName ?? '',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              clientAddress ?? " ",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black),
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                  const SizedBox(
-                                    height: 10,
-                                  )
-                                ],
+                            if (i >= orders.length) {
+                              return Center(
+                                child: const Text('لا يوجد طلبات'),
                               );
                             }
+                            int? key = orders.keys.elementAt(i);
+                            List<Order>? groupedItems =
+                                orders[key]?.cast<Order>();
+                            String? centerName =
+                                groupedItems?.first.client?.centerName;
+                            String? clientAddress =
+                                groupedItems?.first.client?.address;
+                            String? clientName =
+                                groupedItems?.first.client?.name;
+                            return Column(
+                              children: [
+                                MaterialButton(
+                                    color: Color.fromARGB(255, 247, 236, 240),
+                                    onPressed: () {
+                                      Get.to(() => DeliveryOrdersPage(
+                                            clientOrders: groupedItems!,
+                                            clientName: clientName ?? 'عميل',
+                                          ));
+                                    },
+                                    minWidth: 300,
+                                    height: 50,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            centerName ?? '',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            clientAddress ?? " ",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                const SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            );
                           }))),
             ),
           );
@@ -236,5 +240,22 @@ class _Delivery_manState extends State<Delivery_man> {
       Get.snackbar("title", e.toString());
       return;
     }
+  }
+}
+
+Future<bool> editAtWork(int newStatus) async {
+  int? userId = await InstanceSharedPrefrences().getId();
+  Map<String, dynamic> body = {'at_work': newStatus};
+  try {
+    var response = await Api().put(
+      path: 'api/users/$userId',
+      body: body,
+    );
+    if (response == null) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
 }

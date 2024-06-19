@@ -16,7 +16,6 @@ class DeliveryManCubit extends Cubit<DeliveryManState> {
       ReturnedObject data = await _crudController.getAll(queryParams);
       if (data.items != null) {
         emit(DeliveryManSucces(data: data));
-        print(data);
       } else {
         emit(DeliveryManFailuer(errorMessage: 'Error: Failed to fetch data'));
       }
