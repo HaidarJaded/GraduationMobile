@@ -43,7 +43,6 @@ class _oldPhoneState extends State<oldPhone> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'client_id': id,
-        'deliver_to_client': 1,
         'with': 'customer'
       });
       final List<CompletedDevice>? completedDevice = data.items;
@@ -81,7 +80,6 @@ class _oldPhoneState extends State<oldPhone> {
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': id,
-                'deliver_to_client': 1,
                 'with': 'customer'
               })
             })
@@ -157,7 +155,7 @@ class _oldPhoneState extends State<oldPhone> {
                                         ),
                                         subtitle:
                                             // ignore: prefer_interpolation_to_compose_strings
-                                            Text(completedDevice[i].imei),
+                                            Text(completedDevice[i].imei ?? ''),
                                         children: <Widget>[
                                           Padding(
                                               padding: const EdgeInsets
@@ -255,17 +253,17 @@ class _oldPhoneState extends State<oldPhone> {
                                   ),
                                 );
                               } else {
-                                return completedDevice.isNotEmpty
+                                return completedDevice.isEmpty
                                     ? firstTime
                                         ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                        : completedDevice.length >= 20
-                                            ? const Center(
-                                                child: Text('لا يوجد المزيد'))
-                                            : null
-                                    : const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
+                                    : completedDevice.length >= 20
+                                        ? const Center(
+                                            child: Text('لا يوجد المزيد'))
+                                        : null;
                               }
                             },
                           )))));

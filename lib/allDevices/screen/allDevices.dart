@@ -182,6 +182,7 @@ class _allDevicesState extends State<allDevices> {
                                             // ignore: prefer_interpolation_to_compose_strings
                                             Text(devices[i].imei),
                                         trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
                                               icon: const Icon(Icons.edit),
@@ -203,7 +204,7 @@ class _allDevicesState extends State<allDevices> {
                                                 }
                                               },
                                             ),
-                                            if (devices[i].deliverToCustomer ==
+                                            if (devices[i].deliverToClient ==
                                                     1 ||
                                                 devices[i].dateReceipt ==
                                                     null) ...[

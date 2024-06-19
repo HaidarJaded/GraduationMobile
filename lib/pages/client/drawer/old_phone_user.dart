@@ -231,16 +231,15 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
                             ),
                           );
                         } else {
-                          return completedDevice.isNotEmpty
+                          return completedDevice.isEmpty
                               ? firstTime
-                                  ? const Center(child: Text('لا يوجد اجهزة'))
-                                  : completedDevice.length >= 20
-                                      ? const Center(
-                                          child: Text('لا يوجد المزيد'))
-                                      : null
-                              : const Center(
-                                  child: CircularProgressIndicator(),
-                                );
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : const Center(child: Text('لا يوجد اجهزة'))
+                              : completedDevice.length >= 20
+                                  ? const Center(child: Text('لا يوجد المزيد'))
+                                  : const SizedBox();
                         }
                       },
                     )));
