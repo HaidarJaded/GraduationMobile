@@ -16,7 +16,9 @@ import 'package:graduation_mobile/pages/client/add_detalis.dart';
 import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
 import 'package:graduation_mobile/pages/client/drawer/notificationScreen.dart';
 import 'package:graduation_mobile/pages/client/drawer/old_phone_user.dart';
+import 'package:graduation_mobile/pages/client/drawer/profile_user.dart';
 import 'package:graduation_mobile/pages/client/update_status_page.dart';
+import 'package:graduation_mobile/pages/client/widget/app_bar.dart';
 import 'package:graduation_mobile/pages/client/widget/device_info.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
@@ -183,7 +185,6 @@ class _HomePages extends State<HomePages> {
                 if (user != null) {
                   user!.atWork = value ? 1 : 0;
                 }
-                print(value);
               },
             );
           })
@@ -198,7 +199,9 @@ class _HomePages extends State<HomePages> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(UserProfilePage());
+                    },
                     icon: const Icon(Icons.person),
                   ),
                 ),
@@ -338,8 +341,8 @@ class _HomePages extends State<HomePages> {
                                                 Get.back();
                                               });
                                             },
-                                            icon:
-                                                const Icon(Icons.saved_search))
+                                            icon: const Icon(
+                                                Icons.handyman_outlined))
                                       ],
                                       if (device.status == 'قيد العمل') ...[
                                         IconButton(
@@ -544,9 +547,7 @@ class _HomePages extends State<HomePages> {
                           Text('Failed to load devices: ${state.errorMessage}'),
                     );
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: Text('لا يوجد اجهزة '));
                   }
                 },
               ),

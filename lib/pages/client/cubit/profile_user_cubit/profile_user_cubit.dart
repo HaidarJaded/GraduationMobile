@@ -1,35 +1,30 @@
 // ignore_for_file: avoid_print
-
-import 'dart:ui';
-
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/api.dart';
-import 'package:graduation_mobile/helper/snack_bar_alert.dart';
-import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/models/user_model.dart';
+import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
 
-import 'detalis_state.dart';
+class UserDetailsCubit extends Cubit<UserDetailsState> {
+  final CrudController<User> _crudController;
 
-class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
-  final CrudController<Device> _crudController;
+  UserDetailsCubit(this._crudController) : super(UserDetalisInitial());
 
-  DeviceDetailsCubit(this._crudController) : super(DeviceDetalisInitial());
-
-  Future<void> fetchDeviceDetails(int deviceId) async {
+  Future<void> fetchProfileDetails(int userId) async {
     try {
-      emit(DeviceDetalisLoading());
-      final device = await _crudController.getById(deviceId, null);
+      emit(UserDetalisLoading());
+      final user = await _crudController.getById(userId, null);
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
-      if (device != null) {
-        emit(DeviceDetalisSuccesses(details: [device]));
+      if (user != null) {
+        emit(UserDetalisSuccesses(details: [user]));
       } else {
-        emit(DeviceDetalisFailure(errormess: 'Device not found'));
+        emit(UserDetalisFailure(errormess: 'User not found'));
       }
     } catch (e) {
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
       printError();
-      emit(DeviceDetalisFailure(errormess: e.toString()));
+      emit(UserDetalisFailure(errormess: e.toString()));
     }
   }
 
@@ -41,7 +36,7 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
     DateTime? expectedDateOfDelivery,
     String? info,
   }) async {
-    emit(DeviceDetalisLoading());
+    // emit(UserDetalisLoading());
     try {
       Map<String, dynamic> body = {
         'cost_to_client': costToClient,
@@ -49,29 +44,14 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
         'problem': problem,
         'info': info
       };
-      //save device info
+      //save User info
       var infoRedponse = await Api().put(
-        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
+        path: 'https://haidarjaded787.serv00.net/api/users/$id',
         body: body,
       );
       if (infoRedponse == null) return;
-      //save device status
-      var statusResponse = await Api().put(
-        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
-        body: {
-          'status': 'بانتظار استجابة العميل',
-        },
-      );
-      if (statusResponse != null) {
-        SnackBarAlert().alert("تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
-            color: const Color.fromARGB(255, 4, 83, 173),
-            title: "اشعار العميل");
-        emit(DeviceDetalisEditing());
-      } else {
-        emit(DeviceDetalisFailure(errormess: 'Error updating'));
-      }
     } catch (e) {
-      emit(DeviceDetalisFailure(errormess: e.toString()));
+      // emit(UserDetalisFailure(errormess: e.toString()));
     }
   }
 

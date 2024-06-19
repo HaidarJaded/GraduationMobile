@@ -24,6 +24,7 @@ class _AddDetalisState extends State<AddDetalis> {
   late DeviceDetailsCubit _deviceDetailsCubit;
   late TextEditingController _costController;
   late TextEditingController _problemController;
+  late TextEditingController _infoController;
   DateTime? _expectedDateOfDelivery;
 
   @override
@@ -137,6 +138,27 @@ class _AddDetalisState extends State<AddDetalis> {
                           ),
                         ),
                       ),
+                      Card(
+                        color: const Color.fromARGB(255, 252, 234, 251),
+                        child: ListTile(
+                          leading: const Icon(Icons.info),
+                          title: const Text("المعلومات الاضافية"),
+                          subtitle: Text(device.problem ?? ""),
+                          trailing: IconButton(
+                            onPressed: () {
+                              _showEditDialog("المشكلة", device.info ?? "",
+                                  (newValue) {
+                                setState(() {
+                                  device.info = newValue;
+                                  _infoController.text =
+                                      newValue; // تحديث TextEditingController
+                                });
+                              });
+                            },
+                            icon: const Icon(Icons.edit),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       const SizedBox(height: 10),
                       Card(
@@ -162,11 +184,12 @@ class _AddDetalisState extends State<AddDetalis> {
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             await _deviceDetailsCubit.EditDstalis(
-                              id: device.id!,
-                              costToClient: double.parse(_costController.text),
-                              problem: _problemController.text,
-                              expectedDateOfDelivery: _expectedDateOfDelivery,
-                            );
+                                id: device.id!,
+                                costToClient:
+                                    double.parse(_costController.text),
+                                problem: _problemController.text,
+                                expectedDateOfDelivery: _expectedDateOfDelivery,
+                                info: _infoController.text);
                             Get.off(() => const HomePages());
                           }
                         },

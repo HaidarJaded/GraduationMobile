@@ -39,11 +39,10 @@ class completedDeviceInfoUserCard extends StatelessWidget {
               icon: const Icon(Icons.copy))
         ],
       ),
-      Text('اسم الزبون: ${completedDevice.customer?.name ?? ''}'),
+      Text('اسم العميل: ${completedDevice.client?.name ?? ''}'),
       Text('معلومات اضافية: ${completedDevice.info}'),
       Text('العطل: ${completedDevice.problem}'),
-      Text('التكلفة عليك: ${completedDevice.costToClient}'),
-      Text('التكلفة على الزبون: ${completedDevice.costToCustomer}'),
+      Text('التكلفة على العميل: ${completedDevice.costToClient}'),
       const Text('خطوات الاصلاح:'),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,

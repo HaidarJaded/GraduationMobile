@@ -131,6 +131,24 @@ class _Delivery_manState extends State<Delivery_man> {
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
+              actions: [
+                BlocBuilder<SwitchDeliveryCubit, SwitchDeliveryState>(
+                    builder: (context, state) {
+                  bool switchValue = state is SwitchDeliveryInitial
+                      ? state.switchValue
+                      : (state as SwitchDeliveryChanged).switchValue;
+
+                  return Switch(
+                    value: switchValue,
+                    onChanged: (value) {
+                      context.read<SwitchDeliveryCubit>().toggleSwitch(userId!);
+                      if (user != null) {
+                        user!.atWork = value ? 1 : 0;
+                      }
+                    },
+                  );
+                })
+              ],
             ),
             drawer: draweDelivery(),
             body: Container(

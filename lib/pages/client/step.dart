@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'cubit/step_cubit/step_cubit.dart';
 
 class RepairSteps extends StatefulWidget {
@@ -124,7 +125,7 @@ class _RepairSteps extends State<RepairSteps> {
                     InkWell(
                         onTap: () async {
                           _sendToCustomer(context);
-                          Get.back();
+                          Get.off(() => const HomePages());
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -140,7 +141,7 @@ class _RepairSteps extends State<RepairSteps> {
                           width: MediaQuery.of(context).size.width,
                           child: const Center(
                             child: Text(
-                              'Send to customer',
+                              'ارسال الى العميل',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
