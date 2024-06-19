@@ -142,7 +142,7 @@ class _allDevicesState extends State<allDevices> {
                   IconButton(
                     icon: const Icon(
                       Icons.search,
-                      color: Colors.white``,
+                      color: Colors.white,
                     ),
                     onPressed: () {
                       showSearch(context: context, delegate: search());
