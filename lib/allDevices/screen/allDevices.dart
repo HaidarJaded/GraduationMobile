@@ -140,7 +140,10 @@ class _allDevicesState extends State<allDevices> {
                 title: const Text('MYP'),
                 actions: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.search),
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                     onPressed: () {
                       showSearch(context: context, delegate: search());
                     },
@@ -179,6 +182,7 @@ class _allDevicesState extends State<allDevices> {
                                             // ignore: prefer_interpolation_to_compose_strings
                                             Text(devices[i].imei),
                                         trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
                                               icon: const Icon(Icons.edit),
@@ -200,7 +204,7 @@ class _allDevicesState extends State<allDevices> {
                                                 }
                                               },
                                             ),
-                                            if (devices[i].deliverToCustomer ==
+                                            if (devices[i].deliverToClient ==
                                                     1 ||
                                                 devices[i].dateReceipt ==
                                                     null) ...[
@@ -293,7 +297,7 @@ class _allDevicesState extends State<allDevices> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
+                                                                "${devices[i].costToClient ?? "لم تحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -337,24 +341,19 @@ class _allDevicesState extends State<allDevices> {
                                   ),
                                 );
                               } else {
-                                return devices.isNotEmpty
+                                return devices.isEmpty
                                     ? firstTime
                                         ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                        : devices.length >= 20
-                                            ? const Center(
-                                                child: Text('لا يوجد المزيد'))
-                                            : null
-                                    : const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
+                                    : devices.length >= 20
+                                        ? const Center(
+                                            child: Text('لا يوجد المزيد'))
+                                        : null;
                               }
                             },
-                            // onReorder: (int oldIndex, int newIndex) {
-                            //   context
-                            //       .read<AllDevicesCubit>()
-                            //       .reorderDevices(oldIndex, newIndex);
-                            // },
                           )))));
 
           // Example: Print the name of the second user

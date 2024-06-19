@@ -33,6 +33,12 @@ class InstanceSharedPrefrences {
     await prefs.setString('profile', userInfo);
   }
 
+  Future<Map<String, dynamic>> getProfile() async {
+    await initial();
+    final userProfile = jsonDecode(prefs.getString('profile') ?? '');
+    return userProfile;
+  }
+
   Future clearAll() async {
     await initial();
     prefs.clear();
@@ -72,5 +78,25 @@ class InstanceSharedPrefrences {
       return false;
     }
     return jsonDecode(profile)['account_active'] == 1;
+  }
+
+  Future<bool> isAtWork() async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return false;
+    }
+    int atWork = userProfile['at_work'];
+    return atWork == 1;
+  }
+
+  void editAtWork(int newStatus) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['at_work'] = newStatus;
+    setProfile(userProfile);
   }
 }

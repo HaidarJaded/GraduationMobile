@@ -164,15 +164,15 @@ class _serviceScreeenState extends State<ServiceScreeen> {
                     ),
                   );
                 } else {
-                  return service.isNotEmpty
+                  return service.isEmpty
                       ? firstTime
-                          ? const Center(child: Text('لا يوجد اجهزة'))
-                          : service.length >= 20
-                              ? const Center(child: Text('لا يوجد المزيد'))
-                              : null
-                      : const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Center(child: Text('لا يوجد خدمات متاحة'))
+                      : service.length >= 20
+                          ? const Center(child: Text('لا يوجد المزيد'))
+                          : null;
                 }
               },
             ),

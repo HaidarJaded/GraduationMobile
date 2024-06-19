@@ -69,6 +69,7 @@ class addInfoDevice extends StatelessWidget {
       return false;
     }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
+        print(state);
         if (state is AddDevicesLoading) {
           return Container(
               color: Colors.white,
@@ -244,9 +245,9 @@ class addInfoDevice extends StatelessWidget {
             }
           });
         }
-        if (state is AddDevicesFailure) {
-          return Text("${state.errormessage}");
-        }
+        // if (state is AddDevicesFailure) {
+        //   return Text("${state.errormessage}");
+        // }
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(16.0),
