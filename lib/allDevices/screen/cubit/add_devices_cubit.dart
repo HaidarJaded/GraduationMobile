@@ -14,14 +14,14 @@ part 'add_devices_state.dart';
 
 class AddDevicesCubit extends Cubit<AddDevicesState> {
   AddDevicesCubit() : super(AddDevicesInitial());
-  Future<dynamic> checkNationalId({required String nationalId}) async {
+  Future<dynamic> checkNationalId({required String customerPhone}) async {
     final CrudController<Customer> _crudController = CrudController<Customer>();
 
     emit(AddDevicesLoading());
 
     try {
       final List<Customer>? result =
-          (await _crudController.getAll({'national_id': nationalId})).items;
+          (await _crudController.getAll({'phone': customerPhone})).items;
 
       if (result != null && result.isNotEmpty) {
         emit(AddDevicesFound(result: result));
