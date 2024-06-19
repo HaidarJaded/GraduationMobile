@@ -7,7 +7,7 @@ class Customer implements HasId {
   static String table = "customers";
   String name;
   String lastName;
-  String nationalId;
+  String? nationalId;
   int clientId;
   String phone;
   String? email;
@@ -20,7 +20,7 @@ class Customer implements HasId {
     required this.id,
     required this.name,
     required this.lastName,
-    required this.nationalId,
+    this.nationalId,
     required this.clientId,
     required this.phone,
     this.email,

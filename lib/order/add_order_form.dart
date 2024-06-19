@@ -23,8 +23,30 @@ class _AddOrderFormState extends State<AddOrderForm> {
   String? _selectedOrderType;
   GlobalKey<FormState> globalKey = GlobalKey<FormState>();
   TextEditingController deviceCodeController = TextEditingController();
-
+  bool areThereDeliveries = false;
   bool isCodeOk = false;
+
+  Future<bool> areThereDelivery() async {
+    var response = await Api().get(path: 'api/are_there_deliveries');
+    if (response == null) {
+      return false;
+    }
+    final body = response['body'];
+    if (body.length == 0) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    areThereDelivery().then((areThereDelivery) {
+      setState(() {
+        areThereDeliveries = areThereDelivery;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +94,17 @@ class _AddOrderFormState extends State<AddOrderForm> {
           child: const Text('اضافة'),
           onPressed: () async {
             if (globalKey.currentState!.validate()) {
+              if (!areThereDeliveries) {
+                bool reCheckDelivery = await areThereDelivery();
+                if (!reCheckDelivery) {
+                  SnackBarAlert()
+                      .alert("عذراً لا يوجد عمّال توصيل في الوقت الحالي");
+                  return;
+                }
+                setState(() {
+                  areThereDeliveries = reCheckDelivery;
+                });
+              }
               if (_selectedOrderType == null) {
                 SnackBarAlert().alert("الرجاء اختيار نوع الطلب");
                 return;

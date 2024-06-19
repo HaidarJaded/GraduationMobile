@@ -11,7 +11,7 @@ import 'cubit/add_devices_cubit.dart';
 class Search_for_a_customer extends StatelessWidget {
   Search_for_a_customer({super.key, required this.title});
   GlobalKey<FormState> myform = GlobalKey<FormState>();
-  TextEditingController nationalId = TextEditingController();
+  TextEditingController phone = TextEditingController();
   final String title;
   bool exist = false;
   int? id;
@@ -74,7 +74,7 @@ class Search_for_a_customer extends StatelessWidget {
                     onPressed: () {
                       Get.back();
                       Get.off(() => addInfoDevice(
-                            customerNationalId: state.result[0].nationalId,
+                            customerPhone: state.result[0].phone,
                           ));
                     },
                     color: const Color.fromARGB(255, 200, 188, 202),
@@ -97,7 +97,7 @@ class Search_for_a_customer extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // This will ensure that the current frame is complete before executing the navigation
             Get.off(() => addInfoDevice(
-                  customerNationalId: nationalId.text,
+                  customerPhone: phone.text,
                 ));
           });
         }
@@ -114,9 +114,9 @@ class Search_for_a_customer extends StatelessWidget {
                         child: Column(children: [
                       TextFormField(
                         keyboardType: TextInputType.number,
-                        controller: nationalId,
+                        controller: phone,
                         decoration: const InputDecoration(
-                          labelText: 'الرقم الوطني لصاحب الجهاز',
+                          labelText: 'ادخل رقم الهاتف لصاحب الجهاز',
                           labelStyle:
                               TextStyle(fontSize: 17, color: Colors.black),
                           contentPadding:
@@ -125,9 +125,9 @@ class Search_for_a_customer extends StatelessWidget {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'ادخل الرقم الوطني لصاحب الجهاز';
-                          } else if (value.length != 11) {
-                            return 'يجب أن يكون 11 رقم';
+                            return 'ادخل رقم الهاتف لصاحب الجهاز';
+                          } else if (value.length != 10) {
+                            return 'يجب أن يكون 10 ارقام';
                           }
                           return null;
                         },
@@ -151,7 +151,7 @@ class Search_for_a_customer extends StatelessWidget {
                   onPressed: () {
                     if (myform.currentState!.validate()) {
                       BlocProvider.of<AddDevicesCubit>(context)
-                          .checkNationalId(nationalId: nationalId.text);
+                          .checkNationalId(customerPhone: phone.text);
                     }
                   },
                   color: const Color.fromARGB(255, 200, 188, 202),

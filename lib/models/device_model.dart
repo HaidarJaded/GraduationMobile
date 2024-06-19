@@ -23,6 +23,7 @@ class Device implements HasId {
   String status;
   int? clientApproval;
   DateTime? dateReceipt;
+  DateTime? dateReceiptFromCustomer;
   DateTime? expectedDateOfDelivery;
   DateTime? clientDateWarranty;
   int? deliverToClient;
@@ -51,7 +52,8 @@ class Device implements HasId {
       this.fixSteps,
       required this.status,
       this.clientApproval,
-      required this.dateReceipt,
+      this.dateReceipt,
+      this.dateReceiptFromCustomer,
       this.expectedDateOfDelivery,
       this.clientDateWarranty,
       this.deliverToClient,

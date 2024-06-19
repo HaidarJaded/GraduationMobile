@@ -21,9 +21,9 @@ import 'cubit/add_devices_cubit.dart';
 class addInfoDevice extends StatelessWidget {
   addInfoDevice({
     super.key,
-    required customerNationalId,
+    required customerPhone,
   }) {
-    nationalIdController = TextEditingController(text: customerNationalId);
+    phoneController = TextEditingController(text: customerPhone);
   }
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
@@ -69,7 +69,6 @@ class addInfoDevice extends StatelessWidget {
       return false;
     }, child: BlocBuilder<AddDevicesCubit, AddDevicesState>(
       builder: (context, state) {
-        print(state);
         if (state is AddDevicesLoading) {
           return Container(
               color: Colors.white,
@@ -320,9 +319,13 @@ class addInfoDevice extends StatelessWidget {
                       height: 10,
                     ),
 
-                    textFormField(
-                      labelText: "رقم الهاتف",
-                      icon: const Icon(Icons.phone),
+                    TextFormField(
+                      enabled: false,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: "رقم الهاتف",
+                        prefixIcon: Icon(Icons.phone),
+                      ),
                       controller: phoneController,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -332,6 +335,7 @@ class addInfoDevice extends StatelessWidget {
                         }
                         return null;
                       },
+                      keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
@@ -340,17 +344,13 @@ class addInfoDevice extends StatelessWidget {
                       height: 10,
                     ),
                     TextFormField(
-                      readOnly: true,
-                      enabled: false,
                       controller: nationalIdController,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.person_add_alt_1_outlined),
                         labelText: "الرقم الوطني",
                         border: OutlineInputBorder(),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(
                       height: 16,
@@ -387,7 +387,7 @@ class addInfoDevice extends StatelessWidget {
                         icon: const Icon(Icons.numbers),
                         controller: ImeiController,
                         validator: (value) {
-                          if (value.length != 15) {
+                          if (value.length != 0 && value.length != 15) {
                             return 'يجب أن يكون 15 رقم';
                           }
                         },
