@@ -42,9 +42,9 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.success) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
+          Get.back();
           SnackBarAlert().alert("تم انشاء حساب بنجاح",
               color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بك");
-          Get.to(const LoginPage());
         });
       } else if (state == RegistrationState.failure) {
         SnackBarAlert()
@@ -79,9 +79,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                       ),
                     ),
                     Text(
-                      "SignUp",
+                      "إنشاء حساب",
                       style: TextStyle(
-                        fontSize: 26,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey.shade800,
                       ),
@@ -90,14 +90,13 @@ class _SignUpPagesState extends State<SignUpPages> {
                       height: 30,
                     ),
                     textFormField(
-                      labelText: "name",
+                      labelText: "الاسم",
                       icon: const Icon(Icons.abc_outlined),
                       controller: name,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'الرجاء إدخال الاسم';
                         }
-                        // Add more password validation if needed
                         return null;
                       },
                     ),
@@ -105,12 +104,12 @@ class _SignUpPagesState extends State<SignUpPages> {
                       height: 20,
                     ),
                     textFormField(
-                      labelText: 'last name',
+                      labelText: 'الكنية',
                       icon: const Icon(Icons.abc),
                       controller: lastname,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'الرجاء إدخال الكنية';
                         }
                         // Add more password validation if needed
                         return null;
@@ -119,18 +118,25 @@ class _SignUpPagesState extends State<SignUpPages> {
                     const SizedBox(
                       height: 20,
                     ),
-                    textFormField(
-                      labelText: 'email',
-                      icon: const Icon(Icons.email_outlined),
+                    TextFormField(
+                      textDirection: TextDirection.ltr,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        labelText: 'البريد الإلكتروني',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
+                      ),
                       controller: emailController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
+                          return 'الرجاء إدخال البريد الإلكتروني';
                         } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                             .hasMatch(value)) {
                           return 'ادخل عنوان بريد إلكتروني صحيح';
                         }
-                        // Add more email validation if needed
                         return null;
                       },
                     ),
@@ -141,8 +147,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       obscureText: true,
                       controller: passwordController,
+                      textDirection: TextDirection.ltr,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'كلمة المرور',
                         labelStyle: const TextStyle(fontFamily: "Roboto"),
                         prefixIcon: const Icon(Icons.lock_outline),
                         contentPadding: const EdgeInsets.symmetric(
@@ -153,12 +160,11 @@ class _SignUpPagesState extends State<SignUpPages> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'الرجاء إدخال كلمة المرور';
                         }
                         if (value.length < 8) {
-                          return 'يجب ان يكون 8 ارقام';
+                          return 'يجب ان يكون 8 محارف على الأقل';
                         }
-                        // Add more password validation if needed
                         return null;
                       },
                     ),
@@ -166,11 +172,12 @@ class _SignUpPagesState extends State<SignUpPages> {
                       height: 20,
                     ),
                     TextFormField(
+                      textDirection: TextDirection.ltr,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       obscureText: true,
                       controller: password_confirmation,
                       decoration: InputDecoration(
-                        labelText: 'password confirmation',
+                        labelText: 'تأكيد كلمة المرور',
                         labelStyle: const TextStyle(fontFamily: "Roboto"),
                         prefixIcon: const Icon(Icons.lock_outline),
                         contentPadding: const EdgeInsets.symmetric(
@@ -181,7 +188,7 @@ class _SignUpPagesState extends State<SignUpPages> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password confirmation';
+                          return 'الرجاء إدخال تأكيد كلمة المرور';
                         }
                         if (value.length < 8) {
                           return 'يجب ان يكون 8 ارقام';
@@ -193,32 +200,37 @@ class _SignUpPagesState extends State<SignUpPages> {
                     const SizedBox(
                       height: 20,
                     ),
-                    textFormField(
-                      labelText: 'national id',
-                      icon: const Icon(Icons.list_rounded),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          labelText: 'الرقم الوطني',
+                          prefixIcon: const Icon(Icons.list_rounded),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
                       controller: national_Id,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password confirmation';
+                          return 'الرجاء إدخال الرقم الوطني';
                         }
                         if (value.length != 11) {
                           return 'يجب ان يكون 11 رقم';
                         }
+                        return null;
                       },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     textFormField(
-                      labelText: 'adress',
+                      labelText: 'العنوان',
                       icon: const Icon(Icons.line_axis),
                       controller: address,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your adress';
+                          return 'الرجاء إدخال العنوان';
                         }
                       },
                     ),
@@ -226,12 +238,12 @@ class _SignUpPagesState extends State<SignUpPages> {
                       height: 20,
                     ),
                     textFormField(
-                      labelText: 'center name',
+                      labelText: 'اسم المركز',
                       icon: const Icon(Icons.home_filled),
                       controller: centerName,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your center name';
+                          return 'الرجاء إدخال اسم المركز';
                         }
                       },
                     ),
@@ -272,7 +284,7 @@ class _SignUpPagesState extends State<SignUpPages> {
                         width: MediaQuery.of(context).size.width,
                         child: const Center(
                           child: Text(
-                            'SignUP',
+                            'تسجيل',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -288,13 +300,13 @@ class _SignUpPagesState extends State<SignUpPages> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'Already have an account? ',
+                          'ألديك حساب بالفعل؟ ',
                           style: TextStyle(),
                         ),
                         GestureDetector(
                           onTap: () {},
                           child: const Text(
-                            'SignIn',
+                            'تسجيل الدخول',
                             style: TextStyle(color: Colors.blueAccent),
                           ),
                         )

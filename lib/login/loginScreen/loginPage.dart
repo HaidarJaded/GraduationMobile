@@ -7,6 +7,7 @@ import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
+import 'package:graduation_mobile/login/loginScreen/reset_password_page.dart';
 import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
 import '../../Controllers/auth_controller.dart';
@@ -142,11 +143,12 @@ class LoginPageState extends State<LoginPage> {
                         height: 60,
                       ),
                       TextFormField(
+                        textDirection: TextDirection.ltr,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         keyboardType: TextInputType.emailAddress,
                         controller: emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          labelText: 'البريد الالكتروني',
                           prefixIcon: const Icon(Icons.email),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 15),
@@ -156,7 +158,7 @@ class LoginPageState extends State<LoginPage> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return 'الرجاء ادخال البريد الالكتروني';
                           } else if (!RegExp(
                                   r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                               .hasMatch(value)) {
@@ -169,11 +171,12 @@ class LoginPageState extends State<LoginPage> {
                         height: 20,
                       ),
                       TextFormField(
+                        textDirection: TextDirection.ltr,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         obscureText: true,
                         controller: passwordController,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: 'كلمة المرور',
                           labelStyle: const TextStyle(fontFamily: "Roboto"),
                           prefixIcon: const Icon(Icons.lock_outline),
                           contentPadding: const EdgeInsets.symmetric(
@@ -184,7 +187,7 @@ class LoginPageState extends State<LoginPage> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return 'الرجاء ادخال كلمة المرور';
                           }
                           return null;
                         },
@@ -211,7 +214,7 @@ class LoginPageState extends State<LoginPage> {
                           width: MediaQuery.of(context).size.width,
                           child: const Center(
                             child: Text(
-                              'Login',
+                              'تسجيل الدخول',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -227,11 +230,11 @@ class LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Don\'t have an account?',
+                            'ألا تملك حساب؟',
                             style: TextStyle(),
                           ),
-                          GestureDetector(
-                            onTap: () {
+                          TextButton(
+                            onPressed: () {
                               const Center(
                                 child: CircularProgressIndicator(),
                               );
@@ -240,7 +243,26 @@ class LoginPageState extends State<LoginPage> {
                               });
                             },
                             child: const Text(
-                              ' signUp',
+                              'انشاء حساب',
+                              style: TextStyle(color: Colors.blueAccent),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Get.to(() => const ResetPasswordPage());
+                              });
+                            },
+                            child: const Text(
+                              ' هل نسيت كلمة المرور؟',
                               style: TextStyle(color: Colors.blueAccent),
                             ),
                           )
