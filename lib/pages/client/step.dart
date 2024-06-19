@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'cubit/step_cubit/step_cubit.dart';
@@ -123,6 +124,7 @@ class _RepairSteps extends State<RepairSteps> {
                     InkWell(
                         onTap: () async {
                           _sendToCustomer(context);
+                          Get.back();
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(

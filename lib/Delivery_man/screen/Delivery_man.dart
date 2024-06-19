@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/switch_delivery_cubit/switch_delivery_cubit.dart';
 import 'package:graduation_mobile/Delivery_man/screen/drawerDelivery.dart';
 import 'package:graduation_mobile/Delivery_man/screen/delivery_orders_page.dart';
 import 'package:collection/collection.dart';
 
 import 'package:graduation_mobile/models/order_model.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import '../../Controllers/crud_controller.dart';
 import '../../helper/shared_perferences.dart';
 
@@ -28,6 +30,8 @@ class _Delivery_manState extends State<Delivery_man> {
   bool firstTime = true;
   bool readyToBuild = false;
   final controller = ScrollController();
+  int? userId;
+  User? user;
   int getIndexOfId(List items, int id) {
     int index = items.indexWhere((element) => element.id == id);
     return index;
@@ -40,13 +44,14 @@ class _Delivery_manState extends State<Delivery_man> {
     InstanceSharedPrefrences()
         .getId()
         .then((id) => {
+              userId = id,
               BlocProvider.of<DeliveryManCubit>(Get.context!).getorderData({
                 'orderBy': 'date',
                 'done': 0,
                 'dir': 'desc',
                 'with':
                     'devices,products,devices_orders,products_orders,client',
-                'user_id': id,
+                'user_id': userId,
                 'all_data': 1,
               })
             })
@@ -64,6 +69,26 @@ class _Delivery_manState extends State<Delivery_man> {
               appBar: AppBar(
                 backgroundColor: const Color.fromARGB(255, 87, 42, 170),
                 title: const Text('MYP'),
+                actions: [
+                  BlocBuilder<SwitchDeliveryCubit, SwitchDeliveryState>(
+                      builder: (context, state) {
+                    bool switchValue = state is SwitchDeliveryInitial
+                        ? state.switchValue
+                        : (state as SwitchDeliveryChanged).switchValue;
+
+                    return Switch(
+                      value: switchValue,
+                      onChanged: (value) {
+                        context
+                            .read<SwitchDeliveryCubit>()
+                            .toggleSwitch(userId!);
+                        if (user != null) {
+                          user!.atWork = value ? 1 : 0;
+                        }
+                      },
+                    );
+                  })
+                ],
               ),
               body: Container(
                   color: Colors.white,

@@ -13,10 +13,11 @@ import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
-import 'package:graduation_mobile/pages/client/device_info.dart';
-import 'package:graduation_mobile/pages/client/notification.dart';
+import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
+import 'package:graduation_mobile/pages/client/drawer/notificationScreen.dart';
+import 'package:graduation_mobile/pages/client/drawer/old_phone_user.dart';
 import 'package:graduation_mobile/pages/client/update_status_page.dart';
-import '../../bar/SearchAppBar.dart';
+import 'package:graduation_mobile/pages/client/widget/device_info.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
 
@@ -37,6 +38,7 @@ class _HomePages extends State<HomePages> {
   final scrollController = ScrollController();
   int totalCount = 0;
   int? userId;
+  User? user;
 
   late CrudController<Device> _crudController;
   late PhoneCubit _phoneCubit;
@@ -165,7 +167,28 @@ class _HomePages extends State<HomePages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchAppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+        title: const Text('MYP'),
+        actions: [
+          BlocBuilder<SwitchCubit, SwitchState>(builder: (context, state) {
+            bool switchValue = state is SwitchInitial
+                ? state.switchValue
+                : (state as SwitchChanged).switchValue;
+
+            return Switch(
+              value: switchValue,
+              onChanged: (value) {
+                context.read<SwitchCubit>().toggleSwitch(userId!);
+                if (user != null) {
+                  user!.atWork = value ? 1 : 0;
+                }
+                print(value);
+              },
+            );
+          })
+        ],
+      ),
       drawer: Drawer(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -210,9 +233,12 @@ class _HomePages extends State<HomePages> {
                 Get.to(NotificationScreen());
               },
             ),
-            const ListTile(
-              leading: Icon(Icons.list_alt_rounded),
-              title: Text("Old Phone"),
+            ListTile(
+              leading: const Icon(Icons.list_alt_rounded),
+              title: const Text("Old Phone"),
+              onTap: () {
+                Get.to(const oldPhoneUser());
+              },
             ),
             const ListTile(
               leading: Icon(Icons.help),
@@ -370,38 +396,40 @@ class _HomePages extends State<HomePages> {
                                       ],
                                       if (device.status == 'لا يصلح' ||
                                           device.status ==
-                                              'لم يوافق على لعمل به')
-                                        ...[],
-                                      FutureBuilder(
-                                          future:
-                                              User.hasPermission('تسليم جهاز'),
-                                          builder: ((BuildContext context,
-                                              AsyncSnapshot<bool> snapshot) {
-                                            if (snapshot.hasData &&
-                                                snapshot.data!) {
-                                              return TextButton(
-                                                onPressed: () {
-                                                  _showConfirmProcessDialog(
-                                                      device.id, () {
-                                                    setState(() {
-                                                      devices.remove(device);
+                                              'لم يوافق على لعمل به' ||
+                                          device.status == 'جاهز') ...[
+                                        FutureBuilder(
+                                            future: User.hasPermission(
+                                                'تسليم جهاز'),
+                                            builder: ((BuildContext context,
+                                                AsyncSnapshot<bool> snapshot) {
+                                              if (snapshot.hasData &&
+                                                  snapshot.data!) {
+                                                return IconButton(
+                                                  onPressed: () {
+                                                    _showConfirmProcessDialog(
+                                                        device.id, () {
+                                                      setState(() {
+                                                        devices.remove(device);
+                                                      });
+                                                      Api().put(
+                                                          path:
+                                                              'api/devices/${device.id}',
+                                                          body: {
+                                                            'deliver_to_client':
+                                                                1
+                                                          });
+                                                      Get.back();
                                                     });
-                                                    Api().put(
-                                                        path:
-                                                            'api/devices/${device.id}',
-                                                        body: {
-                                                          'deliver_to_client': 1
-                                                        });
-                                                    Get.back();
-                                                  });
-                                                },
-                                                child:
-                                                    const Text('تسليم الجهاز'),
-                                              );
-                                            } else {
-                                              return const SizedBox(); // Placeholder widget if permission check is pending or user doesn't have permission
-                                            }
-                                          }))
+                                                  },
+                                                  icon: const Icon(Icons
+                                                      .local_shipping_outlined),
+                                                );
+                                              } else {
+                                                return const SizedBox(); // Placeholder widget if permission check is pending or user doesn't have permission
+                                              }
+                                            }))
+                                      ],
                                     ],
                                   ),
                                   children: [

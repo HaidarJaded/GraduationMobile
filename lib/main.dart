@@ -18,9 +18,12 @@ import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 
 import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/client/cubit/completed_ccbit/completed_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
+import 'package:graduation_mobile/pages/client/cubit/notifications_cubit/notifications_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/step_cubit/step_cubit.dart';
+import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
 import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import 'package:graduation_mobile/the_center/cubit/service_cubit.dart';
@@ -204,6 +207,15 @@ class MyApp extends StatelessWidget {
             create: (context) => UpdateStatusCubit(CrudController()),
           ),
           BlocProvider(create: (context) => RepairStepsCubit()),
+          BlocProvider(
+            create: (context) => SwitchCubit(true),
+          ),
+          BlocProvider(
+            create: (context) => CompletedCubit(),
+          ),
+          BlocProvider<NotificationsCubit>(
+            create: (context) => NotificationsCubit()..getNotificationData(),
+          ),
         ],
         child: const GetMaterialApp(
           textDirection: TextDirection.rtl,
