@@ -67,7 +67,8 @@ class _orderState extends State<ordersPage> {
   }
 
   Future checkPermission() async {
-    hasAddingOrderPermission = await User.hasPermission('اضافة طلب');
+    hasAddingOrderPermission = await User.hasPermission('اضافة طلب') &&
+        await User.hasPermission('اضافة طلب لجهاز');
     hasSelectDevicesOrderPermission =
         await User.hasPermission('استعلام عن طلبات الاجهزة');
     hasSelectProductsOrderPermission =
@@ -115,16 +116,18 @@ class _orderState extends State<ordersPage> {
             }
           }
           return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const AddOrderForm();
-                      });
-                },
-                child: const Icon(Icons.add),
-              ),
+              floatingActionButton: hasAddingOrderPermission
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const AddOrderForm();
+                            });
+                      },
+                      child: const Icon(Icons.add),
+                    )
+                  : null,
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
               body: Container(
