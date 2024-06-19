@@ -138,7 +138,10 @@ class _allDevicesState extends State<allDevices> {
                 title: const Text('MYP'),
                 actions: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.search),
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.white``,
+                    ),
                     onPressed: () {
                       showSearch(context: context, delegate: search());
                     },
@@ -246,7 +249,7 @@ class _allDevicesState extends State<allDevices> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].costToCustomer ?? "لم تحدد بعد"}")),
+                                                                "${devices[i].costToClient ?? "لم تحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
