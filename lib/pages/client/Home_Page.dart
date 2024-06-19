@@ -13,12 +13,10 @@ import 'package:graduation_mobile/models/device_model.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/add_detalis.dart';
-import 'package:graduation_mobile/pages/client/cubit/switch_cubit/switch_cubit.dart';
 import 'package:graduation_mobile/pages/client/drawer/notificationScreen.dart';
 import 'package:graduation_mobile/pages/client/drawer/old_phone_user.dart';
 import 'package:graduation_mobile/pages/client/drawer/profile_user.dart';
 import 'package:graduation_mobile/pages/client/update_status_page.dart';
-import 'package:graduation_mobile/pages/client/widget/app_bar.dart';
 import 'package:graduation_mobile/pages/client/widget/device_info.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
@@ -36,6 +34,7 @@ class _HomePages extends State<HomePages> {
   bool firstTime = true;
   int pagesCount = 0;
   int perPage = 20;
+  bool isAtWork = false;
   bool readyToBuild = false;
   final scrollController = ScrollController();
   int totalCount = 0;
@@ -118,6 +117,23 @@ class _HomePages extends State<HomePages> {
     }
   }
 
+  Future<bool> editAtWork(int newStatus) async {
+    int? userId = await InstanceSharedPrefrences().getId();
+    Map<String, dynamic> body = {'at_work': newStatus};
+    try {
+      var response = await Api().put(
+        path: 'api/users/$userId',
+        body: body,
+      );
+      if (response == null) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> updateDeviceStatus(Device device, String status) async {
     // هنا يتم تحديث حالة الجهاز
     setState(() {
@@ -173,21 +189,21 @@ class _HomePages extends State<HomePages> {
         backgroundColor: const Color.fromARGB(255, 87, 42, 170),
         title: const Text('MYP'),
         actions: [
-          BlocBuilder<SwitchCubit, SwitchState>(builder: (context, state) {
-            bool switchValue = state is SwitchInitial
-                ? state.switchValue
-                : (state as SwitchChanged).switchValue;
-
-            return Switch(
-              value: switchValue,
-              onChanged: (value) {
-                context.read<SwitchCubit>().toggleSwitch(userId!);
-                if (user != null) {
-                  user!.atWork = value ? 1 : 0;
-                }
-              },
-            );
-          })
+          Switch(
+            value: isAtWork,
+            onChanged: (newStatus) async {
+              setState(() {
+                isAtWork = newStatus;
+              });
+              if (await editAtWork(newStatus ? 1 : 0)) {
+                InstanceSharedPrefrences().editAtWork(newStatus ? 1 : 0);
+              } else {
+                setState(() {
+                  isAtWork = !newStatus;
+                });
+              }
+            },
+          ),
         ],
       ),
       drawer: Drawer(
@@ -200,7 +216,9 @@ class _HomePages extends State<HomePages> {
                   borderRadius: BorderRadius.circular(50),
                   child: IconButton(
                     onPressed: () {
-                      Get.to(UserProfilePage());
+                      Get.to(UserProfilePage(
+                        user: user,
+                      ));
                     },
                     icon: const Icon(Icons.person),
                   ),

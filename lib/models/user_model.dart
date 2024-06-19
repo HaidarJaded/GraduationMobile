@@ -9,17 +9,17 @@ class User implements HasId {
   @override
   final int? id;
   static String table = 'users';
-  final String email;
+  late final String email;
   final String name;
   final String lastName;
   final DateTime? emailVerifiedAt;
   final int? ruleId;
-  final String phone;
+  late final String phone;
   final String? address;
   late final int atWork;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final String? password;
+  late final String? password;
   final String? passwordConfirmation;
   final List<Device>? devices;
   final List<Permission>? permissions;
