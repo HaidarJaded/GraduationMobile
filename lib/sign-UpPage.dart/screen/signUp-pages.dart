@@ -30,8 +30,14 @@ class _SignUpPagesState extends State<SignUpPages> {
   TextEditingController national_Id = TextEditingController();
   TextEditingController centerName = TextEditingController();
   TextEditingController password_confirmation = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    super.dispose();
+    BlocProvider.of<RegistrationCubit>(context).resetState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +55,6 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.failure) {
         SnackBarAlert()
             .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
-        Navigator.pop(context);
       } else if (state == RegistrationState.initial) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -203,6 +208,30 @@ class _SignUpPagesState extends State<SignUpPages> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                          labelText: 'رقم الهاتف',
+                          prefixIcon: const Icon(Icons.phone_android_rounded),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
+                      controller: phoneNumber,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'الرجاء إدخال  رقم الهاتف';
+                        }
+                        if (value.length != 10) {
+                          return 'يجب ان يكون 10 رقم';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
                           labelText: 'الرقم الوطني',
                           prefixIcon: const Icon(Icons.list_rounded),
                           contentPadding: const EdgeInsets.symmetric(
@@ -257,15 +286,16 @@ class _SignUpPagesState extends State<SignUpPages> {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             BlocProvider.of<RegistrationCubit>(context)
                                 .register(
-                                    name: name.text,
-                                    lastName: lastname.text,
-                                    address: address.text,
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                    nationalId: national_Id.text,
-                                    centerName: centerName.text,
-                                    password_confirmation:
-                                        password_confirmation.text);
+                              name: name.text,
+                              lastName: lastname.text,
+                              address: address.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              nationalId: national_Id.text,
+                              centerName: centerName.text,
+                              password_confirmation: password_confirmation.text,
+                              phone: phoneNumber.text,
+                            );
                             Get.offAll(const LoginPage());
                           });
                         }

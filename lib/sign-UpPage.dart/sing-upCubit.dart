@@ -21,6 +21,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     required String nationalId,
     required String centerName,
     required String password_confirmation,
+    required String phone,
   }) async {
     try {
       emit(RegistrationState.loading);
@@ -35,7 +36,8 @@ class RegistrationCubit extends Cubit<RegistrationState> {
           'email': email,
           'password': password,
           'national_id': nationalId,
-          'password_confirmation': password_confirmation
+          'password_confirmation': password_confirmation,
+          'phone': phone
         },
       );
       // print(response.body);
@@ -45,9 +47,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         if (token != null && userInfoMap != null) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
-
           await prefs.setString('profile', jsonEncode(userInfoMap));
-
           emit(RegistrationState.success);
         }
       } else {
@@ -57,5 +57,9 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       print(e.toString());
       emit(RegistrationState.failure);
     }
+  }
+
+  void resetState() {
+    emit(RegistrationState.initial);
   }
 }
