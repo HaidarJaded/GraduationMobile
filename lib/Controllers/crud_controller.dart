@@ -40,7 +40,6 @@ class CrudController<T extends HasId> {
         return returnedData;
       }
     } catch (e) {
-      print(e);
       return ReturnedObject<T>();
     }
   }

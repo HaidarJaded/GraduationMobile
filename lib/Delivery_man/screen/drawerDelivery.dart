@@ -49,7 +49,7 @@ class draweDelivery extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                             child: IconButton(
                                 onPressed: () {
-                                  Get.to(DeliveryProfilePage());
+                                  // Get.to(() => const DeliveryProfilePage());
                                 },
                                 icon: const Icon(Icons.person))),
                       ),

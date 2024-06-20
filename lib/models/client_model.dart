@@ -1,10 +1,7 @@
 import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/rule_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Client implements HasId {
-  static const _clientPermissionKey = 'client_permissions';
-
   @override
   final int? id;
   static String table = "clients";
@@ -73,20 +70,5 @@ class Client implements HasId {
       accountActive: map['account_active'] as int,
       rule: map['rule'] != null ? Rule.fromJson(map['rule']) : null,
     );
-  }
-  static Future<void> saveUserPermissions(List<String> permissions) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_clientPermissionKey, permissions.toList());
-  }
-
-  static Future<List<String>> getUserPermissions() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? permissions = prefs.getStringList(_clientPermissionKey);
-    return permissions != null ? permissions.toList() : [];
-  }
-
-  static Future<bool> hasPermission(String permission) async {
-    List<String> userPermissions = await getUserPermissions();
-    return userPermissions.contains(permission);
   }
 }

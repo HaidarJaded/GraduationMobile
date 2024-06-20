@@ -79,15 +79,10 @@ class InstanceSharedPrefrences {
     }
     return jsonDecode(profile)['email'];
   }
-Future setEmail(String name) async {
-    await initial();
-    await prefs.setString('name', name);
-  }
 
   Future<String?> getPhone() async {
     await initial();
     var profile = prefs.getString('profile');
-    print(profile);
     if (profile == null) {
       return null;
     }
@@ -120,6 +115,56 @@ Future setEmail(String name) async {
       return;
     }
     userProfile['at_work'] = newStatus;
+    setProfile(userProfile);
+  }
+
+  Future setName(String newName) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['name'] = newName;
+    setProfile(userProfile);
+  }
+
+  Future setLastName(String newLastName) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['last_name'] = newLastName;
+    setProfile(userProfile);
+  }
+
+  Future setEmail(String newEmail) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['email'] = newEmail;
+    setProfile(userProfile);
+  }
+
+  Future setPhone(String? newPhone) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['phone'] = newPhone;
+    setProfile(userProfile);
+  }
+
+  Future setPassword(String newpassword) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['password'] = newpassword;
     setProfile(userProfile);
   }
 }

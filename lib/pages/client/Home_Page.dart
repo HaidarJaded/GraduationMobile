@@ -518,7 +518,7 @@ class _HomePagesState extends State<HomePages> {
         children: [
           _buildDetailRow('العطل:', device.problem ?? 'لم يحدد بعد'),
           _buildDetailRow(
-              'التكلفة:', device.costToClient.toString() ?? 'لم يحدد بعد'),
+              'التكلفة:', "${device.costToClient ?? 'لم يحدد بعد'}"),
           _buildDetailRow('الحالة:', device.status),
           TextButton(
             onPressed: () {

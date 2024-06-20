@@ -14,7 +14,7 @@ class User implements HasId {
   final String lastName;
   final DateTime? emailVerifiedAt;
   final int? ruleId;
-  late final String phone;
+  final String? phone;
   final String? address;
   late final int atWork;
   final DateTime? createdAt;
@@ -32,7 +32,7 @@ class User implements HasId {
       required this.lastName,
       this.emailVerifiedAt,
       required this.ruleId,
-      required this.phone,
+      this.phone,
       this.address,
       this.atWork = 0,
       this.createdAt,
