@@ -56,12 +56,17 @@ class _HomePagesState extends State<HomePages> {
     super.initState();
     readyToBuild = false;
     _phoneCubit = PhoneCubit();
+    InstanceSharedPrefrences().isAtWork().then((isAtWork) {
+      setState(() {
+        this.isAtWork = isAtWork;
+      });
+    });
     InstanceSharedPrefrences().getId().then((id) {
       userId = id;
       _crudController = CrudController<Device>();
       _phoneCubit
           .getDevicesByUserId({
-            'page': currentPage,
+            'page': 1,
             'per_page': perPage,
             'orderBy': 'date_receipt',
             'dir': 'desc',
@@ -84,28 +89,6 @@ class _HomePagesState extends State<HomePages> {
     });
   }
 
-  void _initializeData() async {
-    userId = await InstanceSharedPrefrences().getId();
-    if (userId != null) {
-      await fetchDevices();
-    } else {
-      print('No user ID found');
-    }
-  }
-
-  void _scrollListener() async {
-    if (scrollController.position.atEdge) {
-      if (scrollController.position.pixels != 0) {
-        setState(() {
-          if (currentPage <= pagesCount) {
-            currentPage++;
-          }
-        });
-        await fetchDevices();
-      }
-    }
-  }
-
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
@@ -117,6 +100,8 @@ class _HomePagesState extends State<HomePages> {
         'orderBy': 'date_receipt',
         'with': 'client',
         'deliver_to_client': 0,
+        'dir': 'desc',
+        'user_id': userId,
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -551,8 +536,13 @@ class _HomePagesState extends State<HomePages> {
 
   Widget _buildNoMoreDevices() {
     if (devices.isEmpty) {
+      if (totalCount == 0) {
+        return const Center(
+          child: Text('لا يوجد أجهزة'),
+        );
+      }
       return const Center(
-        child: Text('لا يوجد أجهزة'),
+        child: CircularProgressIndicator(),
       );
     } else if (devices.length >= 20) {
       return const Center(

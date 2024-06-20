@@ -25,7 +25,7 @@ class Product implements HasId {
     return Product(
       id: json['id'],
       name: json['name'],
-      price: json['price'],
+      price: (json['price'] as num).toDouble(),
       quantity: json['quantity'].toString(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
