@@ -281,27 +281,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       ),
                                     );
                                   } else {
-                                    return devices.isEmpty
-                                        ? firstTime
-                                            ? const Center(
-                                                key: ValueKey(
-                                                    'loading_more_devices'),
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              )
-                                            : const Center(
-                                                key: ValueKey(
-                                                    'no_devices_first_time'),
-                                                child: Text('لا يوجد اجهزة'))
-                                        : devices.length >= 20
-                                            ? const Center(
-                                                key:
-                                                    ValueKey('no_more_devices'),
-                                                child: Text('لا يوجد المزيد'))
-                                            : const SizedBox(
-                                                key: ValueKey(
-                                                    'no_devices_first_time'),
-                                              );
+                                    return _buildNoMoreDevices();
                                   }
                                 }
                               },
@@ -337,5 +317,27 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
         );
       },
     );
+  }
+
+  Widget _buildNoMoreDevices() {
+    if (devices.isEmpty) {
+      if (totalCount == 0) {
+        return const Center(
+          key: ValueKey('no_devices_first_time'),
+          child: Text('لا يوجد أجهزة'),
+        );
+      }
+      return const Center(
+        key: ValueKey('loading_more_devices'),
+        child: CircularProgressIndicator(),
+      );
+    } else if (devices.length >= 20) {
+      return const Center(
+        key: ValueKey('no_more_devices'),
+        child: Text('لا يوجد المزيد'),
+      );
+    } else {
+      return const SizedBox(key: ValueKey('no_devices_first_time'));
+    }
   }
 }
