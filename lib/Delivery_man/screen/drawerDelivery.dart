@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, unnecessary_import, camel_case_types
+// ignore_for_file: file_names, unnecessary_import, camel_case_types, must_be_immutable
 
 import 'dart:convert';
 
@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Delivery_man/screen/profile_delivery.dart';
-import 'package:graduation_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Controllers/auth_controller.dart';

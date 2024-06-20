@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names, empty_statements, deprecated_member_use, unnecessary_import
+// ignore_for_file: must_be_immutable, file_names, camel_case_types, non_constant_identifier_names, empty_statements, deprecated_member_use, unnecessary_import, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_field
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/api.dart';

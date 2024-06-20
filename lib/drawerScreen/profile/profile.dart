@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers, unnecessary_import, camel_case_types, prefer_interpolation_to_compose_strings
+// ignore_for_file: avoid_unnecessary_containers, unnecessary_import, camel_case_types, prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:convert';
 
@@ -148,103 +148,120 @@ class _profileState extends State<profile> {
                               userInfo['address'] ?? 'العنوان';
                           return Padding(
                             padding: const EdgeInsets.only(right: 30),
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        phone,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 20,
+                            child: Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          //بدها تعديل
+                                          '0996358916',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 200),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () {
-                                          Get.to(editProfile(
-                                            controller: phoneController,
-                                            labelText: "Phone number",
-                                            icon: Icons.phone_android_outlined,
-                                          ));
-                                        },
-                                      ),
-                                    ],
+                                        const SizedBox(width: 170),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {
+                                            Get.to(editProfile(
+                                                controller: phoneController,
+                                                labelText: "Phone number",
+                                                icon:
+                                                    const Icon(Icons.line_axis),
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'يرجى ادخال  الرقم';
+                                                  } else {
+                                                    if (value.length != 10) {
+                                                      return "يجب ان يكون 10 ارقام";
+                                                    }
+                                                  }
+                                                }));
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  height: 1,
-                                  color: Colors.grey,
-                                ),
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        centerName,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 40),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () {
-                                          Get.to(editProfile(
-                                            labelText: 'Center name',
-                                            icon: const Icon(Icons.home_filled),
-                                            controller: centerNameController,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Please enter your center name';
-                                              }
-                                            },
-                                          ));
-                                        },
-                                      ),
-                                    ],
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
                                   ),
-                                ),
-                                Container(
-                                  height: 1,
-                                  color: Colors.grey,
-                                ),
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        address,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 20,
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          centerName,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 40),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () {
-                                          Get.to(
-                                            editProfile(
-                                              labelText: 'adress',
-                                              icon: const Icon(Icons.line_axis),
-                                              controller: adressController,
+                                        const SizedBox(width: 170),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {
+                                            Get.to(editProfile(
+                                              labelText: 'Center name',
+                                              // icon: Icons.home_filled,
+                                              controller: centerNameController,
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your adress';
+                                                  return 'يرجى ادخال  اسم المركز';
                                                 }
                                               },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
+                                              icon: Icon(
+                                                Icons.home_filled,
+                                              ),
+                                            ));
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          address,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 200),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {
+                                            Get.to(
+                                              editProfile(
+                                                labelText: 'adress',
+                                                icon:
+                                                    const Icon(Icons.line_axis),
+                                                controller: adressController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'يرجي ادخال العنوان';
+                                                  }
+                                                },
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }
