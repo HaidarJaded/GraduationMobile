@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/Delivery_man/screen/profile_delivery.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Controllers/auth_controller.dart';
@@ -13,7 +15,8 @@ import '../../helper/snack_bar_alert.dart';
 import '../../login/loginScreen/loginPage.dart';
 
 class draweDelivery extends StatelessWidget {
-  const draweDelivery({super.key});
+  draweDelivery({super.key, required this.userId});
+  int userId;
   void logout() async {
     if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
       SnackBarAlert().alert("تم تسجيل الخروج بنجاح",
@@ -46,7 +49,11 @@ class draweDelivery extends StatelessWidget {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.to(DeliveryProfilePage(
+                                    userId: userId,
+                                  ));
+                                },
                                 icon: const Icon(Icons.person))),
                       ),
                       Expanded(

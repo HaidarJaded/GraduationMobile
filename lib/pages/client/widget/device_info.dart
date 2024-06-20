@@ -64,7 +64,7 @@ class DeviceInfo extends StatelessWidget {
             'العطل:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          Text('${device.problem ?? 'لم يحدد بعد'}'),
+          Text(device.problem ?? 'لم يحدد بعد'),
         ],
       ),
       const SizedBox(

@@ -4,31 +4,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_cubit.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_state.dart';
 import 'package:graduation_mobile/models/user_model.dart';
-import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_cubit.dart';
-import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
 
-class UserProfilePage extends StatefulWidget {
-  const UserProfilePage({super.key, required this.userId});
-  final int? userId;
+class DeliveryProfilePage extends StatefulWidget {
+  const DeliveryProfilePage({super.key, required this.userId});
+  final int userId;
 
   @override
-  _UserProfilePageState createState() => _UserProfilePageState();
+  _DeliveryProfilePageState createState() => _DeliveryProfilePageState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
-  User? user;
-  late UserDetailsCubit _userDetailsCubit;
+class _DeliveryProfilePageState extends State<DeliveryProfilePage> {
+  late DeliveryDetailsCubit _deliveryDetailsCubit;
   late final CrudController<User> _crudController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _phoneController;
-
+  User? user;
   @override
   void initState() {
     super.initState();
     _crudController = CrudController<User>();
-    _userDetailsCubit = UserDetailsCubit(_crudController);
+    _deliveryDetailsCubit = DeliveryDetailsCubit(_crudController);
 
     // Initialize TextEditingController variables
     _emailController = TextEditingController();
@@ -36,7 +35,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     _phoneController = TextEditingController();
 
     if (user != null) {
-      _userDetailsCubit.fetchProfileDetails(user!.id!);
+      _deliveryDetailsCubit.fetchProfileDetails(user!.id!);
       _emailController.text = user!.email;
       _passwordController.text = user!.password ?? '';
       _phoneController.text = user!.phone;
@@ -47,7 +46,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   void dispose() {
-    _userDetailsCubit.close();
+    _deliveryDetailsCubit.close();
     _emailController.dispose();
     _passwordController.dispose();
     _phoneController.dispose();
@@ -57,7 +56,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _userDetailsCubit,
+      value: _deliveryDetailsCubit,
       child: Scaffold(
         appBar: AppBar(
           title: const Center(
@@ -70,18 +69,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ),
         ),
-        body: BlocConsumer<UserDetailsCubit, UserDetailsState>(
+        body: BlocConsumer<DeliveryDetailsCubit, DeliveryDetailsState>(
           listener: (context, state) {
-            if (state is UserDetalisFailure) {
+            if (state is DeliveryDetalisFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.errormess)),
               );
             }
           },
           builder: (context, state) {
-            if (state is UserDetalisLoading) {
+            if (state is DeliveryDetalisLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is UserDetalisSuccesses) {
+            } else if (state is DeliveryDetalisSuccesses) {
               final user = state.details.first;
               return ListView(
                 padding: const EdgeInsets.all(16.0),
@@ -164,7 +163,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   ),
                   InkWell(
                     onTap: () async {
-                      await _userDetailsCubit.EditData(
+                      await _deliveryDetailsCubit.EditData(
                         id: user.id!,
                         email: _emailController.text,
                         password: _passwordController.text,

@@ -7,7 +7,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
-import 'package:graduation_mobile/Delivery_man/cubit/switch_delivery_cubit/switch_delivery_cubit.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_cubit.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
@@ -209,18 +209,16 @@ class MyApp extends StatelessWidget {
             create: (context) => UpdateStatusCubit(CrudController()),
           ),
           BlocProvider(create: (context) => RepairStepsCubit()),
-          BlocProvider(
-            create: (context) => SwitchDeliveryCubit(true),
-          ),
+
           BlocProvider(
             create: (context) => CompletedCubit(),
           ),
           BlocProvider<NotificationsCubit>(
             create: (context) => NotificationsCubit()..getNotificationData(),
           ),
-          BlocProvider(
-            create: (context) => UserDetailsCubit(CrudController<User>()),
-          ),
+          // BlocProvider(
+          //   create: (context) => UserDetailsCubit(CrudController<User>()),
+          // ),
         ],
         child: const GetMaterialApp(
           textDirection: TextDirection.rtl,

@@ -1,33 +1,34 @@
 // ignore_for_file: avoid_print
 import 'package:bloc/bloc.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_state.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
 
-class UserDetailsCubit extends Cubit<UserDetailsState> {
+class DeliveryDetailsCubit extends Cubit<DeliveryDetailsState> {
   final CrudController<User> _crudController;
 
-  UserDetailsCubit(this._crudController) : super(UserDetalisInitial());
+  DeliveryDetailsCubit(this._crudController) : super(DeliveryDetalisInitial());
 
   Future<void> fetchProfileDetails(int userId) async {
     try {
-      emit(UserDetalisLoading());
+      emit(DeliveryDetalisLoading());
       final user = await Api().get(path: 'api/users/$userId');
       // final user = await _crudController.getById(userId, null);
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
       if (user != null) {
         print(user);
-        emit(UserDetalisSuccesses(details: [user]));
+        emit(DeliveryDetalisSuccesses(details: [user]));
       } else {
-        emit(UserDetalisFailure(errormess: 'User not found'));
+        emit(DeliveryDetalisFailure(errormess: 'User not found'));
       }
     } catch (e) {
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
       printError();
       print(e);
-      emit(UserDetalisFailure(errormess: e.toString()));
+      emit(DeliveryDetalisFailure(errormess: e.toString()));
     }
   }
 
