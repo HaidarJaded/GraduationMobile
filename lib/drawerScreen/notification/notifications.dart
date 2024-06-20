@@ -11,6 +11,7 @@ import 'package:graduation_mobile/models/notification.dart';
 import '../../Controllers/crud_controller.dart';
 
 import '../../bar/custom_drawer.dart';
+import '../../helper/snack_bar_alert.dart';
 
 class notificationsScreen extends StatefulWidget {
   const notificationsScreen({super.key});
@@ -18,6 +19,8 @@ class notificationsScreen extends StatefulWidget {
   @override
   State<notificationsScreen> createState() => _notificationsScreenState();
 }
+
+int? selectedNotificstionId;
 
 class _notificationsScreenState extends State<notificationsScreen> {
   int perPage = 20;
@@ -126,7 +129,11 @@ class _notificationsScreenState extends State<notificationsScreen> {
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () {},
+                      onPressed: () {
+                        BlocProvider.of<NotificationCubit>(context)
+                            .deleteNotification(
+                                id: notification[index].StringId!);
+                      },
                     ),
                   ),
                 ),
@@ -143,6 +150,14 @@ class _notificationsScreenState extends State<notificationsScreen> {
             ),
             drawer: const CustomDrawer(),
             body: Center(child: Text("${state.errorMessage}")));
+      }
+      if (state is NotificationDeleteSucsee) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          SnackBarAlert().alert("تمت العملية",
+              color: const Color.fromRGBO(0, 200, 0, 1),
+              title: "تم تحديث البيانات بنجاح");
+          Get.offAll(() => const notificationsScreen());
+        });
       }
       return Container();
     });

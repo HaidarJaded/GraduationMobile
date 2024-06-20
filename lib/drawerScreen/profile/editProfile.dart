@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, camel_case_types, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unnecessary_import
+// ignore_for_file: must_be_immutable, camel_case_types, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unnecessary_import, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
-import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/drawerScreen/profile/cubit/edit_profile_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/profile/profile.dart';
 

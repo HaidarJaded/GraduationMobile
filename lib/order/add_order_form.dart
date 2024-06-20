@@ -154,13 +154,8 @@ class _AddOrderFormState extends State<AddOrderForm> {
                     .alert("عذراً لا يمكن اضافة طلب لجهاز قيد العمل");
                 return;
               }
-              var devicesList = [];
-
-              devicesList = devicesList
-                  .map((device) => {device.id.toString(): _selectedOrderType})
-                  .toList();
               Map<String, dynamic> requestBody = {
-                // 'devices_ids': {device.id.toString(): _selectedOrderType},
+                'devices_ids': {device.id.toString(): _selectedOrderType},
                 'client_id': clientId,
                 'description': _selectedOrderType == 'تسليم للعميل'
                     ? 'توصيل طلب الى العميل'

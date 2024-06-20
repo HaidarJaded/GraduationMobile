@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:graduation_mobile/models/has_id.dart';
 
 class Service1 implements HasId {
@@ -6,7 +8,7 @@ class Service1 implements HasId {
   static String table = "services";
   final String name;
   final String price;
-  final Duration timeRequired;
+  final String timeRequired;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -24,7 +26,7 @@ class Service1 implements HasId {
       id: json['id'],
       name: json['name'],
       price: json['price'].toString(),
-      timeRequired: _parseTime(json['time_required']),
+      timeRequired: json['time_required'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -41,13 +43,6 @@ class Service1 implements HasId {
     };
   }
 
-  // static Duration _parseTime(String timeString) {
-  //   final parts = timeString.split(':');
-  //   final hours = int.parse(parts[0]);
-  //   final minutes = int.parse(parts[1]);
-  //   final seconds = int.parse(parts[2]);
-  //   return Duration(hours: hours, minutes: minutes, seconds: seconds);
-  // }
   static Duration _parseTime(String timeString) {
     // Remove any non-digit characters except for the colon
     final cleanedTimeString = timeString.replaceAll(RegExp(r'[^\d:]'), '');

@@ -89,7 +89,10 @@ class _productsScreensState extends State<productsScreen> {
     return BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
       if (state is ProductLoading || readyToBuild == false) {
         return Scaffold(
-            appBar: SearchAppBar(),
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+              title: const Text('MYP'),
+            ),
             drawer: const CustomDrawer(),
             body: Container(
                 color: Colors.white,
@@ -124,16 +127,6 @@ class _productsScreensState extends State<productsScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   // ignore: avoid_unnecessary_containers
-                          //   child: Container(
-                          //     child: Image.asset(
-                          //       'images/screen.PNG',
-                          //       height: 200,
-                          //     ),
-                          //   ),
-                          // ),
                           Text(
                             product[index].name,
                             style: const TextStyle(

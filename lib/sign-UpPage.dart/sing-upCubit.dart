@@ -38,11 +38,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       );
       // print(response.body);
       if (response != null) {
-        final token = response['token'];
-        final userInfoMap = response['client'];
-        if (token != null && userInfoMap != null) {
-          emit(RegistrationState.success);
-        }
+        emit(RegistrationState.success);
       } else {
         emit(RegistrationState.failure);
       }

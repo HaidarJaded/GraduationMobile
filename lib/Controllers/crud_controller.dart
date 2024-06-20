@@ -110,12 +110,12 @@ class CrudController<T extends HasId> {
     return null;
   }
 
-  Future<void> delete(int id) async {
+  Future<void> delete() async {
     if (!await CheckConnection().thereIsAnInternet()) {
       return;
     }
     String? table = getTable<T>();
-    await Api().delete(path: 'api/$table', id: id);
+    await Api().delete(path: 'api/$table');
   }
 
   T _fromJson<T>(Map<String, dynamic> json) {

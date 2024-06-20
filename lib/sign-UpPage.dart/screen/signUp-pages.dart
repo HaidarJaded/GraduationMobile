@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, file_names, use_super_parameters
 
 import 'package:flutter/material.dart';
+// ignore: unnecessary_import
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,11 +35,6 @@ class _SignUpPagesState extends State<SignUpPages> {
 
   final formKey = GlobalKey<FormState>();
   @override
-  void dispose() {
-    super.dispose();
-    BlocProvider.of<RegistrationCubit>(context).resetState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegistrationCubit, RegistrationState>(
@@ -48,13 +44,20 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.success) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
-          Get.back();
+
+          BlocProvider.of<RegistrationCubit>(context).resetState();
+          Get.offAll(() => const LoginPage());
           SnackBarAlert().alert("تم انشاء حساب بنجاح",
               color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بك");
         });
       } else if (state == RegistrationState.failure) {
-        SnackBarAlert()
-            .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // This will ensure that the current frame is complete before executing the navigation
+          BlocProvider.of<RegistrationCubit>(context).resetState();
+          SnackBarAlert()
+              .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
+          // Get.offAll(() => const SignUpPages());
+        });
       } else if (state == RegistrationState.initial) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -283,6 +286,12 @@ class _SignUpPagesState extends State<SignUpPages> {
                     InkWell(
                       onTap: () {
                         if (formKey.currentState?.validate() ?? false) {
+                          if (passwordController.text !=
+                              password_confirmation.text) {
+                            SnackBarAlert().alert("فشل في انشاء الحساب",
+                                title: "يرجى تأكيد كلمة المرور");
+                            return;
+                          }
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             BlocProvider.of<RegistrationCubit>(context)
                                 .register(
@@ -296,7 +305,6 @@ class _SignUpPagesState extends State<SignUpPages> {
                               password_confirmation: password_confirmation.text,
                               phone: phoneNumber.text,
                             );
-                            Get.offAll(const LoginPage());
                           });
                         }
                       },
@@ -334,7 +342,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                           style: TextStyle(),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.offAll(() => const LoginPage());
+                          },
                           child: const Text(
                             'تسجيل الدخول',
                             style: TextStyle(color: Colors.blueAccent),

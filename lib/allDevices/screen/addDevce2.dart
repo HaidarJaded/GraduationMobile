@@ -304,20 +304,20 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    textFormField(
-                      labelText: "email",
-                      icon: const Icon(Icons.email),
+                    TextFormField(
+                      textDirection: TextDirection.ltr,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      keyboardType: TextInputType.emailAddress,
                       controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value)) {
-                          return 'ادخل عنوان بريد إلكتروني صحيح';
-                        }
-
-                        return null;
-                      },
+                      decoration: InputDecoration(
+                        labelText: 'البريد الالكتروني',
+                        prefixIcon: const Icon(Icons.email),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
 
                     const SizedBox(

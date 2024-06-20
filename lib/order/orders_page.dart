@@ -32,7 +32,7 @@ class _orderState extends State<ordersPage> {
   bool hasAddingOrderPermission = false;
   bool hasSelectDevicesOrderPermission = false;
   bool hasSelectProductsOrderPermission = false;
-
+  bool readyToBuild = false;
   Future confirmOrder(OrderTypes orderType, var orderItem) async {
     if (orderType == OrderTypes.device) {
       var response = await Api().put(
@@ -67,12 +67,16 @@ class _orderState extends State<ordersPage> {
   }
 
   Future checkPermission() async {
-    hasAddingOrderPermission = await User.hasPermission('اضافة طلب') &&
+    bool hasAddingOrderPermission = await User.hasPermission('اضافة طلب') &&
         await User.hasPermission('اضافة طلب لجهاز');
-    hasSelectDevicesOrderPermission =
+    bool hasSelectDevicesOrderPermission =
         await User.hasPermission('استعلام عن طلبات الاجهزة');
-    hasSelectProductsOrderPermission =
+    bool hasSelectProductsOrderPermission =
         await User.hasPermission('استعلام عن طلبات المنتجات');
+    this.hasAddingOrderPermission = hasAddingOrderPermission;
+    this.hasSelectDevicesOrderPermission = hasSelectDevicesOrderPermission;
+    this.hasSelectProductsOrderPermission = hasSelectProductsOrderPermission;
+    readyToBuild = true;
   }
 
   int getIndexOfId(List items, int id) {
@@ -101,7 +105,11 @@ class _orderState extends State<ordersPage> {
       builder: (context, state) {
         if (state is OrderLoading) {
           return Scaffold(
-              appBar: SearchAppBar(),
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+                title: const Text('MYP'),
+              ),
+              drawer: const CustomDrawer(),
               body: Container(
                   color: Colors.white,
                   child: const Center(child: CircularProgressIndicator())));
@@ -116,19 +124,24 @@ class _orderState extends State<ordersPage> {
             }
           }
           return Scaffold(
-              floatingActionButton: hasAddingOrderPermission
-                  ? FloatingActionButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const AddOrderForm();
-                            });
-                      },
-                      child: const Icon(Icons.add),
-                    )
-                  : null,
-              appBar: SearchAppBar(),
+              floatingActionButton: readyToBuild
+                  ? hasAddingOrderPermission
+                      ? FloatingActionButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AddOrderForm();
+                                });
+                          },
+                          child: const Icon(Icons.add),
+                        )
+                      : null
+                  : const CircularProgressIndicator(),
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+                title: const Text('MYP'),
+              ),
               drawer: const CustomDrawer(),
               body: Container(
                   padding: const EdgeInsets.all(5),
