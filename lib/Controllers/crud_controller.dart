@@ -96,18 +96,6 @@ class CrudController<T extends HasId> {
     return null;
   }
 
-  Future<User?> getUserDetails(int userId) async {
-    try {
-      final response = await Api().get(path: 'api/users/$userId');
-      if (response != null && response['data'] != null) {
-        return User.fromJson(response['data']);
-      }
-    } catch (e) {
-      print('Error fetching user details: $e');
-    }
-    return null;
-  }
-
   Future<void> delete(int id) async {
     if (!await CheckConnection().thereIsAnInternet()) {
       return;

@@ -12,26 +12,6 @@ class DeliveryDetailsCubit extends Cubit<DeliveryDetailsState> {
 
   DeliveryDetailsCubit(this._crudController) : super(DeliveryDetalisInitial());
 
-  Future<void> fetchProfileDetails(int userId) async {
-    try {
-      emit(DeliveryDetalisLoading());
-      final user = await Api().get(path: 'api/users/$userId');
-      // final user = await _crudController.getById(userId, null);
-      if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
-      if (user != null) {
-        print(user);
-        emit(DeliveryDetalisSuccesses(details: [user]));
-      } else {
-        emit(DeliveryDetalisFailure(errormess: 'User not found'));
-      }
-    } catch (e) {
-      if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
-      printError();
-      print(e);
-      emit(DeliveryDetalisFailure(errormess: e.toString()));
-    }
-  }
-
   // ignore: non_constant_identifier_names
   Future<void> EditData({
     required int id,

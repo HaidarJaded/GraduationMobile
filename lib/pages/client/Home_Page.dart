@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, avoid_print, use_build_context_synchronously, avoid_unnecessary_containers, unnecessary_import, unused_element
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
@@ -29,22 +30,16 @@ class HomePages extends StatefulWidget {
 
 class _HomePagesState extends State<HomePages> {
   int currentPage = 1;
-  List<Device> devices = [];
-  bool isLoading = false;
-  bool isAtWork = false;
-  bool readyToBuild = false;
-  final ScrollController scrollController = ScrollController();
-  int totalCount = 0;
+  List<dynamic> devices = [];
+  bool firstTime = true;
   int pagesCount = 0;
   int perPage = 20;
+  bool isAtWork = false;
+  bool readyToBuild = false;
+  final scrollController = ScrollController();
+  int totalCount = 0;
   int? userId;
-  User? _user;
-
-  User get user => _user!;
-
-  set user(User value) {
-    _user = value;
-  }
+  User? user;
 
   late CrudController<Device> _crudController;
   late PhoneCubit _phoneCubit;
@@ -59,29 +54,42 @@ class _HomePagesState extends State<HomePages> {
   @override
   void initState() {
     super.initState();
-    _crudController = CrudController<Device>();
+    readyToBuild = false;
     _phoneCubit = PhoneCubit();
-    _initializeData();
-    scrollController.addListener(_scrollListener);
+    InstanceSharedPrefrences().getId().then((id) {
+      userId = id;
+      _crudController = CrudController<Device>();
+      _phoneCubit
+          .getDevicesByUserId({
+            'page': currentPage,
+            'per_page': perPage,
+            'orderBy': 'date_receipt',
+            'dir': 'desc',
+            'user_id': userId,
+            'with': 'client',
+            'deliver_to_client': 0,
+          } as Map<String, dynamic>?)
+          .then((value) => readyToBuild = true);
+    });
+    scrollController.addListener(() async {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        setState(() {
+          if (currentPage <= pagesCount) {
+            currentPage++;
+          }
+        });
+        await fetchDevices(currentPage);
+      }
+    });
   }
 
   void _initializeData() async {
     userId = await InstanceSharedPrefrences().getId();
     if (userId != null) {
-      _fetchUserDetails(userId!);
-      await _fetchDevices();
+      await fetchDevices();
     } else {
       print('No user ID found');
-    }
-  }
-
-  void _fetchUserDetails(int userId) async {
-    // Fetch user details here, assuming you have a method for this
-    var fetchedUser = await _crudController.getUserDetails(userId);
-    if (fetchedUser != null) {
-      setState(() {
-        _user = fetchedUser;
-      });
     }
   }
 
@@ -93,58 +101,62 @@ class _HomePagesState extends State<HomePages> {
             currentPage++;
           }
         });
-        await _fetchDevices();
+        await fetchDevices();
       }
     }
   }
 
-  Future<void> _fetchDevices() async {
-    if (isLoading) return;
-
-    setState(() {
-      isLoading = true;
-    });
-
+  Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
-      var data = await _crudController.getAll({
+      if (currentPage > pagesCount) {
+        return;
+      }
+      var data = await CrudController<Device>().getAll({
         'page': currentPage,
         'per_page': perPage,
         'orderBy': 'date_receipt',
-        'dir': 'desc',
-        'user_id': userId,
         'with': 'client',
         'deliver_to_client': 0,
       });
-      if (data != null) {
+      final List<Device>? devices = data.items;
+      if (devices != null) {
+        int currentPage = data.pagination?['current_page'];
+        int lastPage = data.pagination?['last_page'];
+        int totalCount = data.pagination?['total'];
         setState(() {
-          devices.addAll(data.items!);
-          pagesCount = data.pagination?['last_page'] ?? 1;
-          totalCount = data.pagination?['total'] ?? 0;
+          this.currentPage = currentPage;
+          pagesCount = lastPage;
+          this.devices.addAll(devices);
+          this.totalCount = totalCount;
         });
+        return;
       }
+      return;
     } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
-      setState(() {
-        isLoading = false;
-        readyToBuild = true;
-      });
+      Get.snackbar("title", e.toString());
+      return;
     }
   }
 
   Future<bool> editAtWork(int newStatus) async {
+    int? userId = await InstanceSharedPrefrences().getId();
+    Map<String, dynamic> body = {'at_work': newStatus};
     try {
       var response = await Api().put(
         path: 'api/users/$userId',
-        body: {'at_work': newStatus},
+        body: body,
       );
-      return response != null;
+      if (response == null) {
+        return false;
+      }
+      return true;
     } catch (e) {
       return false;
     }
   }
 
   Future<void> updateDeviceStatus(Device device, String status) async {
+    // هنا يتم تحديث حالة الجهاز
     setState(() {
       device.status = status;
     });
@@ -152,7 +164,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   void logout() async {
-    if (await BlocProvider.of<loginCubit>(context).logout()) {
+    if (await BlocProvider.of<loginCubit>(Get.context!).logout()) {
       SnackBarAlert().alert("تم تسجيل الخروج بنجاح",
           color: const Color.fromRGBO(0, 200, 0, 1), title: "إلى اللقاء");
       Get.offAll(() => const LoginPage());
@@ -160,19 +172,20 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Future<void> _refreshData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
     setState(() {
       currentPage = 1;
       devices.clear();
+      fetchDevices(currentPage);
     });
-    await _fetchDevices();
   }
 
   void _showStatusDialog(String status, Device device, Function() action) {
     showDialog(
-      context: context,
+      context: Get.context!,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('هل تريد تغيير حالة الجهاز إلى $status؟'),
+          title: Text('هل تريد تغيير حالة الجهاز الى $status'),
           actions: <Widget>[
             TextButton(
               child: const Text('لا'),
@@ -249,7 +262,7 @@ class _HomePagesState extends State<HomePages> {
                     borderRadius: BorderRadius.circular(50),
                     child: IconButton(
                       onPressed: () {
-                        Get.to(UserProfilePage(userId: userId));
+                        Get.to(() => const UserProfilePage());
                       },
                       icon: const Icon(Icons.person),
                     ),
@@ -351,6 +364,13 @@ class _HomePagesState extends State<HomePages> {
                       child: const Center(child: CircularProgressIndicator()),
                     );
                   } else if (state is PhoneSuccess) {
+                    if (firstTime) {
+                      totalCount = state.data.pagination?['total'];
+                      currentPage = state.data.pagination?['current_page'];
+                      pagesCount = state.data.pagination?['last_page'];
+                      devices.addAll(state.data.items!);
+                      firstTime = false;
+                    }
                     return RefreshIndicator(
                       onRefresh: _refreshData,
                       child: ListView.builder(
