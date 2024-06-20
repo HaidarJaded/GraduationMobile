@@ -81,7 +81,6 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 'orderBy': 'client_priority',
                 'client_id': id,
                 'repaired_in_center': 1,
-                'with': 'customer',
               })
             })
         .then((value) => readyToBuild = true);
