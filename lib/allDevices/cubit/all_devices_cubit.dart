@@ -22,7 +22,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     try {
       emit(AllDevicesLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
-
+      print(data.items);
       if (data.items != null) {
         emit(AllDevicesSucces(data: data));
       } else {

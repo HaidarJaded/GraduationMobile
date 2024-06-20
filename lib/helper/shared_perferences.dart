@@ -50,7 +50,7 @@ class InstanceSharedPrefrences {
     if (profile == null) {
       return null;
     }
-    return jsonDecode(profile)['rule']['name'];
+    return jsonDecode(profile)['rule']?['name'];
   }
 
   Future<String?> getName() async {

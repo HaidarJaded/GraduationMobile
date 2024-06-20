@@ -182,7 +182,7 @@ class _allDevicesState extends State<allDevices> {
                                             // ignore: prefer_interpolation_to_compose_strings
                                             Text(devices[i].imei),
                                         trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
                                               icon: const Icon(Icons.edit),
@@ -380,7 +380,9 @@ class _allDevicesState extends State<allDevices> {
             appBar: SearchAppBar(),
             drawer: const CustomDrawer(),
             body: const Center(
-              child: CircularProgressIndicator(),
+              child: Center(
+                child: Text("لا يوجد اجهزة"),
+              ),
             ));
       },
     );

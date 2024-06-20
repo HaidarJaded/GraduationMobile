@@ -1,11 +1,7 @@
 // ignore_for_file: avoid_print, file_names, non_constant_identifier_names
 
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:graduation_mobile/helper/api.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum RegistrationState { initial, loading, success, failure }
 
@@ -43,11 +39,6 @@ class RegistrationCubit extends Cubit<RegistrationState> {
         final token = response['token'];
         final userInfoMap = response['client'];
         if (token != null && userInfoMap != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('token', token);
-
-          await prefs.setString('profile', jsonEncode(userInfoMap));
-
           emit(RegistrationState.success);
         }
       } else {

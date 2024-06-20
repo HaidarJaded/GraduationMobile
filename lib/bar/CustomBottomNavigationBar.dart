@@ -79,19 +79,19 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   const Text(
-                    'all device',
+                    'الاجهزة',
                     style: TextStyle(
                         fontWeight: FontWeight.w500, color: Colors.white),
                   ),
                   Container(),
                   const Text(
-                    'Services',
+                    'الخدمات',
                     style: TextStyle(
                         fontWeight: FontWeight.w500, color: Colors.white),
                   ),
                   Container(),
                   const Text(
-                    'Goods',
+                    'المنتجات',
                     style: TextStyle(
                         fontWeight: FontWeight.w500, color: Colors.white),
                   ),

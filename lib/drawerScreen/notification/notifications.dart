@@ -10,7 +10,6 @@ import 'package:graduation_mobile/models/notification.dart';
 
 import '../../Controllers/crud_controller.dart';
 
-import '../../bar/SearchAppBar.dart';
 import '../../bar/custom_drawer.dart';
 
 class notificationsScreen extends StatefulWidget {
@@ -89,7 +88,10 @@ class _notificationsScreenState extends State<notificationsScreen> {
         builder: (context, state) {
       if (state is NotificationLoading || readyToBuild == false) {
         return Scaffold(
-            appBar: SearchAppBar(),
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+              title: const Text('MYP'),
+            ),
             drawer: const CustomDrawer(),
             body: Container(
                 color: Colors.white,
@@ -107,14 +109,6 @@ class _notificationsScreenState extends State<notificationsScreen> {
           appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 87, 42, 170),
             title: const Text('MYP'),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: search());
-                },
-              ),
-            ],
           ),
           drawer: const CustomDrawer(),
           body: ListView.builder(
@@ -146,14 +140,6 @@ class _notificationsScreenState extends State<notificationsScreen> {
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
-              actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    showSearch(context: context, delegate: search());
-                  },
-                ),
-              ],
             ),
             drawer: const CustomDrawer(),
             body: Center(child: Text("${state.errorMessage}")));

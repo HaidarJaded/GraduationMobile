@@ -13,6 +13,7 @@ import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/oldPhone/cubit/completed_device_cubit.dart';
+import 'package:graduation_mobile/drawerScreen/profile/cubit/edit_profile_cubit.dart';
 import 'package:graduation_mobile/firebase_options.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
@@ -28,6 +29,7 @@ import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.d
 import 'package:graduation_mobile/pages/client/cubit/step_cubit/step_cubit.dart';
 import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
+import 'package:graduation_mobile/the_center/cubit/product_cubit.dart';
 import 'package:graduation_mobile/the_center/cubit/service_cubit.dart';
 import 'Controllers/auth_controller.dart';
 import 'allDevices/cubit/all_devices_cubit.dart';
@@ -204,6 +206,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ServiceCubit(),
+          ),
+          BlocProvider(
+            create: (context) => ProductCubit(),
+          ),
+          BlocProvider(
+            create: (context) => EditProfileCubit(),
           ),
           BlocProvider(
             create: (context) => UpdateStatusCubit(CrudController()),

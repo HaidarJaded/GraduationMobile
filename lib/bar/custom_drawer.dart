@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
-import 'package:graduation_mobile/allDevices/cubit/all_devices_cubit.dart';
+import 'package:graduation_mobile/drawerScreen/profile/profile.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
-import '../drawerScreen/anyQuestion.dart';
 import '../drawerScreen/notification/notifications.dart';
 import '../drawerScreen/oldPhone/oldPhone.dart';
 import '../order/orders_page.dart';
@@ -115,8 +114,6 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        BlocProvider.of<AllDevicesCubit>(context)
-                            .getDeviceData();
                         Get.off(center());
                       },
                     ),
@@ -179,34 +176,6 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        Get.off(() => const anyQuestion());
-                      },
-                      // ignore: avoid_unnecessary_containers
-                      child: Container(
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.help,
-                              size: 23,
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              "Any question",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     FutureBuilder(
                         future: User.hasPermission('الاسنعلام عن الطلبات'),
                         builder: ((context, snapshot) {
@@ -223,7 +192,7 @@ class CustomDrawer extends StatelessWidget {
                                 child: const Row(
                                   children: [
                                     Icon(
-                                      Icons.list_alt_sharp,
+                                      Icons.local_shipping_outlined,
                                       size: 23,
                                     ),
                                     SizedBox(
@@ -246,7 +215,9 @@ class CustomDrawer extends StatelessWidget {
                       height: 10,
                     ),
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => const profile());
+                      },
                       // ignore: avoid_unnecessary_containers
                       child: Container(
                         child: const Row(

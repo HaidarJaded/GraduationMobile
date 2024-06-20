@@ -32,7 +32,7 @@ class _orderState extends State<ordersPage> {
   bool hasAddingOrderPermission = false;
   bool hasSelectDevicesOrderPermission = false;
   bool hasSelectProductsOrderPermission = false;
-
+  bool readyToBuild = false;
   Future confirmOrder(OrderTypes orderType, var orderItem) async {
     if (orderType == OrderTypes.device) {
       var response = await Api().put(
@@ -67,12 +67,16 @@ class _orderState extends State<ordersPage> {
   }
 
   Future checkPermission() async {
-    hasAddingOrderPermission = await User.hasPermission('اضافة طلب') &&
+    bool hasAddingOrderPermission = await User.hasPermission('اضافة طلب') &&
         await User.hasPermission('اضافة طلب لجهاز');
-    hasSelectDevicesOrderPermission =
+    bool hasSelectDevicesOrderPermission =
         await User.hasPermission('استعلام عن طلبات الاجهزة');
-    hasSelectProductsOrderPermission =
+    bool hasSelectProductsOrderPermission =
         await User.hasPermission('استعلام عن طلبات المنتجات');
+    this.hasAddingOrderPermission = hasAddingOrderPermission;
+    this.hasSelectDevicesOrderPermission = hasSelectDevicesOrderPermission;
+    this.hasSelectProductsOrderPermission = hasSelectProductsOrderPermission;
+    readyToBuild = true;
   }
 
   int getIndexOfId(List items, int id) {
@@ -116,18 +120,20 @@ class _orderState extends State<ordersPage> {
             }
           }
           return Scaffold(
-              floatingActionButton: hasAddingOrderPermission
-                  ? FloatingActionButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const AddOrderForm();
-                            });
-                      },
-                      child: const Icon(Icons.add),
-                    )
-                  : null,
+              floatingActionButton: readyToBuild
+                  ? hasAddingOrderPermission
+                      ? FloatingActionButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AddOrderForm();
+                                });
+                          },
+                          child: const Icon(Icons.add),
+                        )
+                      : null
+                  : const CircularProgressIndicator(),
               appBar: SearchAppBar(),
               drawer: const CustomDrawer(),
               body: Container(

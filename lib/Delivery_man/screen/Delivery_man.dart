@@ -145,9 +145,12 @@ class _Delivery_manState extends State<Delivery_man> {
                           itemCount: orders.length + 1,
                           itemBuilder: (context, i) {
                             if (i >= orders.length) {
-                              return Center(
-                                child: const Text('لا يوجد طلبات'),
-                              );
+                              if (orders.isEmpty) {
+                                return Center(
+                                  child: const Text('لا يوجد طلبات'),
+                                );
+                              }
+                              return null;
                             }
                             int? key = orders.keys.elementAt(i);
                             List<Order>? groupedItems =

@@ -33,7 +33,6 @@ class Api {
           e.response!.statusCode!, e.response?.data['message']);
       return null;
     } catch (e) {
-      print(e);
       return null;
     }
   }
