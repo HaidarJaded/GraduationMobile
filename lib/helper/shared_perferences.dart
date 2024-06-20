@@ -62,6 +62,15 @@ class InstanceSharedPrefrences {
     return jsonDecode(profile)['name'];
   }
 
+  Future<String?> getLastName() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['last_name'];
+  }
+
   Future<String?> getEmail() async {
     await initial();
     var profile = prefs.getString('profile');
@@ -69,6 +78,20 @@ class InstanceSharedPrefrences {
       return null;
     }
     return jsonDecode(profile)['email'];
+  }
+Future setEmail(String name) async {
+    await initial();
+    await prefs.setString('name', name);
+  }
+
+  Future<String?> getPhone() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    print(profile);
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['phone'];
   }
 
   Future<bool> isAccountActive() async {

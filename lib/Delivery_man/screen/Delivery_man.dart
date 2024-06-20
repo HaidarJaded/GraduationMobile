@@ -133,9 +133,7 @@ class _Delivery_manState extends State<Delivery_man> {
                 ),
               ],
             ),
-            drawer: draweDelivery(
-              userId: userId!,
-            ),
+            drawer: draweDelivery(),
             body: Container(
               child: Container(
                   padding: const EdgeInsets.all(5),
