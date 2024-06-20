@@ -9,8 +9,7 @@ import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/prof
 import 'package:graduation_mobile/models/user_model.dart';
 
 class DeliveryProfilePage extends StatefulWidget {
-  const DeliveryProfilePage({super.key, required this.userId});
-  final int userId;
+  const DeliveryProfilePage({super.key});
 
   @override
   _DeliveryProfilePageState createState() => _DeliveryProfilePageState();
@@ -26,7 +25,6 @@ class _DeliveryProfilePageState extends State<DeliveryProfilePage> {
   @override
   void initState() {
     super.initState();
-    _crudController = CrudController<User>();
     _deliveryDetailsCubit = DeliveryDetailsCubit(_crudController);
 
     // Initialize TextEditingController variables
@@ -34,14 +32,9 @@ class _DeliveryProfilePageState extends State<DeliveryProfilePage> {
     _passwordController = TextEditingController();
     _phoneController = TextEditingController();
 
-    if (user != null) {
-      _deliveryDetailsCubit.fetchProfileDetails(user!.id!);
-      _emailController.text = user!.email;
-      _passwordController.text = user!.password ?? '';
-      _phoneController.text = user!.phone;
-    } else {
-      print('No user provided');
-    }
+    _emailController.text = user!.email;
+    _passwordController.text = user!.password ?? '';
+    _phoneController.text = user!.phone;
   }
 
   @override

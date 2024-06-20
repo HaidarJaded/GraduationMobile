@@ -163,133 +163,118 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                               devices.length + 1,
                               (i) {
                                 if (i < devices.length) {
-                                  return Dismissible(
+                                  return Card(
                                     key: ValueKey(devices[i].id),
-                                    onDismissed: (direction) {
-                                      setState(() {
-                                        devices.removeAt(i);
-                                      });
-                                    },
-                                    child: Card(
-                                      key: ValueKey(devices[i].id),
-                                      color: const Color.fromARGB(
-                                          255, 252, 234, 251),
-                                      child: Column(
-                                        children: [
-                                          ExpansionTile(
-                                            title: Text(devices[i].model),
-                                            subtitle: Text(devices[i].imei),
-                                            trailing: IconButton(
-                                              icon: const Icon(Icons.edit),
-                                              onPressed: () {
-                                                if (devices[i].id != null) {
-                                                  selectedDeviceId =
-                                                      devices[i].id;
-                                                  BlocProvider.of<EditCubit>(
-                                                          context)
-                                                      .exitIdDevice(
-                                                          id: selectedDeviceId!);
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return edit();
-                                                    },
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                            children: <Widget>[
-                                              Padding(
-                                                  key: ValueKey(devices[i].id),
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 25,
-                                                          top: 5,
-                                                          bottom: 5,
-                                                          right: 25),
-                                                  child: Container(
-                                                      transformAlignment:
-                                                          Alignment.topRight,
-                                                      decoration: const BoxDecoration(
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              242,
-                                                              235,
-                                                              247),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
-                                                      padding: const EdgeInsets
-                                                          .all(10),
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Column(children: [
-                                                        Row(
-                                                          children: [
-                                                            const Expanded(
-                                                                child: Text(
-                                                                    "العطل")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].problem}")),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 3,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            const Expanded(
-                                                                child: Text(
-                                                                    "التكلفة ")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].costToCustomer}")),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 3,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            const Expanded(
-                                                                child: Text(
-                                                                    "الحالة")),
-                                                            const Expanded(
-                                                                child:
-                                                                    Text(":")),
-                                                            Expanded(
-                                                                child: Text(
-                                                                    "${devices[i].status}")),
-                                                          ],
-                                                        ),
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              _showDeviceDetailsDialog(
-                                                                  devices[i]);
-                                                            },
-                                                            child: const Align(
-                                                              alignment: Alignment
-                                                                  .centerLeft,
+                                    color: const Color.fromARGB(
+                                        255, 252, 234, 251),
+                                    child: Column(
+                                      children: [
+                                        ExpansionTile(
+                                          title: Text(devices[i].model),
+                                          subtitle: Text(devices[i].imei),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.edit),
+                                            onPressed: () {
+                                              if (devices[i].id != null) {
+                                                selectedDeviceId =
+                                                    devices[i].id;
+                                                BlocProvider.of<EditCubit>(
+                                                        context)
+                                                    .exitIdDevice(
+                                                        id: selectedDeviceId!);
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return edit();
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                          children: <Widget>[
+                                            Padding(
+                                                key: ValueKey(devices[i].id),
+                                                padding: const EdgeInsets.only(
+                                                    left: 25,
+                                                    top: 5,
+                                                    bottom: 5,
+                                                    right: 25),
+                                                child: Container(
+                                                    transformAlignment:
+                                                        Alignment.topRight,
+                                                    decoration: const BoxDecoration(
+                                                        color: Color.fromARGB(
+                                                            255, 242, 235, 247),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    child: Column(children: [
+                                                      Row(
+                                                        children: [
+                                                          const Expanded(
                                                               child: Text(
-                                                                  'عرض جميع البيانات'),
-                                                            )),
-                                                        const SizedBox(
-                                                          height: 3,
-                                                        ),
-                                                      ])))
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                                                                  "العطل")),
+                                                          const Expanded(
+                                                              child: Text(":")),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  "${devices[i].problem}")),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const Expanded(
+                                                              child: Text(
+                                                                  "التكلفة ")),
+                                                          const Expanded(
+                                                              child: Text(":")),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  "${devices[i].costToCustomer}")),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const Expanded(
+                                                              child: Text(
+                                                                  "الحالة")),
+                                                          const Expanded(
+                                                              child: Text(":")),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  "${devices[i].status}")),
+                                                        ],
+                                                      ),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            _showDeviceDetailsDialog(
+                                                                devices[i]);
+                                                          },
+                                                          child: const Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'عرض جميع البيانات'),
+                                                          )),
+                                                      const SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                    ])))
+                                          ],
+                                        )
+                                      ],
                                     ),
                                   );
                                 } else {
@@ -304,27 +289,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       ),
                                     );
                                   } else {
-                                    return devices.isEmpty
-                                        ? firstTime
-                                            ? const Center(
-                                                key: ValueKey(
-                                                    'loading_more_devices'),
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              )
-                                            : const Center(
-                                                key: ValueKey(
-                                                    'no_devices_first_time'),
-                                                child: Text('لا يوجد اجهزة'))
-                                        : devices.length >= 20
-                                            ? const Center(
-                                                key:
-                                                    ValueKey('no_more_devices'),
-                                                child: Text('لا يوجد المزيد'))
-                                            : const SizedBox(
-                                                key: ValueKey(
-                                                    'no_devices_first_time'),
-                                              );
+                                    return _buildNoMoreDevices();
                                   }
                                 }
                               },
@@ -360,5 +325,27 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
         );
       },
     );
+  }
+
+  Widget _buildNoMoreDevices() {
+    if (devices.isEmpty) {
+      if (totalCount == 0) {
+        return const Center(
+          key: ValueKey('no_devices_first_time'),
+          child: Text('لا يوجد أجهزة'),
+        );
+      }
+      return const Center(
+        key: ValueKey('loading_more_devices'),
+        child: CircularProgressIndicator(),
+      );
+    } else if (devices.length >= 20) {
+      return const Center(
+        key: ValueKey('no_more_devices'),
+        child: Text('لا يوجد المزيد'),
+      );
+    } else {
+      return const SizedBox(key: ValueKey('no_devices_first_time'));
+    }
   }
 }

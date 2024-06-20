@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
@@ -38,10 +37,12 @@ class addInfoDevice extends StatelessWidget {
   TextEditingController inCenterController = TextEditingController(text: '0');
 
   Future<bool> areThereDelivery() async {
-    List? deliveries = (await CrudController<User>()
-            .getAll({'rule*name': 'عامل توصيل', 'at_work': 1}))
-        .items;
-    if (deliveries == null) {
+    var response = await Api().get(path: 'api/are_there_deliveries');
+    if (response == null) {
+      return false;
+    }
+    final body = response['body'];
+    if (body.length == 0) {
       return false;
     }
     return true;
@@ -215,7 +216,7 @@ class addInfoDevice extends StatelessWidget {
                 color: const Color.fromRGBO(0, 200, 0, 1),
                 title: "اضافة جهاز جديد");
             Get.off(() => const allDevices());
-            // BlocProvider.of<AddDevicesCubit>(context).resetState();
+            BlocProvider.of<AddDevicesCubit>(context).resetState();
             if (state.isRepairedInCenter) {
               User.hasPermission("اضافة طلب لجهاز").then((hasPermission) {
                 if (hasPermission) {
@@ -244,14 +245,6 @@ class addInfoDevice extends StatelessWidget {
             }
           });
         }
-        if (state is AddDevicesFailure) {
-          if (state.errormessage != null) {
-            print(state.errormessage);
-          }
-        }
-        // if (state is AddDevicesFailure) {
-        //   return Text("${state.errormessage}");
-        // }
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(16.0),

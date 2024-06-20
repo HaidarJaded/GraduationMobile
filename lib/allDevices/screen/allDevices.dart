@@ -44,7 +44,7 @@ class _allDevicesState extends State<allDevices> {
       var data = await CrudController<Device>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
+        'orderBy': 'date_receipt_from_customer',
         'dir': 'desc',
         'client_id': id,
         'with': 'customer',
@@ -81,7 +81,7 @@ class _allDevicesState extends State<allDevices> {
               BlocProvider.of<AllDevicesCubit>(Get.context!).getDeviceData({
                 'page': 1,
                 'per_page': perPage,
-                'orderBy': 'date_receipt',
+                'orderBy': 'date_receipt_from_customer',
                 'dir': 'desc',
                 'client_id': id,
                 'with': 'customer',
@@ -341,17 +341,7 @@ class _allDevicesState extends State<allDevices> {
                                   ),
                                 );
                               } else {
-                                return devices.isEmpty
-                                    ? firstTime
-                                        ? const Center(
-                                            child: CircularProgressIndicator(),
-                                          )
-                                        : const Center(
-                                            child: Text('لا يوجد اجهزة'))
-                                    : devices.length >= 20
-                                        ? const Center(
-                                            child: Text('لا يوجد المزيد'))
-                                        : null;
+                                return _buildNoMoreDevices();
                               }
                             },
                           )))));
@@ -410,6 +400,25 @@ class _allDevicesState extends State<allDevices> {
         );
       },
     );
+  }
+
+  Widget _buildNoMoreDevices() {
+    if (devices.isEmpty) {
+      if (totalCount == 0) {
+        return const Center(
+          child: Text('لا يوجد أجهزة'),
+        );
+      }
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (devices.length >= 20) {
+      return const Center(
+        child: Text('لا يوجد المزيد'),
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 }
 

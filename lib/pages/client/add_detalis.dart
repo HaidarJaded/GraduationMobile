@@ -37,6 +37,7 @@ class _AddDetalisState extends State<AddDetalis> {
     _problemController =
         TextEditingController(text: widget.device.problem ?? '');
     _expectedDateOfDelivery = widget.device.expectedDateOfDelivery;
+    _infoController = TextEditingController(text: widget.device.info);
   }
 
   @override
@@ -83,14 +84,6 @@ class _AddDetalisState extends State<AddDetalis> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 12),
-                      Card(
-                        color: const Color.fromARGB(255, 252, 234, 251),
-                        child: ListTile(
-                          leading: const Icon(Icons.emoji_symbols_sharp),
-                          title: const Text("رقم العميل"),
-                          subtitle: Text(device.clientId.toString()),
-                        ),
-                      ),
                       const SizedBox(height: 10),
                       Card(
                         color: const Color.fromARGB(255, 252, 234, 251),
@@ -143,10 +136,11 @@ class _AddDetalisState extends State<AddDetalis> {
                         child: ListTile(
                           leading: const Icon(Icons.info),
                           title: const Text("المعلومات الاضافية"),
-                          subtitle: Text(device.problem ?? ""),
+                          subtitle: Text(device.info ?? ""),
                           trailing: IconButton(
                             onPressed: () {
-                              _showEditDialog("المشكلة", device.info ?? "",
+                              _showEditDialog(
+                                  "المعلومات الاضافية", device.info ?? "",
                                   (newValue) {
                                 setState(() {
                                   device.info = newValue;

@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
+import 'package:graduation_mobile/pages/client/Home_Page.dart';
 
 class DeviceInfoCard extends StatelessWidget {
   final Device device;
@@ -98,8 +100,13 @@ class DeviceInfoCard extends StatelessWidget {
         height: 8,
       ));
       contentList.add(FloatingActionButton(
-        onPressed: () {
-          Get.off(() => const allDevices());
+        onPressed: () async {
+          String? ruleName = await InstanceSharedPrefrences().getRuleName();
+          if (ruleName == 'عميل') {
+            Get.off(() => const allDevices());
+          } else if (ruleName == 'فني') {
+            Get.off(() => const HomePages());
+          }
         },
         child: const Text('العودة للصفحة الرئيسية'),
       ));
