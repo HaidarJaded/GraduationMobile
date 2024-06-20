@@ -9,6 +9,7 @@ import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import '../Controllers/crud_controller.dart';
 import '../allDevices/screen/cubit/edit_cubit.dart';
+import '../allDevices/screen/device_info_card.dart';
 import '../allDevices/screen/edit.dart';
 import '../bar/SearchAppBar.dart';
 import '../models/device_model.dart';
@@ -40,7 +41,9 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
         'page': currentPage,
         'per_page': perPage,
         'orderBy': 'client_priority',
-        'client_id': id
+        'client_id': id,
+        'repaired_in_center': 1,
+        'with': 'customer',
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -76,7 +79,9 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 'page': 1,
                 'per_page': perPage,
                 'orderBy': 'client_priority',
-                'client_id': id
+                'client_id': id,
+                'repaired_in_center': 1,
+                'with': 'customer',
               })
             })
         .then((value) => readyToBuild = true);
@@ -256,6 +261,17 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                                                     "${devices[i].status}")),
                                                           ],
                                                         ),
+                                                        TextButton(
+                                                            onPressed: () {
+                                                              _showDeviceDetailsDialog(
+                                                                  devices[i]);
+                                                            },
+                                                            child: const Align(
+                                                              alignment: Alignment
+                                                                  .centerLeft,
+                                                              child: Text(
+                                                                  'عرض جميع البيانات'),
+                                                            )),
                                                         const SizedBox(
                                                           height: 3,
                                                         ),
@@ -318,5 +334,20 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
       devices.clear();
       fetchDevices(currentPage);
     });
+  }
+
+  void _showDeviceDetailsDialog(dynamic device) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          width: 50,
+          height: 50,
+          child: DeviceInfoCard(
+            device: device,
+          ),
+        );
+      },
+    );
   }
 }

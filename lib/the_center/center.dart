@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation_mobile/the_center/Goods.dart';
+import 'package:graduation_mobile/the_center/products.dart';
 import 'package:graduation_mobile/the_center/allPhoneInCenter.dart';
 import 'package:graduation_mobile/the_center/cubit/the_center_cubit.dart';
 
@@ -31,7 +31,7 @@ class center extends StatelessWidget {
                 children: const <Widget>[
                   allPhoneInCenter(),
                   ServiceScreeen(),
-                  Goods(),
+                  productsScreen(),
                 ],
               ),
             ),

@@ -264,7 +264,7 @@ class _oldPhoneState extends State<oldPhone> {
                                                 child: Text('لا يوجد المزيد'))
                                             : null
                                     : const Center(
-                                        child: CircularProgressIndicator(),
+                                        child: Text('لا يوجد اجهزة'),
                                       );
                               }
                             },

@@ -215,7 +215,7 @@ class addInfoDevice extends StatelessWidget {
                 color: const Color.fromRGBO(0, 200, 0, 1),
                 title: "اضافة جهاز جديد");
             Get.off(() => const allDevices());
-            BlocProvider.of<AddDevicesCubit>(context).resetState();
+            // BlocProvider.of<AddDevicesCubit>(context).resetState();
             if (state.isRepairedInCenter) {
               User.hasPermission("اضافة طلب لجهاز").then((hasPermission) {
                 if (hasPermission) {
@@ -245,7 +245,9 @@ class addInfoDevice extends StatelessWidget {
           });
         }
         if (state is AddDevicesFailure) {
-          return Text("${state.errormessage}");
+          if (state.errormessage != null) {
+            print(state.errormessage);
+          }
         }
         return Scaffold(
           body: Padding(

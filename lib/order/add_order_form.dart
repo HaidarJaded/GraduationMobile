@@ -127,7 +127,7 @@ class _AddOrderFormState extends State<AddOrderForm> {
                   .map((device) => {device.id.toString(): _selectedOrderType})
                   .toList();
               Map<String, dynamic> requestBody = {
-                'devices_ids': {device.id.toString(): _selectedOrderType},
+                // 'devices_ids': {device.id.toString(): _selectedOrderType},
                 'client_id': clientId,
                 'description': _selectedOrderType == 'تسليم للعميل'
                     ? 'توصيل طلب الى العميل'

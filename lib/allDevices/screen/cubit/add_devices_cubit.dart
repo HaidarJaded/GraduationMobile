@@ -29,6 +29,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
         emit(AddDevicesFailure(errorMessage: 'No data found'));
       }
     } catch (e) {
+      print(e);
       emit(AddDevicesFailure(errorMessage: e));
     }
     Get.back();

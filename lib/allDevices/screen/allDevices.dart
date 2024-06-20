@@ -299,7 +299,7 @@ class _allDevicesState extends State<allDevices> {
                                                 child: Text('لا يوجد المزيد'))
                                             : null
                                     : const Center(
-                                        child: CircularProgressIndicator(),
+                                        child: Text('لا يوجد اجهزة'),
                                       );
                               }
                             },
@@ -334,7 +334,9 @@ class _allDevicesState extends State<allDevices> {
             appBar: SearchAppBar(),
             drawer: const CustomDrawer(),
             body: const Center(
-              child: CircularProgressIndicator(),
+              child: Center(
+                child: Text("لا يوجد اجهزة"),
+              ),
             ));
       },
     );
