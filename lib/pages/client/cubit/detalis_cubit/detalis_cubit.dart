@@ -39,6 +39,7 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
     required double costToClient,
     required String problem,
     DateTime? expectedDateOfDelivery,
+    String? info,
   }) async {
     emit(DeviceDetalisLoading());
     try {
@@ -46,6 +47,7 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
         'cost_to_client': costToClient,
         'expected_date_of_delivery': expectedDateOfDelivery?.toIso8601String(),
         'problem': problem,
+        'info': info
       };
       //save device info
       var infoRedponse = await Api().put(

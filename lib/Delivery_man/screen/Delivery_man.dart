@@ -9,6 +9,7 @@ import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
 import 'package:graduation_mobile/Delivery_man/screen/drawerDelivery.dart';
 import 'package:graduation_mobile/Delivery_man/screen/delivery_orders_page.dart';
 import 'package:collection/collection.dart';
+import 'package:graduation_mobile/helper/api.dart';
 
 import 'package:graduation_mobile/models/order_model.dart';
 import '../../Controllers/crud_controller.dart';
@@ -28,6 +29,8 @@ class _Delivery_manState extends State<Delivery_man> {
   bool firstTime = true;
   bool readyToBuild = false;
   final controller = ScrollController();
+  int? userId;
+  bool isAtWork = false;
   int getIndexOfId(List items, int id) {
     int index = items.indexWhere((element) => element.id == id);
     return index;
@@ -37,16 +40,22 @@ class _Delivery_manState extends State<Delivery_man> {
   void initState() {
     super.initState();
     readyToBuild = false;
+    InstanceSharedPrefrences().isAtWork().then((isAtWork) {
+      setState(() {
+        this.isAtWork = isAtWork;
+      });
+    });
     InstanceSharedPrefrences()
         .getId()
         .then((id) => {
+              userId = id,
               BlocProvider.of<DeliveryManCubit>(Get.context!).getorderData({
                 'orderBy': 'date',
                 'done': 0,
                 'dir': 'desc',
                 'with':
                     'devices,products,devices_orders,products_orders,client',
-                'user_id': id,
+                'user_id': userId,
                 'all_data': 1,
               })
             })
@@ -106,8 +115,27 @@ class _Delivery_manState extends State<Delivery_man> {
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
               title: const Text('MYP'),
+              actions: [
+                Switch(
+                  value: isAtWork,
+                  onChanged: (newStatus) async {
+                    setState(() {
+                      isAtWork = newStatus;
+                    });
+                    if (await editAtWork(newStatus ? 1 : 0)) {
+                      InstanceSharedPrefrences().editAtWork(newStatus ? 1 : 0);
+                    } else {
+                      setState(() {
+                        isAtWork = !newStatus;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
-            drawer: draweDelivery(),
+            drawer: draweDelivery(
+              userId: userId!,
+            ),
             body: Container(
               child: Container(
                   padding: const EdgeInsets.all(5),
@@ -116,58 +144,61 @@ class _Delivery_manState extends State<Delivery_man> {
                       child: ListView.builder(
                           physics: AlwaysScrollableScrollPhysics(),
                           controller: controller,
-                          itemCount: orders.length,
+                          itemCount: orders.length + 1,
                           itemBuilder: (context, i) {
-                            if (i < orders.length) {
-                              int? key = orders.keys.elementAt(i);
-                              List<Order>? groupedItems =
-                                  orders[key]?.cast<Order>();
-                              String? centerName =
-                                  groupedItems?.first.client?.centerName;
-                              String? clientAddress =
-                                  groupedItems?.first.client?.address;
-                              String? clientName =
-                                  groupedItems?.first.client?.name;
-                              return Column(
-                                children: [
-                                  MaterialButton(
-                                      color: Color.fromARGB(255, 247, 236, 240),
-                                      onPressed: () {
-                                        Get.to(() => DeliveryOrdersPage(
-                                              clientOrders: groupedItems!,
-                                              clientName: clientName ?? 'عميل',
-                                            ));
-                                      },
-                                      minWidth: 300,
-                                      height: 50,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              centerName ?? '',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              clientAddress ?? " ",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black),
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                  const SizedBox(
-                                    height: 10,
-                                  )
-                                ],
+                            if (i >= orders.length) {
+                              return Center(
+                                child: const Text('لا يوجد طلبات'),
                               );
                             }
+                            int? key = orders.keys.elementAt(i);
+                            List<Order>? groupedItems =
+                                orders[key]?.cast<Order>();
+                            String? centerName =
+                                groupedItems?.first.client?.centerName;
+                            String? clientAddress =
+                                groupedItems?.first.client?.address;
+                            String? clientName =
+                                groupedItems?.first.client?.name;
+                            return Column(
+                              children: [
+                                MaterialButton(
+                                    color: Color.fromARGB(255, 247, 236, 240),
+                                    onPressed: () {
+                                      Get.to(() => DeliveryOrdersPage(
+                                            clientOrders: groupedItems!,
+                                            clientName: clientName ?? 'عميل',
+                                          ));
+                                    },
+                                    minWidth: 300,
+                                    height: 50,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            centerName ?? '',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            clientAddress ?? " ",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                const SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            );
                           }))),
             ),
           );
@@ -211,5 +242,22 @@ class _Delivery_manState extends State<Delivery_man> {
       Get.snackbar("title", e.toString());
       return;
     }
+  }
+}
+
+Future<bool> editAtWork(int newStatus) async {
+  int? userId = await InstanceSharedPrefrences().getId();
+  Map<String, dynamic> body = {'at_work': newStatus};
+  try {
+    var response = await Api().put(
+      path: 'api/users/$userId',
+      body: body,
+    );
+    if (response == null) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
   }
 }

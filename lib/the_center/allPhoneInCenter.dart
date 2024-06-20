@@ -119,7 +119,10 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
               title: const Text('MYP'),
               actions: <Widget>[
                 IconButton(
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
                   onPressed: () {
                     showSearch(context: context, delegate: search());
                   },
@@ -294,26 +297,27 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                       ),
                                     );
                                   } else {
-                                    return devices.isNotEmpty
+                                    return devices.isEmpty
                                         ? firstTime
                                             ? const Center(
                                                 key: ValueKey(
+                                                    'loading_more_devices'),
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              )
+                                            : const Center(
+                                                key: ValueKey(
                                                     'no_devices_first_time'),
                                                 child: Text('لا يوجد اجهزة'))
-                                            : devices.length >= 20
-                                                ? const Center(
-                                                    key: ValueKey(
-                                                        'no_more_devices'),
-                                                    child:
-                                                        Text('لا يوجد المزيد'))
-                                                : const SizedBox(
-                                                    key: ValueKey(
-                                                        'no_devices_first_time'),
-                                                  )
-                                        : const Center(
-                                            key: ValueKey(
-                                                'loading_more_devices'),
-                                            child: CircularProgressIndicator());
+                                        : devices.length >= 20
+                                            ? const Center(
+                                                key:
+                                                    ValueKey('no_more_devices'),
+                                                child: Text('لا يوجد المزيد'))
+                                            : const SizedBox(
+                                                key: ValueKey(
+                                                    'no_devices_first_time'),
+                                              );
                                   }
                                 }
                               },

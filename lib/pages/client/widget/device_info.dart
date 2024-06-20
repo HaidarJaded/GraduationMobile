@@ -34,19 +34,51 @@ class DeviceInfo extends StatelessWidget {
               icon: const Icon(Icons.copy))
         ],
       ),
-      Text('اسم العميل: ${device.client?.name ?? ''}'),
+      Row(
+        children: [
+          const Text(
+            'اسم العميل:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(' ${device.client?.name ?? ''}'),
+        ],
+      ),
       const SizedBox(
         height: 5,
       ),
-      Text('معلومات اضافية: ${device.info}'),
+      Row(
+        children: [
+          const Text(
+            'معلومات اضافية:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text('  ${device.info}'),
+        ],
+      ),
       const SizedBox(
         height: 5,
       ),
-      Text('العطل: ${device.problem ?? 'لم يحدد بعد'}'),
+      Row(
+        children: [
+          const Text(
+            'العطل:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(device.problem ?? 'لم يحدد بعد'),
+        ],
+      ),
       const SizedBox(
         height: 5,
       ),
-      Text('التكلفة على العميل: ${device.costToClient ?? 'لم تحدد بعد'}'),
+      Row(
+        children: [
+          const Text(
+            'التكلفة على العميل:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text('${device.costToClient ?? 'لم تحدد بعد'}'),
+        ],
+      ),
       const SizedBox(
         height: 5,
       ),

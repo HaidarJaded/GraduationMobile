@@ -23,8 +23,30 @@ class _AddOrderFormState extends State<AddOrderForm> {
   String? _selectedOrderType;
   GlobalKey<FormState> globalKey = GlobalKey<FormState>();
   TextEditingController deviceCodeController = TextEditingController();
-
+  bool areThereDeliveries = false;
   bool isCodeOk = false;
+
+  Future<bool> areThereDelivery() async {
+    var response = await Api().get(path: 'api/are_there_deliveries');
+    if (response == null) {
+      return false;
+    }
+    final body = response['body'];
+    if (body.length == 0) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    areThereDelivery().then((areThereDelivery) {
+      setState(() {
+        areThereDeliveries = areThereDelivery;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +94,17 @@ class _AddOrderFormState extends State<AddOrderForm> {
           child: const Text('اضافة'),
           onPressed: () async {
             if (globalKey.currentState!.validate()) {
+              if (!areThereDeliveries) {
+                bool reCheckDelivery = await areThereDelivery();
+                if (!reCheckDelivery) {
+                  SnackBarAlert()
+                      .alert("عذراً لا يوجد عمّال توصيل في الوقت الحالي");
+                  return;
+                }
+                setState(() {
+                  areThereDeliveries = reCheckDelivery;
+                });
+              }
               if (_selectedOrderType == null) {
                 SnackBarAlert().alert("الرجاء اختيار نوع الطلب");
                 return;
@@ -135,22 +168,20 @@ class _AddOrderFormState extends State<AddOrderForm> {
               };
               var addingOrderResponse =
                   await Api().post(path: 'api/orders', body: requestBody);
-              if (addingOrderResponse == null) {
-                Get.back();
-                return;
+              if (addingOrderResponse != null) {
+                BlocProvider.of<OrderCubit>(Get.context!).getOrder({
+                  'with': 'devices,products,devices_orders,products_orders',
+                  'done': 0,
+                  'all_data': 1,
+                  'orderBy': 'date',
+                  'dir': 'desc',
+                  'client_id': clientId
+                });
+                SnackBarAlert().alert("تمت الاضافة بنجاح",
+                    title: 'تمت الاضافة',
+                    color: const Color.fromRGBO(0, 200, 0, 1));
               }
-              BlocProvider.of<OrderCubit>(Get.context!).getOrder({
-                'with': 'devices,products,devices_orders,products_orders',
-                'done': 0,
-                'all_data': 1,
-                'orderBy': 'date',
-                'dir': 'desc',
-                'client_id': clientId
-              });
-              Get.back();
-              SnackBarAlert().alert("تمت الاضافة بنجاح",
-                  title: 'تمت الاضافة',
-                  color: const Color.fromRGBO(0, 200, 0, 1));
+              Navigator.of(Get.context!).pop();
             }
           },
         ),

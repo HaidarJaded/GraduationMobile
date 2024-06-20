@@ -161,7 +161,7 @@ class _serviceScreeenState extends State<ServiceScreeen> {
               } else {
                 return service.isNotEmpty
                     ? firstTime
-                        ? const Center(child: Text('لا يوجد اجهزة'))
+                        ? const Center(child: Text('لا يوجد خدمات'))
                         : service.length >= 20
                             ? const Center(child: Text('لا يوجد المزيد'))
                             : null
