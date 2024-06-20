@@ -260,13 +260,6 @@ class _oldPhoneState extends State<oldPhone> {
                                           )
                                         : const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                        : completedDevice.length >= 20
-                                            ? const Center(
-                                                child: Text('لا يوجد المزيد'))
-                                            : null
-                                    : const Center(
-                                        child: Text('لا يوجد اجهزة'),
-                                      );
                                     : completedDevice.length >= 20
                                         ? const Center(
                                             child: Text('لا يوجد المزيد'))
