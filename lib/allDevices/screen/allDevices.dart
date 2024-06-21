@@ -163,7 +163,7 @@ class _allDevicesState extends State<allDevices> {
                             itemCount: devices.length + 1,
                             itemBuilder: (context, i) {
                               if (i < devices.length) {
-                                final device = devices[i];
+                                Device device = devices[i];
                                 return Card(
                                   // key: ValueKey(state.data[index].itemName),
                                   color:
@@ -175,21 +175,20 @@ class _allDevicesState extends State<allDevices> {
                                         expandedAlignment:
                                             FractionalOffset.topRight,
                                         title: Text(
-                                          devices[i].model,
+                                          device.model,
                                         ),
 
                                         subtitle:
                                             // ignore: prefer_interpolation_to_compose_strings
-                                            Text(devices[i].imei),
+                                            Text(device.imei),
                                         trailing: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
                                               icon: const Icon(Icons.edit),
                                               onPressed: () {
-                                                if (devices[i].id != null) {
-                                                  selectedDeviceId =
-                                                      devices[i].id;
+                                                if (device.id != null) {
+                                                  selectedDeviceId = device.id;
 
                                                   BlocProvider.of<EditCubit>(
                                                           context)
@@ -204,10 +203,8 @@ class _allDevicesState extends State<allDevices> {
                                                 }
                                               },
                                             ),
-                                            if (devices[i].deliverToClient ==
-                                                    1 ||
-                                                devices[i].dateReceipt ==
-                                                    null) ...[
+                                            if (device.deliverToClient == 1 ||
+                                                device.dateReceipt == null) ...[
                                               FutureBuilder(
                                                   future: User.hasPermission(
                                                       'تسليم جهاز'),
@@ -220,7 +217,7 @@ class _allDevicesState extends State<allDevices> {
                                                       return IconButton(
                                                         onPressed: () {
                                                           _showConfirmProcessDialog(
-                                                              device.id, () {
+                                                              device.id!, () {
                                                             setState(() {
                                                               devices.remove(
                                                                   device);
@@ -282,7 +279,7 @@ class _allDevicesState extends State<allDevices> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].problem ?? "لم يحدد بعد"}")),
+                                                                "${device.problem ?? "لم يحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -297,7 +294,7 @@ class _allDevicesState extends State<allDevices> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].costToClient ?? "لم تحدد بعد"}")),
+                                                                "${device.costToClient ?? "لم تحدد بعد"}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -312,13 +309,59 @@ class _allDevicesState extends State<allDevices> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${devices[i].status}")),
+                                                                "${device.status}")),
                                                       ],
                                                     ),
+                                                    if (device.status ==
+                                                        'بانتظار استجابة العميل')
+                                                      Row(
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                if (await changeClientApproval(
+                                                                    false,
+                                                                    device
+                                                                        .id!)) {
+                                                                  setState(() {
+                                                                    device.status =
+                                                                        'تم رفض العمل به';
+                                                                  });
+                                                                }
+                                                              },
+                                                              child:
+                                                                  const Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Text(
+                                                                    'رفض العمل به'),
+                                                              )),
+                                                          TextButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                if (await changeClientApproval(
+                                                                    true,
+                                                                    device
+                                                                        .id!)) {
+                                                                  setState(() {
+                                                                    device.status =
+                                                                        'قيد العمل';
+                                                                  });
+                                                                }
+                                                              },
+                                                              child:
+                                                                  const Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Text(
+                                                                    'الموافقة على العمل به'),
+                                                              )),
+                                                        ],
+                                                      ),
                                                     TextButton(
                                                         onPressed: () {
                                                           _showDeviceDetailsDialog(
-                                                              devices[i]);
+                                                              device);
                                                         },
                                                         child: const Align(
                                                           alignment: Alignment
@@ -418,6 +461,21 @@ class _allDevicesState extends State<allDevices> {
       );
     } else {
       return const SizedBox();
+    }
+  }
+
+  Future<bool> changeClientApproval(bool isClientApproval, int deviceId) async {
+    try {
+      var response = await Api().put(path: 'api/devices/$deviceId', body: {
+        'status': isClientApproval ? 'قيد العمل' : 'لم يوافق على العمل به',
+        'client_approval': isClientApproval ? 1 : 0
+      });
+      if (response == null) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }
