@@ -114,7 +114,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Get.off(center());
+                        Get.off(() => center());
                       },
                     ),
                     const SizedBox(

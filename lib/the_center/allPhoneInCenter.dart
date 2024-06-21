@@ -83,6 +83,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 'deliver_to_client': 0,
                 'client_id': id,
                 'repaired_in_center': 1,
+                'status': 'لم يتم بدء العمل فيه'
               })
             })
         .then((value) => readyToBuild = true);

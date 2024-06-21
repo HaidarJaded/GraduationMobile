@@ -140,33 +140,22 @@ class InstanceSharedPrefrences {
 
   Future setEmail(String newEmail) async {
     await initial();
-    var userProfile = await prefs.setString('email', newEmail);
-    //  if (userProfile.isEmpty) {
-    // return;
-    // }
-    //  userProfile['email'] = newEmail;
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['email'] = newEmail;
     setProfile(userProfile);
   }
 
   Future setPhone(String newPhone) async {
     await initial();
-
-    var userProfile = await prefs.setString('phone', newPhone);
-    // var userProfile = await getProfile();
-    // if (userProfile.isEmpty) {
-    // return;
-    // }
-    // userProfile['phone'] = newPhone;
-    setProfile(userProfile);
-  }
-
-  Future setPassword(String newpassword) async {
-    await initial();
     var userProfile = await getProfile();
     if (userProfile.isEmpty) {
       return;
     }
-    userProfile['password'] = newpassword;
+    userProfile['phone'] = newPhone;
     setProfile(userProfile);
   }
+
 }
