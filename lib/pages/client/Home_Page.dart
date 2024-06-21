@@ -170,14 +170,6 @@ class _HomePagesState extends State<HomePages> {
                   Get.to(const oldPhoneUser());
                 },
               ),
-              const ListTile(
-                leading: Icon(Icons.help),
-                title: Text("أي سؤال"),
-              ),
-              const ListTile(
-                leading: Icon(Icons.settings),
-                title: Text("الإعدادات"),
-              ),
               InkWell(
                 onTap: logout,
                 child: Container(

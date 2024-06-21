@@ -105,7 +105,7 @@ class CustomDrawer extends StatelessWidget {
                               width: 12,
                             ),
                             Text(
-                              "Center",
+                              "المركز",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -133,7 +133,7 @@ class CustomDrawer extends StatelessWidget {
                               width: 12,
                             ),
                             Text(
-                              "Notifications",
+                              "الاشعارات",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -164,7 +164,7 @@ class CustomDrawer extends StatelessWidget {
                               width: 12,
                             ),
                             Text(
-                              "Old Phone",
+                              "الاجهزة المسلمة",
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -199,7 +199,7 @@ class CustomDrawer extends StatelessWidget {
                                       width: 12,
                                     ),
                                     Text(
-                                      "order",
+                                      "الطلبات",
                                       style: TextStyle(
                                         fontSize: 18,
                                       ),
@@ -214,40 +214,13 @@ class CustomDrawer extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    MaterialButton(
-                      onPressed: () {
-                        Get.to(() => const profile());
-                      },
-                      // ignore: avoid_unnecessary_containers
-                      child: Container(
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.settings,
-                              size: 23,
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              "Settings",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
                     const SizedBox(
                       height: 10,
                     ),
                     InkWell(
                       onTap: logout,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 14,
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           gradient: const LinearGradient(colors: [
@@ -258,7 +231,7 @@ class CustomDrawer extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         child: const Center(
                           child: Text(
-                            'Log out',
+                            'تسجيل الخروج',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
