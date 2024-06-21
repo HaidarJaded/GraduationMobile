@@ -3,17 +3,16 @@
 // ignore: unnecessary_import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:graduation_mobile/drawerScreen/profile/profile.dart';
+import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
-import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_cubit.dart';
-import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
-import 'package:graduation_mobile/the_center/center.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _UserProfilePageState createState() => _UserProfilePageState();
 }
 
@@ -21,13 +20,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late InstanceSharedPrefrences _instanceSharedPrefrences;
-  late UserDetailsCubit _userDetailsCubit;
   String? phone;
 
   @override
   void initState() {
     super.initState();
-    _userDetailsCubit = UserDetailsCubit();
     _instanceSharedPrefrences = InstanceSharedPrefrences(); // تهيئة المتغير هنا
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
@@ -75,26 +72,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     return FutureBuilder<String?>(
                       future: _instanceSharedPrefrences.getLastName(),
                       builder: (context, lastSnapshot) {
-                        if (nameSnapshot.hasData && lastSnapshot.hasData) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                nameSnapshot.data!,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                        if (nameSnapshot.connectionState ==
+                                ConnectionState.done &&
+                            lastSnapshot.connectionState ==
+                                ConnectionState.done) {
+                          if (nameSnapshot.hasData && lastSnapshot.hasData) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${nameSnapshot.data!} ${lastSnapshot.data!}",
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                lastSnapshot.data!,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          }
+                          return const SizedBox();
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -112,164 +108,108 @@ class _UserProfilePageState extends State<UserProfilePage> {
           FutureBuilder(
             future: _instanceSharedPrefrences.getEmail(),
             builder: (context, emailSnapshot) {
-              if (emailSnapshot.hasData) {
-                return ListTile(
-                  leading: const Icon(Icons.email),
-                  title: const Text('البريد الالكتروني'),
-                  subtitle: Text(_emailController.text),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        _changeData(
-                          'البريد الالكتروني',
-                          emailSnapshot.data!,
-                          (newEmail) async {
-                            _emailController.text = newEmail;
-                            await _instanceSharedPrefrences
-                                .setEmail(_emailController.text);
-                          },
-                          context,
-                        );
-                      });
-                    },
-                  ),
-                );
-              } else {
+              if (emailSnapshot.connectionState != ConnectionState.done) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
+              _emailController.text = emailSnapshot.data ?? '';
+              return ListTile(
+                leading: const Icon(Icons.email),
+                title: const Text('البريد الالكتروني'),
+                subtitle: Text(_emailController.text),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    setState(() {
+                      _changeData(
+                        'البريد الالكتروني',
+                        emailSnapshot.data!,
+                        (newEmail) async {
+                          if (newEmail != _emailController.text) {
+                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                .hasMatch(newEmail)) {
+                              SnackBarAlert()
+                                  .alert('الرجاء ادخال بريد الكتروني صالح');
+                              return;
+                            }
+                            if (await _changeDataOnDatabase(
+                                {'email': newEmail})) {
+                              setState(() {
+                                _emailController.text = newEmail;
+                              });
+                              await _instanceSharedPrefrences
+                                  .setEmail(_emailController.text);
+                            }
+                          }
+                        },
+                        context,
+                      );
+                    });
+                  },
+                ),
+              );
             },
           ),
           const Divider(),
           FutureBuilder(
             future: _instanceSharedPrefrences.getPhone(),
             builder: (context, phoneSnapshot) {
-              if (phoneSnapshot.hasData) {
-                return ListTile(
-                  leading: const Icon(Icons.phone),
-                  title: const Text('رقم الهاتف'),
-                  subtitle: Text(_phoneController.text),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        _changeData(
-                          'رقم الهاتف',
-                          phoneSnapshot.data!,
-                          (newPhone) async {
-                            _phoneController.text = newPhone;
-                            await _instanceSharedPrefrences
-                                .setPhone(_phoneController.text);
-                          },
-                          context,
-                        );
-                      });
-                    },
-                  ),
-                );
-              } else {
-                return ListTile(
-                  leading: const Icon(Icons.phone),
-                  title: const Text('رقم الهاتف'),
-                  subtitle: Text(_phoneController.text),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('تعديل رقم الهاتف'),
-                              content: TextField(
-                                controller: _phoneController,
-                                decoration: const InputDecoration(
-                                  hintText: ' ادخل رقم الهاتف الجديد',
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('اغلاق'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('حفظ'),
-                                  onPressed: () async {
-                                    _phoneController.text = phone!;
-                                    _instanceSharedPrefrences.setPhone(phone!);
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      });
-                    },
-                  ),
+              if (phoneSnapshot.connectionState != ConnectionState.done) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
               }
+
+              phoneController.text = phoneSnapshot.data ?? '';
+              return ListTile(
+                leading: const Icon(Icons.phone),
+                title: const Text('رقم الهاتف'),
+                subtitle: Text(phoneController.text),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    _changeData('رقم الهاتف', phoneSnapshot.data!,
+                        (newPhone) async {
+                      if (newPhone.length != 10) {
+                        SnackBarAlert()
+                            .alert('رقم الهاتف يجب ان يكون 10 ارقام');
+                        return;
+                      }
+                      if (await _changeDataOnDatabase({'phone': newPhone})) {
+                        setState(() {
+                          _phoneController.text = newPhone;
+                        });
+                        await _instanceSharedPrefrences
+                            .setPhone(_phoneController.text);
+                      }
+                    }, context, true);
+                  },
+                ),
+              );
             },
           ),
-          const SizedBox(height: 50),
-          BlocBuilder<UserDetailsCubit, UserDetailsState>(
-              builder: (context, state) {
-            if (state is UserDetalisLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is UserDetalisFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errormess)),
-              );
-            }
-            return InkWell(
-              onTap: () async {
-                print(_emailController.text);
-                print(_phoneController);
-                await _userDetailsCubit.EditData(
-                    email: _emailController.text, phone: phone!);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 233, 139, 248),
-                      Color.fromARGB(255, 96, 27, 152),
-                    ],
-                  ),
-                ),
-                width: MediaQuery.of(context).size.width,
-                child: const Center(
-                  child: Text(
-                    'حفظ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }),
         ],
       ),
     );
   }
 }
 
-Future<void> _changeData(
-  String title,
-  String? currentValue,
-  Function(String) onSave,
-  BuildContext context,
-) async {
+Future<bool> _changeDataOnDatabase(Map<String, String> requestBody) async {
+  int? userId = await InstanceSharedPrefrences().getId();
+  if (userId == null) {
+    return false;
+  }
+  var response = await Api().put(path: 'api/users/$userId', body: requestBody);
+  if (response == null) {
+    return false;
+  }
+  return true;
+}
+
+Future<void> _changeData(String title, String? currentValue,
+    Function(String) onSave, BuildContext context,
+    [bool isNumeric = false]) async {
   final TextEditingController controller =
       TextEditingController(text: currentValue);
 
@@ -279,6 +219,8 @@ Future<void> _changeData(
       return AlertDialog(
         title: Text('تعديل $title'),
         content: TextField(
+          inputFormatters:
+              isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
           controller: controller,
           decoration: InputDecoration(
             hintText: ' ادخل $title الجديد',
@@ -294,8 +236,8 @@ Future<void> _changeData(
           TextButton(
             child: const Text('حفظ'),
             onPressed: () async {
-              await onSave(controller.text);
               Navigator.of(context).pop();
+              await onSave(controller.text);
             },
           ),
         ],
