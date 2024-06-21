@@ -42,6 +42,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
         'per_page': perPage,
         'orderBy': 'client_priority',
         'client_id': id,
+        'deliver_to_client': 0,
         'repaired_in_center': 1,
         'with': 'customer',
       });
@@ -79,6 +80,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                 'page': 1,
                 'per_page': perPage,
                 'orderBy': 'client_priority',
+                'deliver_to_client': 0,
                 'client_id': id,
                 'repaired_in_center': 1,
               })

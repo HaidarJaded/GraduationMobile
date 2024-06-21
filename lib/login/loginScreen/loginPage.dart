@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -30,11 +31,15 @@ class LoginPageState extends State<LoginPage> {
 
   Future<void> checkLoginStatus() async {
     String? token = await InstanceSharedPrefrences().getToken();
-    if (token == null ||
-        Get.currentRoute != '/' ||
-        !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
-      return;
-    }
+    AwesomeNotifications().getInitialNotificationAction().then((value) async {
+      if (value == null) {
+        if (token == null ||
+            Get.currentRoute != '/' ||
+            !await BlocProvider.of<loginCubit>(Get.context!).refreshToken()) {
+          return;
+        }
+      }
+    });
   }
 
   @override

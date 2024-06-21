@@ -7,6 +7,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/notification_controller.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/delivery_man_cubit.dart';
+import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
 import 'package:graduation_mobile/allDevices/cubit/swich/SwitchEvent.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/allDevices/screen/cubit/edit_cubit.dart';
@@ -21,6 +22,7 @@ import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/completed_ccbit/completed_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/notifications_cubit/notifications_cubit.dart';
+import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/step_cubit/step_cubit.dart';
 import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
@@ -117,7 +119,7 @@ Future<void> checkLoginStatus() async {
         title: "مرحباً بعودتك",
       );
     } else if (ruleName == 'عامل توصيل') {
-      Get.off(() => const allDevices());
+      Get.off(() => const Delivery_man());
     } else if (ruleName == 'عميل') {
       InstanceSharedPrefrences().isAccountActive().then((isAccountActive) {
         if (isAccountActive) {

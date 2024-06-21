@@ -11,7 +11,6 @@ import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
-import 'package:graduation_mobile/order/orders_page.dart';
 
 class NotificationController {
   @pragma("vm:entry-point")
@@ -43,11 +42,7 @@ class NotificationController {
         if (payload.containsKey('order_id')) {
           int orderId = int.parse(payload['order_id']);
           String? ruleName = await InstanceSharedPrefrences().getRuleName();
-          if (ruleName == 'عميل') {
-            Get.offAll(() => ordersPage(
-                  orderId: orderId,
-                ));
-          } else if (ruleName == 'عامل توصيل') {
+          if (ruleName == 'عامل توصيل') {
             Get.offAll(() => Delivery_man(
                   orderId: orderId,
                 ));
