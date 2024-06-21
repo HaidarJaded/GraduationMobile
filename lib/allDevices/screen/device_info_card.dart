@@ -43,18 +43,38 @@ class DeviceInfoCard extends StatelessWidget {
       Text('اسم الزبون: ${device.customer?.name ?? ''}'),
       Text('معلومات اضافية: ${device.info}'),
       Text('العطل: ${device.problem ?? 'لم يحدد بعد'}'),
-      Text('التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
-      Text('التكلفة على الزبون: ${device.costToCustomer ?? 'لم تحدد بعد'}'),
-      const Text('خطوات الاصلاح:'),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: device.fixSteps == null
-            ? [const Text('     لم تحدد بعد')]
-            : device.fixSteps!
-                .split('\n')
-                .map((step) => Text('         - $step'))
-                .toList(),
-      ),
+      FutureBuilder(
+          future: InstanceSharedPrefrences().getRuleName(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.data == 'عميل') {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
+                    Text(
+                        'التكلفة على الزبون: ${device.costToCustomer ?? 'لم تحدد بعد'}')
+                  ],
+                );
+              }
+              return const SizedBox();
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          }),
+      if (device.status == 'جاهز') ...[
+        const Text('خطوات الاصلاح:'),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: device.fixSteps == null
+              ? [const Text('     لم تحدد')]
+              : device.fixSteps!
+                  .split('\n')
+                  .map((step) => Text('         - $step'))
+                  .toList(),
+        )
+      ],
       Text('حالة الجهاز: ${device.status}'),
     ];
     contentList.add(const Divider());
