@@ -17,7 +17,6 @@ class PhoneCubit extends Cubit<PhoneState> {
       final ReturnedObject allDevices =
           await _crudController.getAll(queryParams);
       final List? userDevises = allDevices.items;
-      print(userDevises);
 
       if (userDevises != null) {
         emit(PhoneSuccess(data: allDevices));

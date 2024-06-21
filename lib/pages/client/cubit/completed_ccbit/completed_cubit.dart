@@ -14,7 +14,6 @@ class CompletedCubit extends Cubit<CompletedState> {
   Future<void> getCompletedDeviceData(
       [Map<String, dynamic>? queryParams]) async {
     try {
-      print("hi1Loading");
       emit(CompletedLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
 

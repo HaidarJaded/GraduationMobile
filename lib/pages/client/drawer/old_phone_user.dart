@@ -73,19 +73,14 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
                   .getCompletedDeviceData({
                 'page': 1,
                 'per_page': perPage,
-                'orderBy': 'date_receipt',
+                'orderBy': 'date_delivery_client',
                 'dir': 'desc',
                 'user_id': id,
                 'deliver_to_client': 1,
-                'with': 'customer'
+                'with': 'client'
               })
             })
         .then((value) => readyToBuild = true);
-    CrudController<CompletedDevice>().getAll({}).then((value) {
-      // ignore: avoid_print
-      print(value.items);
-    });
-
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         setState(() {
@@ -147,7 +142,7 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
                                   ),
                                   subtitle:
                                       // ignore: prefer_interpolation_to_compose_strings
-                                      Text(completedDevice[i].imei),
+                                      Text(completedDevice[i].imei ?? ''),
                                   children: <Widget>[
                                     Padding(
                                         padding: const EdgeInsets.only(
@@ -174,7 +169,7 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
                                                       child: Text(":")),
                                                   Expanded(
                                                       child: Text(
-                                                          "${completedDevice[i].problem}")),
+                                                          "${completedDevice[i].problem ?? 'لم تحدد'}")),
                                                 ],
                                               ),
                                               const SizedBox(
@@ -188,7 +183,7 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
                                                       child: Text(":")),
                                                   Expanded(
                                                       child: Text(
-                                                          "${completedDevice[i].costToCustomer}")),
+                                                          "${completedDevice[i].costToClient ?? 'لم تحدد '}")),
                                                 ],
                                               ),
                                               const SizedBox(
