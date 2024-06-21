@@ -1,12 +1,14 @@
 // ignore_for_file: avoid_print
 import 'package:bloc/bloc.dart';
+import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
 
 class UserDetailsCubit extends Cubit<UserDetailsState> {
   // final CrudController<User> _crudController;
 
-  UserDetailsCubit() : super(UserDetalisInitial());
+  UserDetailsCubit(/*this._crudController*/) : super(UserDetalisInitial());
 
   // Future<void> fetchProfileDetails(int userId) async {
   //   try {
@@ -29,7 +31,7 @@ class UserDetailsCubit extends Cubit<UserDetailsState> {
 
   // ignore: non_constant_identifier_names
   Future<void> EditData({
-    required int id,
+    int? id,
     required String email,
     // required String password,
     required String phone,
@@ -40,6 +42,7 @@ class UserDetailsCubit extends Cubit<UserDetailsState> {
         // 'password': password,
         'phone': phone
       };
+
       var infoRedponse = await Api().put(
         path: 'https://haidarjaded787.serv00.net/api/users/$id',
         body: body,

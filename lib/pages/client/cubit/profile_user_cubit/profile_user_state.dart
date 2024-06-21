@@ -17,5 +17,3 @@ final class UserDetalisFailure extends UserDetailsState {
 }
 
 final class UserDetalisLoading extends UserDetailsState {}
-
-final class UserDetalisEditing extends UserDetailsState {}
