@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 
 import 'package:graduation_mobile/drawerScreen/oldPhone/cubit/completed_device_cubit.dart';
+import 'package:graduation_mobile/drawerScreen/oldPhone/searchCompletedDevice.dart';
 
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
@@ -43,7 +44,8 @@ class _oldPhoneState extends State<oldPhone> {
         'orderBy': 'date_receipt',
         'dir': 'desc',
         'client_id': id,
-        'with': 'customer'
+        'with': 'customer',
+        'deliver_to_customer': 1
       });
       final List<CompletedDevice>? completedDevice = data.items;
       if (completedDevice != null) {
@@ -80,7 +82,8 @@ class _oldPhoneState extends State<oldPhone> {
                 'orderBy': 'date_receipt',
                 'dir': 'desc',
                 'client_id': id,
-                'with': 'customer'
+                'with': 'customer',
+                'deliver_to_customer': 1
               })
             })
         .then((value) => readyToBuild = true);
@@ -122,9 +125,13 @@ class _oldPhoneState extends State<oldPhone> {
                 title: const Text('MYP'),
                 actions: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.search),
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
                     onPressed: () {
-                      showSearch(context: context, delegate: search());
+                      showSearch(
+                          context: context, delegate: searchCompletedDevice());
                     },
                   ),
                 ],

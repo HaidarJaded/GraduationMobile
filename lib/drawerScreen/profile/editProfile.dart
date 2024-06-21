@@ -1,11 +1,11 @@
-// ignore_for_file: must_be_immutable, camel_case_types, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unnecessary_import
+// ignore_for_file: must_be_immutable, camel_case_types, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unnecessary_import, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
-import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
 import 'package:graduation_mobile/drawerScreen/profile/cubit/edit_profile_cubit.dart';
 import 'package:graduation_mobile/drawerScreen/profile/profile.dart';
 
@@ -15,7 +15,7 @@ class editProfile extends StatelessWidget {
   editProfile(
       {super.key,
       this.labelText,
-      this.icon,
+      required this.icon,
       required this.controller,
       this.validator,
       this.inputFormatters});
@@ -24,7 +24,7 @@ class editProfile extends StatelessWidget {
   TextEditingController centerName = TextEditingController();
   TextEditingController addres = TextEditingController();
   final labelText;
-  final icon;
+  Icon icon;
   final TextEditingController controller;
   final validator;
   List<TextInputFormatter>? inputFormatters;
@@ -58,10 +58,19 @@ class editProfile extends StatelessWidget {
       return Container(
           child: Column(
         children: [
-          textFormField(
-            labelText: labelText,
-            icon: icon,
+          TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             controller: controller,
+            decoration: InputDecoration(
+              labelText: labelText,
+              // labelStyle: const TextStyle(fontFamily: "Roboto"),
+              prefixIcon: icon,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
             validator: validator,
             inputFormatters: inputFormatters,
           ),

@@ -9,6 +9,8 @@ final class NotificationInitial extends NotificationState {}
 
 final class NotificationLoading extends NotificationState {}
 
+final class NotificationDeleteSucsee extends NotificationState {}
+
 final class NotificationSucess extends NotificationState {
   final ReturnedObject data;
   NotificationSucess({required this.data});

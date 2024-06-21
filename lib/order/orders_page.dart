@@ -105,7 +105,11 @@ class _orderState extends State<ordersPage> {
       builder: (context, state) {
         if (state is OrderLoading) {
           return Scaffold(
-              appBar: SearchAppBar(),
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+                title: const Text('MYP'),
+              ),
+              drawer: const CustomDrawer(),
               body: Container(
                   color: Colors.white,
                   child: const Center(child: CircularProgressIndicator())));
@@ -134,7 +138,10 @@ class _orderState extends State<ordersPage> {
                         )
                       : null
                   : const CircularProgressIndicator(),
-              appBar: SearchAppBar(),
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+                title: const Text('MYP'),
+              ),
               drawer: const CustomDrawer(),
               body: Container(
                   padding: const EdgeInsets.all(5),

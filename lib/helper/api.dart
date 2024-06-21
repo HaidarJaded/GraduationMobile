@@ -105,7 +105,7 @@ class Api {
     }
   }
 
-  Future<void> delete({required String path, required int id}) async {
+  Future<dynamic> delete({required String path}) async {
     if (!await CheckConnection().thereIsAnInternet()) {
       return;
     }

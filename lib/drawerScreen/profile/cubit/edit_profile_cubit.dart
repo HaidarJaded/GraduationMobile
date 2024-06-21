@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, depend_on_referenced_packages
 
 import 'package:bloc/bloc.dart';
 
@@ -35,20 +35,15 @@ class EditProfileCubit extends Cubit<EditProfileState> {
           body: body,
         );
 
-        print("id" + ' ${id}');
-        print(response);
-
         if (response != null) {
           emit(EditProfileSucess());
         } else {
           emit(EditProfileFailure(errorMessage: "somethingWrong"));
         }
       } else {
-        print("No data to update");
         emit(EditProfileFailure(errorMessage: "No data to update"));
       }
     } catch (e) {
-      print(e);
       emit(EditProfileFailure(errorMessage: e.toString()));
     }
   }

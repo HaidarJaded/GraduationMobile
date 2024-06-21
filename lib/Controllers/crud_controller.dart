@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_shadowing_type_parameters, equal_keys_in_map
+// ignore_for_file: avoid_shadowing_type_parameters, equal_keys_in_map, avoid_print
 
 import 'dart:async';
 
@@ -97,12 +97,24 @@ class CrudController<T extends HasId> {
     return null;
   }
 
-  Future<void> delete(int id) async {
+  Future<User?> getUserDetails(int userId) async {
+    try {
+      final response = await Api().get(path: 'api/users/$userId');
+      if (response != null && response['data'] != null) {
+        return User.fromJson(response['data']);
+      }
+    } catch (e) {
+      print('Error fetching user details: $e');
+    }
+    return null;
+  }
+
+  Future<void> delete() async {
     if (!await CheckConnection().thereIsAnInternet()) {
       return;
     }
     String? table = getTable<T>();
-    await Api().delete(path: 'api/$table', id: id);
+    await Api().delete(path: 'api/$table');
   }
 
   T _fromJson<T>(Map<String, dynamic> json) {

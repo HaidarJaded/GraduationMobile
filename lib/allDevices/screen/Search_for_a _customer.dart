@@ -126,8 +126,11 @@ class Search_for_a_customer extends StatelessWidget {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'ادخل رقم الهاتف لصاحب الجهاز';
-                          } else if (value.length != 10) {
+                          }
+                          if (value.length < 10) {
                             return 'يجب أن يكون 10 ارقام';
+                          } else if (value.length > 10) {
+                            return 'اكثر من  10 ارقام';
                           }
                           return null;
                         },

@@ -11,8 +11,8 @@ import '../Controllers/crud_controller.dart';
 import '../allDevices/screen/cubit/edit_cubit.dart';
 import '../allDevices/screen/device_info_card.dart';
 import '../allDevices/screen/edit.dart';
-import '../bar/SearchAppBar.dart';
 import '../models/device_model.dart';
+import 'searchAllPhoneInCenter.dart';
 
 class allPhoneInCenter extends StatefulWidget {
   const allPhoneInCenter({super.key});
@@ -102,7 +102,14 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
     return BlocBuilder<AllPhoneInCenterCubit, AllPhoneInCenterState>(
         builder: (context, state) {
       if (state is AllPhoneInCenterLoading || readyToBuild == false) {
-        return const Center(child: CircularProgressIndicator());
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+            title: const Text('MYP'),
+          ),
+          drawer: const CustomDrawer(),
+          body: const Center(child: CircularProgressIndicator()),
+        );
       } else if (state is AllPhoneInCenterSuccess) {
         if (firstTime) {
           totalCount = state.data.pagination?['total'];
@@ -123,7 +130,8 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    showSearch(context: context, delegate: search());
+                    showSearch(
+                        context: context, delegate: searchAllPhoneInCenter());
                   },
                 ),
               ],

@@ -17,6 +17,7 @@ class RegistrationCubit extends Cubit<RegistrationState> {
     required String nationalId,
     required String centerName,
     required String password_confirmation,
+    required String phone,
   }) async {
     try {
       emit(RegistrationState.loading);
@@ -31,16 +32,13 @@ class RegistrationCubit extends Cubit<RegistrationState> {
           'email': email,
           'password': password,
           'national_id': nationalId,
-          'password_confirmation': password_confirmation
+          'password_confirmation': password_confirmation,
+          'phone': phone
         },
       );
       // print(response.body);
       if (response != null) {
-        final token = response['token'];
-        final userInfoMap = response['client'];
-        if (token != null && userInfoMap != null) {
-          emit(RegistrationState.success);
-        }
+        emit(RegistrationState.success);
       } else {
         emit(RegistrationState.failure);
       }
@@ -48,5 +46,9 @@ class RegistrationCubit extends Cubit<RegistrationState> {
       print(e.toString());
       emit(RegistrationState.failure);
     }
+  }
+
+  void resetState() {
+    emit(RegistrationState.initial);
   }
 }

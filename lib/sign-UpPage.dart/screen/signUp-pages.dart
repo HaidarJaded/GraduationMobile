@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, file_names, use_super_parameters
 
 import 'package:flutter/material.dart';
+// ignore: unnecessary_import
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,9 +31,10 @@ class _SignUpPagesState extends State<SignUpPages> {
   TextEditingController national_Id = TextEditingController();
   TextEditingController centerName = TextEditingController();
   TextEditingController password_confirmation = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-
+  @override
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegistrationCubit, RegistrationState>(
@@ -42,14 +44,20 @@ class _SignUpPagesState extends State<SignUpPages> {
       } else if (state == RegistrationState.success) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           // This will ensure that the current frame is complete before executing the navigation
-          Get.back();
+
+          BlocProvider.of<RegistrationCubit>(context).resetState();
+          Get.offAll(() => const LoginPage());
           SnackBarAlert().alert("تم انشاء حساب بنجاح",
               color: const Color.fromRGBO(0, 200, 0, 1), title: "مرحباً بك");
         });
       } else if (state == RegistrationState.failure) {
-        SnackBarAlert()
-            .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
-        Navigator.pop(context);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // This will ensure that the current frame is complete before executing the navigation
+          BlocProvider.of<RegistrationCubit>(context).resetState();
+          SnackBarAlert()
+              .alert("فشل في انشاء الحساب", title: "الرجاء المحاولة مرة اخرى");
+          // Get.offAll(() => const SignUpPages());
+        });
       } else if (state == RegistrationState.initial) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -203,6 +211,30 @@ class _SignUpPagesState extends State<SignUpPages> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                          labelText: 'رقم الهاتف',
+                          prefixIcon: const Icon(Icons.phone_android_rounded),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
+                      controller: phoneNumber,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'الرجاء إدخال  رقم الهاتف';
+                        }
+                        if (value.length != 10) {
+                          return 'يجب ان يكون 10 رقم';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
                           labelText: 'الرقم الوطني',
                           prefixIcon: const Icon(Icons.list_rounded),
                           contentPadding: const EdgeInsets.symmetric(
@@ -254,19 +286,25 @@ class _SignUpPagesState extends State<SignUpPages> {
                     InkWell(
                       onTap: () {
                         if (formKey.currentState?.validate() ?? false) {
+                          if (passwordController.text !=
+                              password_confirmation.text) {
+                            SnackBarAlert().alert("فشل في انشاء الحساب",
+                                title: "يرجى تأكيد كلمة المرور");
+                            return;
+                          }
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             BlocProvider.of<RegistrationCubit>(context)
                                 .register(
-                                    name: name.text,
-                                    lastName: lastname.text,
-                                    address: address.text,
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                    nationalId: national_Id.text,
-                                    centerName: centerName.text,
-                                    password_confirmation:
-                                        password_confirmation.text);
-                            Get.offAll(const LoginPage());
+                              name: name.text,
+                              lastName: lastname.text,
+                              address: address.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              nationalId: national_Id.text,
+                              centerName: centerName.text,
+                              password_confirmation: password_confirmation.text,
+                              phone: phoneNumber.text,
+                            );
                           });
                         }
                       },
@@ -304,7 +342,9 @@ class _SignUpPagesState extends State<SignUpPages> {
                           style: TextStyle(),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Get.offAll(() => const LoginPage());
+                          },
                           child: const Text(
                             'تسجيل الدخول',
                             style: TextStyle(color: Colors.blueAccent),

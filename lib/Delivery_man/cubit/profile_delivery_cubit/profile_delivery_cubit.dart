@@ -1,7 +1,9 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_field
 import 'package:bloc/bloc.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_state.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 
 class DeliveryDetailsCubit extends Cubit<DeliveryDetailsState> {
   DeliveryDetailsCubit() : super(DeliveryDetalisInitial());

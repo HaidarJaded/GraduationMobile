@@ -21,7 +21,6 @@ import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/completed_ccbit/completed_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/notifications_cubit/notifications_cubit.dart';
-import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/step_cubit/step_cubit.dart';
 import 'package:graduation_mobile/pages/client/disabled_account_page.dart';
