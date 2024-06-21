@@ -13,7 +13,6 @@ import '../../Controllers/auth_controller.dart';
 import '../../helper/snack_bar_alert.dart';
 import '../../login/loginScreen/loginPage.dart';
 
-// ignore: must_be_immutable
 class draweDelivery extends StatelessWidget {
   const draweDelivery({super.key});
   void logout() async {
@@ -49,7 +48,7 @@ class draweDelivery extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                             child: IconButton(
                                 onPressed: () {
-                                  Get.to(DeliveryProfilePage());
+                                  Get.to(()=>const DeliveryProfilePage());
                                 },
                                 icon: const Icon(Icons.person))),
                       ),
