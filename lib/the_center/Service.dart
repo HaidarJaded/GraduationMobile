@@ -87,10 +87,10 @@ class _serviceScreeenState extends State<ServiceScreeen> {
     return BlocBuilder<ServiceCubit, ServiceState>(builder: (context, state) {
       if (state is ServiceLoading || readyToBuild == false) {
         return Scaffold(
-            appBar:  AppBar(
-            backgroundColor: const Color.fromARGB(255, 87, 42, 170),
-            title: const Text('MYP'),
-          ),
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+              title: const Text('MYP'),
+            ),
             drawer: const CustomDrawer(),
             body: Container(
                 color: Colors.white,
@@ -114,7 +114,7 @@ class _serviceScreeenState extends State<ServiceScreeen> {
             controller: controller,
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, mainAxisExtent: 120),
+                crossAxisCount: 2, mainAxisExtent: 150),
             itemCount: service.length + 1,
             itemBuilder: (context, index) {
               if (index < service.length) {
@@ -131,6 +131,13 @@ class _serviceScreeenState extends State<ServiceScreeen> {
                       children: [
                         Text(
                           service[index].name,
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          service[index].device_model,
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

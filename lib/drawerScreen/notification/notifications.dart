@@ -1,5 +1,8 @@
 // ignore_for_file: camel_case_types, unnecessary_import, body_might_complete_normally_nullable, avoid_unnecessary_containers
 
+import 'dart:convert';
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,6 +88,9 @@ class _notificationsScreenState extends State<notificationsScreen> {
     });
   }
 
+  String body = "";
+  String body2 = "";
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationCubit, NotificationState>(
@@ -117,6 +123,13 @@ class _notificationsScreenState extends State<notificationsScreen> {
           body: ListView.builder(
             itemCount: notification.length,
             itemBuilder: (BuildContext context, int index) {
+              body = notification[index].body.toString();
+              for (var i = 1; i < body.length - 1; i++) {
+                if (i != 0 || i != body.length) {
+                  body2 += body[i];
+                }
+              }
+
               return Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -124,8 +137,13 @@ class _notificationsScreenState extends State<notificationsScreen> {
                   elevation: 4.0,
                   child: ListTile(
                     title: Text(notification[index].title),
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.notifications),
+                    subtitle: Text(body2),
+                    leading: const Column(
+                      children: [
+                        CircleAvatar(
+                          child: Icon(Icons.notifications),
+                        ),
+                      ],
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),

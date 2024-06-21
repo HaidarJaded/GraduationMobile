@@ -8,6 +8,7 @@ class Service1 implements HasId {
   static String table = "services";
   final String name;
   final String price;
+  final String device_model;
   final String timeRequired;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -16,6 +17,7 @@ class Service1 implements HasId {
     this.id,
     required this.name,
     required this.price,
+    required this.device_model,
     required this.timeRequired,
     required this.createdAt,
     required this.updatedAt,
@@ -26,6 +28,7 @@ class Service1 implements HasId {
       id: json['id'],
       name: json['name'],
       price: json['price'].toString(),
+      device_model: json['device_model'],
       timeRequired: json['time_required'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
