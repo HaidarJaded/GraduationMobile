@@ -6,6 +6,7 @@ import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:meta/meta.dart';
 import '../../../Controllers/returned_object.dart';
+import '../../../helper/snack_bar_alert.dart';
 import '../../../models/notification.dart';
 part 'notification_state.dart';
 
@@ -31,14 +32,14 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> deleteNotification({required String id}) async {
     try {
-     
-
       var respone = await Api().delete(
         path: 'api/notifications/delete/${id}',
       );
 
       if (respone == null) {
-        emit(NotificationDeleteSucsee());
+        SnackBarAlert().alert("تمت العملية",
+            color: const Color.fromRGBO(0, 200, 0, 1),
+            title: "تم تحديث البيانات بنجاح");
       }
     } catch (e) {
       emit(NotificationFailur(errorMessage: e.toString()));

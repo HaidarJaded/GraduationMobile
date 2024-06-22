@@ -138,36 +138,12 @@ class _notificationsScreenState extends State<notificationsScreen> {
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('تأكيد الحذف'),
-                              content: const Text(
-                                  'هل أنت متأكد أنك تريد حذف هذا الإشعار؟'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('إلغاء'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('حذف'),
-                                  onPressed: () {
-                                    BlocProvider.of<NotificationCubit>(context)
-                                        .deleteNotification(
-                                            id: notification[index].StringId!);
-                                    setState(() {
-                                      notification.removeAt(index);
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        BlocProvider.of<NotificationCubit>(context)
+                            .deleteNotification(
+                                id: notification[index].StringId!);
+                        setState(() {
+                          notification.removeAt(index);
+                        });
                       },
                     ),
                   ),
@@ -186,13 +162,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
             drawer: const CustomDrawer(),
             body: Center(child: Text("${state.errorMessage}")));
       }
-      if (state is NotificationDeleteSucsee) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          SnackBarAlert().alert("تمت العملية",
-              color: const Color.fromRGBO(0, 200, 0, 1),
-              title: "تم تحديث البيانات بنجاح");
-        });
-      }
+     
       return Container();
     });
   }
