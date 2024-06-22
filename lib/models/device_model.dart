@@ -26,6 +26,7 @@ class Device implements HasId {
   DateTime? dateReceiptFromCustomer;
   DateTime? expectedDateOfDelivery;
   DateTime? clientDateWarranty;
+  DateTime? customerDateWarranty;
   int? deliverToClient;
   int? deliverToCustomer;
   int? repairedInCenter;
@@ -63,6 +64,7 @@ class Device implements HasId {
       this.updatedAt,
       this.customer,
       this.user,
+      this.customerDateWarranty,
       this.client,
       this.orders});
 
@@ -87,6 +89,8 @@ class Device implements HasId {
       expectedDateOfDelivery:
           DateTime.tryParse(json['Expected_date_of_delivery'] ?? ''),
       clientDateWarranty: DateTime.tryParse(json['client_date_warranty'] ?? ''),
+      customerDateWarranty:
+          DateTime.tryParse(json['customer_date_warranty'] ?? ''),
       deliverToClient: json['deliver_to_client'],
       deliverToCustomer: json['deliver_to_customer'],
       repairedInCenter: json['repaired_in_center'],
