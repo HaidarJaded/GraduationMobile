@@ -73,10 +73,12 @@ class _orderState extends State<ordersPage> {
         await User.hasPermission('استعلام عن طلبات الاجهزة');
     bool hasSelectProductsOrderPermission =
         await User.hasPermission('استعلام عن طلبات المنتجات');
-    this.hasAddingOrderPermission = hasAddingOrderPermission;
-    this.hasSelectDevicesOrderPermission = hasSelectDevicesOrderPermission;
-    this.hasSelectProductsOrderPermission = hasSelectProductsOrderPermission;
-    readyToBuild = true;
+    setState(() {
+      this.hasAddingOrderPermission = hasAddingOrderPermission;
+      this.hasSelectDevicesOrderPermission = hasSelectDevicesOrderPermission;
+      this.hasSelectProductsOrderPermission = hasSelectProductsOrderPermission;
+      readyToBuild = true;
+    });
   }
 
   int getIndexOfId(List items, int id) {
@@ -97,6 +99,7 @@ class _orderState extends State<ordersPage> {
         'client_id': clientId
       });
     });
+    checkPermission();
   }
 
   @override
