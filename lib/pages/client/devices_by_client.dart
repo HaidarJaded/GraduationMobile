@@ -35,7 +35,6 @@ class _DevicesByClientState extends State<DevicesByClient> {
   final scrollController = ScrollController();
   int totalCount = 0;
 
-
   @override
   void initState() {
     super.initState();
@@ -52,6 +51,7 @@ class _DevicesByClientState extends State<DevicesByClient> {
             'user_id': userId,
             'client_id': widget.client.id,
             'deliver_to_client': 0,
+            'with': 'client'
           } as Map<String, dynamic>?)
           .then((value) => readyToBuild = true);
     });
@@ -366,7 +366,8 @@ class _DevicesByClientState extends State<DevicesByClient> {
     });
     await _crudController.update(device.id!, {'status': status});
   }
-    Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
+
+  Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
         return;
@@ -375,6 +376,7 @@ class _DevicesByClientState extends State<DevicesByClient> {
         'page': currentPage,
         'per_page': perPage,
         'orderBy': 'client_priority',
+        'with': 'client',
         'user_id': userId,
         'client_id': widget.client.id,
         'deliver_to_client': 0,
@@ -397,5 +399,4 @@ class _DevicesByClientState extends State<DevicesByClient> {
       return;
     }
   }
-
 }
