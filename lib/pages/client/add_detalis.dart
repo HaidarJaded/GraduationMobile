@@ -224,12 +224,7 @@ class _AddDetalisState extends State<AddDetalis> {
   }
 
   void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _expectedDateOfDelivery ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
+    final DateTime? picked = await showDateTimePicker(context: context);
 
     if (picked != null && picked != _expectedDateOfDelivery) {
       setState(() {
@@ -272,5 +267,40 @@ class _AddDetalisState extends State<AddDetalis> {
         );
       },
     );
+  }
+
+  Future<DateTime?> showDateTimePicker({
+    required BuildContext context,
+    DateTime? initialDate,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) async {
+    initialDate ??= DateTime.now();
+    firstDate ??= DateTime.now();
+    lastDate ??= firstDate.add(const Duration(days: 365 * 200));
+
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (selectedDate == null) return null;
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: Get.context!,
+      initialTime: TimeOfDay.fromDateTime(initialDate),
+    );
+
+    return selectedTime == null
+        ? selectedDate
+        : DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
+          );
   }
 }
