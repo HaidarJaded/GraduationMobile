@@ -1,7 +1,5 @@
 // ignore_for_file: camel_case_types, unnecessary_import, body_might_complete_normally_nullable, avoid_unnecessary_containers
 
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,9 +85,6 @@ class _notificationsScreenState extends State<notificationsScreen> {
     });
   }
 
-  String body = "";
-  String body2 = "";
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationCubit, NotificationState>(
@@ -122,12 +117,8 @@ class _notificationsScreenState extends State<notificationsScreen> {
           body: ListView.builder(
             itemCount: notification.length,
             itemBuilder: (BuildContext context, int index) {
-              body = notification[index].body.toString();
-              for (var i = 1; i < body.length - 1; i++) {
-                if (i != 0 || i != body.length) {
-                  body2 += body[i];
-                }
-              }
+              List notificationBodyList = notification[index].body;
+              String notificationBody = notificationBodyList.join(' ');
 
               return Padding(
                 padding:
@@ -136,7 +127,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
                   elevation: 4.0,
                   child: ListTile(
                     title: Text(notification[index].title),
-                    subtitle: Text(body2),
+                    subtitle: Text(notificationBody),
                     leading: const Column(
                       children: [
                         CircleAvatar(
@@ -147,9 +138,36 @@ class _notificationsScreenState extends State<notificationsScreen> {
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        BlocProvider.of<NotificationCubit>(context)
-                            .deleteNotification(
-                                id: notification[index].StringId!);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('تأكيد الحذف'),
+                              content: const Text(
+                                  'هل أنت متأكد أنك تريد حذف هذا الإشعار؟'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('إلغاء'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('حذف'),
+                                  onPressed: () {
+                                    BlocProvider.of<NotificationCubit>(context)
+                                        .deleteNotification(
+                                            id: notification[index].StringId!);
+                                    setState(() {
+                                      notification.removeAt(index);
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ),
@@ -173,7 +191,6 @@ class _notificationsScreenState extends State<notificationsScreen> {
           SnackBarAlert().alert("تمت العملية",
               color: const Color.fromRGBO(0, 200, 0, 1),
               title: "تم تحديث البيانات بنجاح");
-          Get.offAll(() => const notificationsScreen());
         });
       }
       return Container();

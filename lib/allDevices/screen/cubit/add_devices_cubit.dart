@@ -29,7 +29,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
         emit(AddDevicesFailure(errorMessage: 'No data found'));
       }
     } catch (e) {
-      print(e);
+      
       emit(AddDevicesFailure(errorMessage: e));
     }
     Get.back();
@@ -75,7 +75,7 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       required String info,
       required repairedInCenter,
       required int cusomer_id}) async {
-    print("loading");
+   
     emit(AddDevicesLoading());
     var client_id = await InstanceSharedPrefrences().getId();
 

@@ -31,11 +31,10 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> deleteNotification({required String id}) async {
     try {
-      
-      emit(NotificationLoading());
+     
+
       var respone = await Api().delete(
-        path:
-            'https://haidarjaded787.serv00.net/api/notifications/delete/${id}',
+        path: 'api/notifications/delete/${id}',
       );
 
       if (respone == null) {

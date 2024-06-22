@@ -1,8 +1,6 @@
 // ignore_for_file: avoid_print, unused_field
 import 'package:bloc/bloc.dart';
-import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
-import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/cubit/profile_user_cubit/profile_user_state.dart';
 
 class UserDetailsCubit extends Cubit<UserDetailsState> {

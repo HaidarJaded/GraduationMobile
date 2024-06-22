@@ -16,7 +16,7 @@ class ServiceCubit extends Cubit<ServiceState> {
     try {
       emit(ServiceLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
-      print(data.items);
+    
       if (data.items != null) {
         emit(ServiceSucces(data: data));
       } else {

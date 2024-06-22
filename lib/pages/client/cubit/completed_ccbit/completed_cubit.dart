@@ -17,7 +17,7 @@ class CompletedCubit extends Cubit<CompletedState> {
       emit(CompletedLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
 
-      print(data.items);
+      
       if (data.items != null) {
         emit(CompletedSucces(data: data));
       } else {

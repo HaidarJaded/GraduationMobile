@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_cubit.dart';
 import 'package:graduation_mobile/Delivery_man/cubit/profile_delivery_cubit/profile_delivery_state.dart';
 import 'package:graduation_mobile/models/user_model.dart';
@@ -138,7 +137,7 @@ class _DeliveryProfilePageState extends State<DeliveryProfilePage> {
                   ListTile(
                     leading: const Icon(Icons.phone),
                     title: const Text('رقم الهاتف'),
-                    subtitle: Text('user.phone'),
+                    subtitle: const Text('user.phone'),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
