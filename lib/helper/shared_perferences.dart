@@ -89,6 +89,25 @@ class InstanceSharedPrefrences {
     return jsonDecode(profile)['phone'];
   }
 
+  Future<String?> getAddress() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['address'];
+  }
+
+  Future setAddress(String newAddress) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['address'] = newAddress;
+    setProfile(userProfile);
+  }
+
   Future<bool> isAccountActive() async {
     await initial();
     var profile = prefs.getString('profile');
@@ -157,5 +176,4 @@ class InstanceSharedPrefrences {
     userProfile['phone'] = newPhone;
     setProfile(userProfile);
   }
-
 }
