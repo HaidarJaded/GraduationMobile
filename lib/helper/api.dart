@@ -122,11 +122,13 @@ class Api {
       var response = await dio.delete(path);
       if (!(response.statusCode! >= 200 && response.statusCode! < 300)) {
         HttpExceptionsHandler().handleException(response.statusCode!);
+        return "error";
       }
+      return null;
     } on DioException catch (e) {
       HttpExceptionsHandler().handleException(
           e.response!.statusCode!, e.response?.data['message']);
-      return;
+      return "error";
     } catch (e) {
       return;
     }
