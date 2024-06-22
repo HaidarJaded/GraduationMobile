@@ -22,7 +22,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     try {
       emit(AllDevicesLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
-      print(data.items);
+     
       if (data.items != null) {
         emit(AllDevicesSucces(data: data));
       } else {
@@ -38,7 +38,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
       final currentState = state as AllDevicesSucces;
       final devicesList = List<Device>.from(currentState.data.items!);
       // final device = devicesList.removeAt(oldIndex);
-      print('device.id  $deviceId');
+     
       // devicesList.insert(newIndex, device);
 
       final newReturnedObject = ReturnedObject<Device>();
@@ -48,7 +48,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
 
       try {
         emit(AllDevicesLoading());
-        print(newIndex);
+        
         if (oldIndex < newIndex) {
           newIndex -= 1;
         }
@@ -60,12 +60,10 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
           },
         );
 
-        print(response);
+       
         if (response == null) {
           throw Exception('Failed to update device order');
-        } else {
-          print('Device order updated successfully');
-        }
+        } 
       } catch (e) {
         print('Error: $e');
       }

@@ -121,7 +121,7 @@ class addInfoDevice extends StatelessWidget {
                                 icon: const Icon(Icons.numbers),
                                 controller: ImeiController,
                                 validator: (value) {
-                                  if (value.length != 15) {
+                                  if (value.length != 15 && value.length != 0) {
                                     return 'يجب أن يكون 15 رقم';
                                   }
                                 },

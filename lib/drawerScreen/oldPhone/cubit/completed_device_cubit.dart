@@ -20,7 +20,7 @@ class CompletedDeviceCubit extends Cubit<CompletedDeviceState> {
       emit(CompletedDeviceLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
 
-      print(data.items);
+      
       if (data.items != null) {
         emit(CompletedDeviceSucces(data: data));
       } else {

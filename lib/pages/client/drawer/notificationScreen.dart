@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, unused_element
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/models/notification.dart';
 import 'package:graduation_mobile/pages/client/cubit/notifications_cubit/notifications_cubit.dart';
+
+import '../../../drawerScreen/notification/cubit/notification_cubit.dart';
 
 @immutable
 // ignore: use_key_in_widget_constructors
@@ -128,7 +130,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          _showDeleteConfirmationDialog(index);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('تأكيد الحذف'),
+                                content: const Text(
+                                    'هل أنت متأكد أنك تريد حذف هذا الإشعار؟'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('إلغاء'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('حذف'),
+                                    onPressed: () {
+                                      BlocProvider.of<NotificationCubit>(
+                                              context)
+                                          .deleteNotification(
+                                              id: notifications[index]
+                                                  .StringId!);
+                                      setState(() {
+                                        notifications.removeAt(index);
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     ),
@@ -162,7 +195,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
               child: const Text('حذف'),
               onPressed: () {
                 setState(() {
-                  // حذف الإشعار من القائمة
                   notifications.removeAt(index);
                 });
                 Navigator.of(context).pop(); // إغلاق حوار التأكيد

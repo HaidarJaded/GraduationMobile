@@ -3,7 +3,6 @@
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
-import 'package:get/get.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
@@ -28,7 +27,7 @@ class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
       }
     } catch (e) {
       if (isClosed) return; // تحقق مما إذا كان Cubit قد تم إغلاقه
-      printError();
+     
       emit(DeviceDetalisFailure(errormess: e.toString()));
     }
   }

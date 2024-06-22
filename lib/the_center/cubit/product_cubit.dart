@@ -16,7 +16,7 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(ProductLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
-      print(data.items);
+      
       if (data.items != null) {
         emit(ProductSucces(data: data));
       } else {

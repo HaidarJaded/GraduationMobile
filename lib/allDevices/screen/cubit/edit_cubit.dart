@@ -16,9 +16,9 @@ class EditCubit extends Cubit<EditState> {
     final CrudController<Device> _crudController = CrudController<Device>();
     emit(Editloading());
     try {
-      print("hi");
+      
       final Device? result = await _crudController.getById(id, {});
-      print(result);
+      
       if (result != null) {
         emit(EditFound(editDevicesDatat: result));
       } else {
@@ -56,8 +56,7 @@ class EditCubit extends Cubit<EditState> {
           body: body,
         );
 
-        print("id" + ' ${id}');
-        print(response);
+      
 
         if (response != null) {
           emit(EditSuccess());
@@ -65,11 +64,11 @@ class EditCubit extends Cubit<EditState> {
           emit(EditFailur(errMessage: "somethingWrong"));
         }
       } else {
-        print("No data to update");
+       
         emit(EditFailur(errMessage: "No data to update"));
       }
     } catch (e) {
-      print(e);
+     
       emit(EditFailur(errMessage: e.toString()));
     }
   }
@@ -104,8 +103,7 @@ class EditCubit extends Cubit<EditState> {
           body: body,
         );
 
-        print("id" + ' ${id}');
-        print(response);
+        
 
         if (response != null) {
           emit(EditSuccess());
@@ -113,11 +111,11 @@ class EditCubit extends Cubit<EditState> {
           emit(EditFailur(errMessage: "somethingWrong"));
         }
       } else {
-        print("No data to update");
+       
         emit(EditFailur(errMessage: "No data to update"));
       }
     } catch (e) {
-      print(e);
+     
       emit(EditFailur(errMessage: e.toString()));
     }
   }

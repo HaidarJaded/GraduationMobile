@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, non_constant_identifier_names
 
 import 'package:graduation_mobile/models/has_id.dart';
 
