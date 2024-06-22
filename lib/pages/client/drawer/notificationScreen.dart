@@ -117,6 +117,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
             return ListView.builder(
               itemCount: notifications.length,
               itemBuilder: (BuildContext context, int index) {
+                List notificationBodyList = notifications[index].body;
+                String notificationBody = notificationBodyList.join(' ');
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 16.0),
@@ -124,6 +127,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     elevation: 4.0,
                     child: ListTile(
                       title: Text('${notifications[index].title}'),
+                      subtitle: Text(notificationBody),
                       leading: const CircleAvatar(
                         child: Icon(Icons.notifications),
                       ),
