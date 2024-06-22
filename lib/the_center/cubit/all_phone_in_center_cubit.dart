@@ -49,7 +49,11 @@ class AllPhoneInCenterCubit extends Cubit<AllPhoneInCenterState> {
         'page': 1,
         'per_page': 20,
         'orderBy': 'client_priority',
-        'client_id': id
+        'client_id': id,
+        'with': 'customer',
+        'deliver_to_client': 0,
+        'repaired_in_center': 1,
+        'status': 'لم يتم بدء العمل فيه'
       });
       emit(AllPhoneInCenterSuccess(data: data));
     }
