@@ -60,7 +60,7 @@ class _HomePagesState extends State<HomePages> {
         'deliver_to_client': 0,
       }).then((value) {
         setState(() {
-          clients = (value['body'] as List).isEmpty ? {} : value['body'];
+          clients = (value['body']).length == 0 ? {} : value['body'];
           clientsId.addAll(clients.keys);
         });
       }).then((value) => readyToBuild = true);
