@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
+import 'package:graduation_mobile/allDevices/screen/Search_for_a_customer.dart';
+import 'package:graduation_mobile/allDevices/screen/deliver_device_form.dart';
 import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
 import 'package:graduation_mobile/allDevices/screen/edit.dart';
 import 'package:graduation_mobile/helper/api.dart';
@@ -15,7 +17,6 @@ import '../../bar/custom_drawer.dart';
 import '../../bar/SearchAppBar.dart';
 import '../cubit/all_devices_cubit.dart';
 
-import 'search_for_a _customer.dart';
 import 'cubit/edit_cubit.dart';
 
 class allDevices extends StatefulWidget {
@@ -216,19 +217,70 @@ class _allDevicesState extends State<allDevices> {
                                                         snapshot.data!) {
                                                       return IconButton(
                                                         onPressed: () {
-                                                          _showConfirmProcessDialog(
-                                                              device.id!, () {
-                                                            setState(() {
-                                                              devices.remove(
-                                                                  device);
+                                                          if (device
+                                                                  .repairedInCenter ==
+                                                              0) {
+                                                            showDialog(
+                                                                context: Get
+                                                                    .context!,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return DeliverDeviceForm(
+                                                                      device:
+                                                                          device);
+                                                                }).then((value) {
+                                                              if (value !=
+                                                                      null &&
+                                                                  value) {
+                                                                setState(() {
+                                                                  devices.remove(
+                                                                      device);
+                                                                });
+                                                              }
                                                             });
-                                                            Api().put(
-                                                                path:
-                                                                    'api/devices/${device.id}',
-                                                                body: {
+                                                            return;
+                                                          }
+                                                          if (device.status ==
+                                                              'جاهز') {
+                                                            showDialog(
+                                                                context: Get
+                                                                    .context!,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return DeliverDeviceForm(
+                                                                      device:
+                                                                          device);
+                                                                }).then((value) {
+                                                              if (value) {
+                                                                setState(() {
+                                                                  devices.remove(
+                                                                      device);
+                                                                });
+                                                              }
+                                                            });
+                                                            return;
+                                                          }
+                                                          _showConfirmProcessDialog(
+                                                              device.id!,
+                                                              () async {
+                                                            var response =
+                                                                await Api().put(
+                                                                    path:
+                                                                        'api/devices/${device.id}',
+                                                                    body: {
                                                                   'deliver_to_customer':
                                                                       1
                                                                 });
+                                                            if (response !=
+                                                                null) {
+                                                              setState(
+                                                                  () async {
+                                                                devices.remove(
+                                                                    device);
+                                                              });
+                                                            }
                                                             Get.back();
                                                           });
                                                         },
