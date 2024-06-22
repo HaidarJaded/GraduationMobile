@@ -38,10 +38,8 @@ class _productsScreensState extends State<productsScreen> {
         return;
       }
 
-      var data = await CrudController<Product>().getAll({
-        'page': 1,
-        'per_page': perPage,
-      });
+      var data = await CrudController<Product>()
+          .getAll({'page': 1, 'per_page': perPage, 'quantity!': 0});
       final List<Product>? products = data.items;
       if (products != null) {
         int currentPage = data.pagination?['current_page'];
