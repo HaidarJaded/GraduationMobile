@@ -107,7 +107,25 @@ class InstanceSharedPrefrences {
     userProfile['address'] = newAddress;
     setProfile(userProfile);
   }
+  
+  Future<String?> getCenterName() async {
+    await initial();
+    var profile = prefs.getString('profile');
+    if (profile == null) {
+      return null;
+    }
+    return jsonDecode(profile)['center_name'];
+  }
 
+  Future setCenterName(String newCenterName) async {
+    await initial();
+    var userProfile = await getProfile();
+    if (userProfile.isEmpty) {
+      return;
+    }
+    userProfile['center_name'] = newCenterName;
+    setProfile(userProfile);
+  }
   Future<bool> isAccountActive() async {
     await initial();
     var profile = prefs.getString('profile');

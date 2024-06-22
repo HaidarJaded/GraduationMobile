@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Controllers/auth_controller.dart';
-import 'package:graduation_mobile/drawerScreen/profile/profile.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/login/loginScreen/loginPage.dart';
 import 'package:graduation_mobile/models/user_model.dart';
+import 'package:graduation_mobile/pages/client/drawer/client_profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../allDevices/screen/allDevices.dart';
@@ -55,7 +55,9 @@ class CustomDrawer extends StatelessWidget {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.to(() => const ClientProfilePage());
+                                },
                                 icon: const Icon(Icons.person))),
                       ),
                       Expanded(

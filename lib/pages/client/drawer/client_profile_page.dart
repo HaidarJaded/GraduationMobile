@@ -10,17 +10,18 @@ import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 
-class UserProfilePage extends StatefulWidget {
-  const UserProfilePage({super.key});
+class ClientProfilePage extends StatefulWidget {
+  const ClientProfilePage({super.key});
 
   @override
-  _UserProfilePageState createState() => _UserProfilePageState();
+  _ClientProfilePageState createState() => _ClientProfilePageState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
+class _ClientProfilePageState extends State<ClientProfilePage> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+  late TextEditingController _centerNameController;
   late InstanceSharedPrefrences _instanceSharedPrefrences;
   String? phone;
 
@@ -31,6 +32,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     _emailController = TextEditingController();
     _phoneController = TextEditingController();
     _addressController = TextEditingController();
+    _centerNameController = TextEditingController();
   }
 
   @override
@@ -248,7 +250,53 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 _changePasswordDialog();
               },
             ),
-          )
+          ),
+          const Divider(height: 40, thickness: 2),
+          FutureBuilder(
+            future: _instanceSharedPrefrences.getCenterName(),
+            builder: (context, centerNameSnapshot) {
+              if (centerNameSnapshot.connectionState != ConnectionState.done) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              _centerNameController.text = centerNameSnapshot.data ?? '';
+              return ListTile(
+                leading: const Icon(Icons.email),
+                title: const Text('اسم المركز'),
+                subtitle: Text(_centerNameController.text),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    setState(() {
+                      _changeDataDialog(
+                        'اسم المركز',
+                        centerNameSnapshot.data!,
+                        (newCenterName) async {
+                          if (newCenterName == _centerNameController.text) {
+                            return;
+                          }
+                          if (newCenterName.isEmpty) {
+                            SnackBarAlert().alert('الرجاء ادخال اسم المركز');
+                            return;
+                          }
+                          if (await _changeDataOnDatabase(
+                              {'center_name': newCenterName})) {
+                            setState(() {
+                              _centerNameController.text = newCenterName;
+                            });
+                            await _instanceSharedPrefrences
+                                .setCenterName(_centerNameController.text);
+                          }
+                        },
+                        context,
+                      );
+                    });
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -256,11 +304,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
 }
 
 Future<bool> _changeDataOnDatabase(Map<String, String> requestBody) async {
-  int? userId = await InstanceSharedPrefrences().getId();
-  if (userId == null) {
+  int? clientId = await InstanceSharedPrefrences().getId();
+  if (clientId == null) {
     return false;
   }
-  var response = await Api().put(path: 'api/users/$userId', body: requestBody);
+  var response =
+      await Api().put(path: 'api/clients/$clientId', body: requestBody);
   if (response == null) {
     return false;
   }
