@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/product_model.dart';
+import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/the_center/cubit/product_cubit.dart';
 
 import '../Controllers/crud_controller.dart';
@@ -26,7 +29,7 @@ class _productsScreensState extends State<productsScreen> {
   int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
-  List<dynamic> product = [];
+  List<dynamic> products = [];
   bool firstTime = true;
   bool readyToBuild = false;
   Future<void> fetchproducts([int page = 1, int perPage = 20]) async {
@@ -47,7 +50,7 @@ class _productsScreensState extends State<productsScreen> {
         setState(() {
           this.currentPage = currentPage;
           pagesCount = lastPage;
-          this.product.addAll(product);
+          this.products.addAll(products);
           this.totalCount = totalCount;
         });
         return;
@@ -102,7 +105,7 @@ class _productsScreensState extends State<productsScreen> {
           totalCount = state.data.pagination?['total'];
           currentPage = state.data.pagination?['current_page'];
           pagesCount = state.data.pagination?['last_page'];
-          product.addAll(state.data.items!);
+          products.addAll(state.data.items!);
           firstTime = false;
         }
         return Scaffold(
@@ -116,32 +119,61 @@ class _productsScreensState extends State<productsScreen> {
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, mainAxisExtent: 100),
-              itemCount: product.length + 1,
+              itemCount: products.length + 1,
               itemBuilder: (context, index) {
-                if (index < product.length) {
+                if (index < products.length) {
+                  Product product = products[index];
                   return Card(
                     elevation: 12,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product[index].name,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            product[index].price.toString(),
-                            style: const TextStyle(
-                              fontSize: 16,
+                            const SizedBox(height: 5),
+                            Text(
+                              "السعر ${product.price}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
-                          ),
-                        ],
+                            FutureBuilder(
+                                future: checkPermissions(),
+                                builder: ((context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  }
+                                  if (snapshot.data == null ||
+                                      !snapshot.data!) {
+                                    return const SizedBox();
+                                  }
+                                  return TextButton(
+                                      onPressed: () async {
+                                        if (product.id == null) {
+                                          return;
+                                        }
+                                        if (await addingOrder(product.id!)) {
+                                          SnackBarAlert().alert(
+                                              'تمت اضافة طلب بنجاح',
+                                              color: const Color.fromRGBO(
+                                                  0, 222, 0, 1),
+                                              title: 'تم');
+                                        }
+                                      },
+                                      child: const Text('اضافة طلب توصيل'));
+                                }))
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -153,10 +185,10 @@ class _productsScreensState extends State<productsScreen> {
                     ),
                   );
                 } else {
-                  return product.isNotEmpty
+                  return products.isNotEmpty
                       ? firstTime
                           ? const Center(child: Text('لا يوجد اجهزة'))
-                          : product.length >= 20
+                          : products.length >= 20
                               ? const Center(child: Text('لا يوجد المزيد'))
                               : null
                       : const Center(
@@ -176,5 +208,30 @@ class _productsScreensState extends State<productsScreen> {
       }
       return Container();
     });
+  }
+
+  Future<bool> checkPermissions() async {
+    return await User.hasPermission('اضافة طلب لمنتج') &&
+        await User.hasPermission('اضافة طلب');
+  }
+
+  Future<bool> addingOrder(int productId) async {
+    try {
+      int? clientId = await InstanceSharedPrefrences().getId();
+      if (clientId == null) {
+        return false;
+      }
+      var response = await Api().post(path: 'api/orders', body: {
+        'client_id': clientId,
+        'description': 'توصيل طلب للعميل',
+        'products_ids': {productId.toString(): ''}
+      });
+      if (response == null) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
