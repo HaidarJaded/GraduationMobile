@@ -73,6 +73,14 @@ class _ordersState extends State<DeliveryOrdersPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    setState(() {
+      widget.orderIdFromNotification = null;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -170,8 +178,7 @@ class _ordersState extends State<DeliveryOrdersPage> {
                                                       color: Color.fromARGB(
                                                           255, 12, 74, 207),
                                                       child: Text(
-                                                        " تم استلامه  ",
-                                                        style: TextStyle(
+                                                        " تم استلامه  ",                                                        style: TextStyle(
                                                             color:
                                                                 Color.fromRGBO(
                                                                     255,
