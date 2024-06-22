@@ -40,7 +40,6 @@ class DeviceInfoCard extends StatelessWidget {
               icon: const Icon(Icons.copy))
         ],
       ),
-      Text('اسم الزبون: ${device.customer?.name ?? ''}'),
       Text('معلومات اضافية: ${device.info}'),
       Text('العطل: ${device.problem ?? 'لم يحدد بعد'}'),
       FutureBuilder(
@@ -51,6 +50,7 @@ class DeviceInfoCard extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('اسم الزبون: ${device.customer?.name ?? ''}'),
                     Text(
                         'التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
                     Text(
