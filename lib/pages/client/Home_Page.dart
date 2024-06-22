@@ -55,8 +55,6 @@ class _HomePagesState extends State<HomePages> {
       userId = id;
       Api().get(path: 'api/devices_grouped', queryParams: {
         'all_data': 1,
-        'user_id': userId,
-        'with': 'client',
         'deliver_to_client': 0,
       }).then((value) {
         setState(() {
@@ -288,8 +286,6 @@ class _HomePagesState extends State<HomePages> {
     await Future.delayed(const Duration(milliseconds: 200));
     Api().get(path: 'api/devices_grouped', queryParams: {
       'all_data': 1,
-      'user_id': userId,
-      'with': 'client',
       'deliver_to_client': 0,
     }).then((value) {
       setState(() {
