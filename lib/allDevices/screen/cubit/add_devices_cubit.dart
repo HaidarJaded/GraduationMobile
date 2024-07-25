@@ -29,22 +29,23 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
         emit(AddDevicesFailure(errorMessage: 'No data found'));
       }
     } catch (e) {
-      
       emit(AddDevicesFailure(errorMessage: e));
     }
     Get.back();
   }
 
-  Future<dynamic> addNewDevicewithNewCustomer(
-      {required String firstnameCustomer,
-      required String lastnameCustomer,
-      required String email,
-      required String phone,
-      required String nationalId,
-      required String model,
-      required String imei,
-      required String info,
-      required repairedInCenter}) async {
+  Future<dynamic> addNewDevicewithNewCustomer({
+    required String firstnameCustomer,
+    required String lastnameCustomer,
+    required String email,
+    required String phone,
+    required String nationalId,
+    required String model,
+    required String imei,
+    required String info,
+    required repairedInCenter,
+    required String customerComplaint,
+  }) async {
     emit(AddDevicesLoading());
     var client_id = await InstanceSharedPrefrences().getId();
     var respons = await Api().post(path: '/api/devices/with_customer', body: {
@@ -57,7 +58,8 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'imei': imei,
       'info': info,
       'client_id': client_id.toString(),
-      'repaired_in_center': repairedInCenter.toString()
+      'repaired_in_center': repairedInCenter.toString(),
+      'customer_complaint': customerComplaint
     });
     if (respons != null) {
       emit(AddDevicesSuccess(
@@ -73,9 +75,9 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       {required String model,
       required String imei,
       required String info,
+      required String customerComplaint,
       required repairedInCenter,
       required int cusomer_id}) async {
-   
     emit(AddDevicesLoading());
     var client_id = await InstanceSharedPrefrences().getId();
 
@@ -85,7 +87,8 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
       'info': info,
       'client_id': client_id.toString(),
       'repaired_in_center': repairedInCenter.toString(),
-      'customer_id': cusomer_id.toString()
+      'customer_id': cusomer_id.toString(),
+      'customer_complaint': customerComplaint
     });
 
     if (respons != null) {
