@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/allDevices/screen/TextFormField.dart';
@@ -13,17 +12,29 @@ import 'package:graduation_mobile/helper/qr_scanner.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/user_model.dart';
-
 import '../cubit/swich/SwitchEvent.dart';
 import 'cubit/add_devices_cubit.dart';
 
-class addInfoDevice extends StatelessWidget {
-  addInfoDevice({
+class addInfoDevice extends StatefulWidget {
+  const addInfoDevice({
     super.key,
-    required customerPhone,
-  }) {
-    phoneController = TextEditingController(text: customerPhone);
+    required this.customerPhone,
+  });
+  final String customerPhone;
+
+  @override
+  State<addInfoDevice> createState() => _addInfoDeviceState();
+}
+
+int? selectedDeviceId;
+
+class _addInfoDeviceState extends State<addInfoDevice> {
+  @override
+  void initState() {
+    super.initState();
+    phoneController = TextEditingController(text: widget.customerPhone);
   }
+
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -35,6 +46,7 @@ class addInfoDevice extends StatelessWidget {
   TextEditingController ImeiController = TextEditingController();
   TextEditingController infoController = TextEditingController();
   TextEditingController inCenterController = TextEditingController(text: '0');
+  TextEditingController customerComplaintController = TextEditingController();
 
   Future<bool> areThereDelivery() async {
     var response = await Api().get(path: 'api/are_there_deliveries');
@@ -114,21 +126,47 @@ class addInfoDevice extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
+                            textFormField(
+                              labelText: "شكوى الزبون (حالة الجهاز الحالية)",
+                              icon: const Icon(Icons.report_problem_rounded),
+                              controller: customerComplaintController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "الحقل مطلوب";
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Row(children: [
                               Expanded(
-                                  child: textFormField(
-                                labelText: "Imei",
-                                icon: const Icon(Icons.numbers),
-                                controller: ImeiController,
-                                validator: (value) {
-                                  if (value.length != 15 && value.length != 0) {
-                                    return 'يجب أن يكون 15 رقم';
-                                  }
-                                },
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              )),
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      labelText: 'Imei',
+                                      prefixIcon: const Icon(Icons.numbers),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 15),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      )),
+                                  controller: ImeiController,
+                                  validator: (value) {
+                                    if (value != null &&
+                                        value.isNotEmpty &&
+                                        value.length != 15) {
+                                      return 'يجب ان يكون 15 رقم';
+                                    }
+                                    return null;
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                ),
+                              ),
                               IconButton(
                                 icon: const Icon(Icons.qr_code_scanner),
                                 onPressed: scanQR,
@@ -149,13 +187,12 @@ class addInfoDevice extends StatelessWidget {
                                 return Row(
                                   children: [
                                     Switch(
-                                      value: state.inCenter,
+                                      value: inCenterController.text == '1',
                                       onChanged: (val) {
-                                        BlocProvider.of<SwitchBloc>(context)
-                                            .add(ToggleSwitch(val));
-
-                                        inCenterController.text =
-                                            val ? '1' : '0';
+                                        setState(() {
+                                          inCenterController.text =
+                                              val ? '1' : '0';
+                                        });
                                       },
                                     ),
                                     Container(
@@ -178,6 +215,8 @@ class addInfoDevice extends StatelessWidget {
                                           model: modelController.text,
                                           imei: ImeiController.text,
                                           info: infoController.text,
+                                          customerComplaint:
+                                              customerComplaintController.text,
                                           repairedInCenter:
                                               inCenterController.text,
                                           cusomer_id: state.result[0].id!);
@@ -217,7 +256,7 @@ class addInfoDevice extends StatelessWidget {
                 title: "اضافة جهاز جديد");
             Get.off(() => const allDevices());
             BlocProvider.of<AddDevicesCubit>(context).resetState();
-            if (state.isRepairedInCenter) {
+            if (inCenterController.text == '1') {
               User.hasPermission("اضافة طلب لجهاز").then((hasPermission) {
                 if (hasPermission) {
                   areThereDelivery().then((areThereDelivery) {
@@ -377,22 +416,46 @@ class addInfoDevice extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-
+                    textFormField(
+                      labelText: "شكوى الزبون (حالة الجهاز الحالية)",
+                      icon: const Icon(Icons.report_problem_rounded),
+                      controller: customerComplaintController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "الحقل مطلوب";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Row(children: [
                       Expanded(
-                          child: textFormField(
-                        labelText: "Imei",
-                        icon: const Icon(Icons.numbers),
-                        controller: ImeiController,
-                        validator: (value) {
-                          if (value.length != 0 && value.length != 15) {
-                            return 'يجب أن يكون 15 رقم';
-                          }
-                        },
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      )),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              labelText: 'Imei',
+                              prefixIcon: const Icon(Icons.numbers),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
+                          controller: ImeiController,
+                          validator: (value) {
+                            if (value != null &&
+                                value.isNotEmpty &&
+                                value.length != 15) {
+                              return 'يجب ان يكون 15 رقم';
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
                       IconButton(
                         icon: const Icon(Icons.qr_code_scanner),
                         onPressed: scanQR,
@@ -439,15 +502,17 @@ class addInfoDevice extends StatelessWidget {
                         if (myform.currentState?.validate() ?? false) {
                           BlocProvider.of<AddDevicesCubit>(context)
                               .addNewDevicewithNewCustomer(
-                                  firstnameCustomer: nameController.text,
-                                  lastnameCustomer: lastNameController.text,
-                                  email: emailController.text,
-                                  phone: phoneController.text,
-                                  nationalId: nationalIdController.text,
-                                  model: modelController.text,
-                                  imei: ImeiController.text,
-                                  info: infoController.text,
-                                  repairedInCenter: inCenterController.text);
+                            firstnameCustomer: nameController.text,
+                            lastnameCustomer: lastNameController.text,
+                            email: emailController.text,
+                            phone: phoneController.text,
+                            nationalId: nationalIdController.text,
+                            model: modelController.text,
+                            imei: ImeiController.text,
+                            info: infoController.text,
+                            repairedInCenter: inCenterController.text,
+                            customerComplaint: customerComplaintController.text,
+                          );
 
                           ;
                         }
