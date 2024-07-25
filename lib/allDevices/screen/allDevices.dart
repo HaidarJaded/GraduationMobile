@@ -49,7 +49,7 @@ class _allDevicesState extends State<allDevices> {
         'dir': 'desc',
         'client_id': id,
         'with': 'customer',
-        'deliver_to_client': 0,
+        'deliver_to_customer': 0,
       });
       final List<Device>? devices = data.items;
       if (devices != null) {
@@ -86,7 +86,7 @@ class _allDevicesState extends State<allDevices> {
                 'dir': 'desc',
                 'client_id': id,
                 'with': 'customer',
-                'deliver_to_client': 0,
+                'deliver_to_customer': 0,
               })
             })
         .then((value) => readyToBuild = true);
@@ -322,6 +322,21 @@ class _allDevicesState extends State<allDevices> {
                                                       const EdgeInsets.all(10),
                                                   alignment: Alignment.topLeft,
                                                   child: Column(children: [
+                                                    Row(
+                                                      children: [
+                                                        const Expanded(
+                                                            child: Text(
+                                                                "شكوى الزبون")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${device.customerComplaint}")),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 3,
+                                                    ),
                                                     Row(
                                                       children: [
                                                         const Expanded(
