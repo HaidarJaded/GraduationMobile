@@ -149,7 +149,8 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
               'deliver_to_customer': 1,
               'status': deviceStatus,
               'customer_date_warranty': customerDateWarranty?.toIso8601String(),
-              'problem': problemController.text
+              'problem': problemController.text,
+              'cost_to_customer': costToCustomerController.text,
             });
             if (response == null) {
               Navigator.pop(Get.context!, false);
