@@ -27,6 +27,7 @@ class CompletedDevice implements HasId {
   final DateTime? dateDelivery;
   final DateTime? dateWarranty;
   final int repairedInCenter;
+  final String customerComplaint;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final Client? client;
@@ -55,6 +56,7 @@ class CompletedDevice implements HasId {
     this.dateDelivery,
     this.dateWarranty,
     required this.repairedInCenter,
+    required this.customerComplaint,
     this.createdAt,
     this.updatedAt,
     this.client,
@@ -85,6 +87,7 @@ class CompletedDevice implements HasId {
       dateDelivery: DateTime.tryParse(json['date_delivery'] ?? ''),
       dateWarranty: DateTime.tryParse(json['date_warranty'] ?? ''),
       repairedInCenter: json['repaired_in_center'],
+      customerComplaint: json['customer_complaint'],
       createdAt: DateTime.tryParse(json['created_at'] ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
       customer:

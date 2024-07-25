@@ -30,6 +30,7 @@ class Device implements HasId {
   int? deliverToClient;
   int? deliverToCustomer;
   int? repairedInCenter;
+  String customerComplaint;
   DateTime? createdAt;
   DateTime? updatedAt;
   Customer? customer;
@@ -60,6 +61,7 @@ class Device implements HasId {
       this.deliverToClient,
       this.deliverToCustomer,
       this.repairedInCenter,
+      required this.customerComplaint,
       this.createdAt,
       this.updatedAt,
       this.customer,
@@ -94,6 +96,7 @@ class Device implements HasId {
       deliverToClient: json['deliver_to_client'],
       deliverToCustomer: json['deliver_to_customer'],
       repairedInCenter: json['repaired_in_center'],
+      customerComplaint: json['customer_complaint'],
       createdAt: DateTime.tryParse(json['created_at']),
       updatedAt: DateTime.tryParse(json['updated_at']),
       customer:
