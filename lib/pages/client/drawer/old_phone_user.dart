@@ -37,7 +37,7 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
         'per_page': perPage,
         'orderBy': 'date_receipt',
         'dir': 'desc',
-        'client_id': id,
+        'user_id': id,
         'deliver_to_client': 1,
         'with': 'client'
       });
