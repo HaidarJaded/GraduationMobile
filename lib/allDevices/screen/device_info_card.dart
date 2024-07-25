@@ -6,8 +6,10 @@ import 'package:get/get.dart';
 import 'package:graduation_mobile/allDevices/screen/allDevices.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
+import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/pages/client/Home_Page.dart';
+import 'package:graduation_mobile/pages/client/customer_info_card.dart';
 
 class DeviceInfoCard extends StatelessWidget {
   final Device device;
@@ -40,8 +42,9 @@ class DeviceInfoCard extends StatelessWidget {
               icon: const Icon(Icons.copy))
         ],
       ),
-      Text('معلومات اضافية: ${device.info}'),
+      Text('معلومات اضافية: ${device.info ?? 'لا يوجد'}'),
       Text('العطل: ${device.problem ?? 'لم يحدد بعد'}'),
+      Text('شكوى الزبون: ${device.customerComplaint}'),
       FutureBuilder(
           future: InstanceSharedPrefrences().getRuleName(),
           builder: (context, snapshot) {
@@ -50,9 +53,28 @@ class DeviceInfoCard extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('اسم الزبون: ${device.customer?.name ?? ''}'),
-                    Text(
-                        'التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
+                    Row(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                'اسم الزبون: ${device.customer?.name ?? ''} ${device.customer?.lastName ?? ''}'),
+                            TextButton(
+                                onPressed: () {
+                                  if (device.customer == null) {
+                                    return;
+                                  }
+                                  _showCustomerDetailsDialog(device.customer!);
+                                },
+                                child: const Text('عرض بيانات الزبون'))
+                          ],
+                        )
+                      ],
+                    ),
+                    if (device.repairedInCenter == 1)
+                      Text(
+                          'التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
                     Text(
                         'التكلفة على الزبون: ${device.costToCustomer ?? 'لم تحدد بعد'}')
                   ],
@@ -139,4 +161,17 @@ class DeviceInfoCard extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showCustomerDetailsDialog(Customer customer) {
+  showDialog(
+    context: Get.context!,
+    builder: (context) {
+      return SizedBox(
+        width: 50,
+        height: 50,
+        child: CustomerInfoCard(customer: customer),
+      );
+    },
+  );
 }
