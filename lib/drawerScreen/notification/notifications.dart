@@ -11,7 +11,6 @@ import 'package:graduation_mobile/models/notification.dart';
 import '../../Controllers/crud_controller.dart';
 
 import '../../bar/custom_drawer.dart';
-import '../../helper/snack_bar_alert.dart';
 
 class notificationsScreen extends StatefulWidget {
   const notificationsScreen({super.key});
