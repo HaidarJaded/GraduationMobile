@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/Delivery_man/screen/Delivery_man.dart';
+import 'package:graduation_mobile/helper/app_version_controller.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
@@ -63,7 +64,11 @@ class LoginPageState extends State<LoginPage> {
               child: const Center(child: CircularProgressIndicator()));
         }
         if (state == LoginState.success) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!await AppVersionController().checkLatestVersion()) {
+              BlocProvider.of<loginCubit>(Get.context!).logout();
+              return;
+            }
             InstanceSharedPrefrences().getRuleName().then((ruleName) {
               if (ruleName == 'فني') {
                 Get.off(() => const HomePages());
