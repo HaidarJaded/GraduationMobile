@@ -154,7 +154,7 @@ class Search_for_a_customer extends StatelessWidget {
                   onPressed: () {
                     if (myform.currentState!.validate()) {
                       BlocProvider.of<AddDevicesCubit>(context)
-                          .checkNationalId(customerPhone: phone.text);
+                          .checkIfCustomerExists(customerPhone: phone.text);
                     }
                   },
                   color: const Color.fromARGB(255, 200, 188, 202),

@@ -388,6 +388,12 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value!.isNotEmpty && value.length != 11) {
+                          return "يجب ان يكون من 11 خانة";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(
                       height: 16,
