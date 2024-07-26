@@ -275,13 +275,13 @@ class _allDevicesState extends State<allDevices> {
                                                                 });
                                                             if (response !=
                                                                 null) {
-                                                              setState(
-                                                                  () async {
+                                                              setState(() {
                                                                 devices.remove(
                                                                     device);
                                                               });
                                                             }
-                                                            Get.back();
+                                                            Navigator.pop(
+                                                                Get.context!);
                                                           });
                                                         },
                                                         icon: const Icon(Icons

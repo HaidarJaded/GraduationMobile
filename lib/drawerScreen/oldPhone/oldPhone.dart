@@ -41,7 +41,7 @@ class _oldPhoneState extends State<oldPhone> {
       var data = await CrudController<CompletedDevice>().getAll({
         'page': currentPage,
         'per_page': perPage,
-        'orderBy': 'date_receipt',
+        'orderBy': 'date_delivery_customer',
         'dir': 'desc',
         'client_id': id,
         'with': 'customer',

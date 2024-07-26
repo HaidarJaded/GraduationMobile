@@ -55,50 +55,27 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
       const SizedBox(
         height: 20,
       ),
-      TextFormField(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: 'العطل',
-          prefixIcon: const Icon(Icons.report_problem),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        ),
-        controller: problemController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'الرجاء إدخال العطل';
-          }
-          return null;
-        },
-      ),
-      const SizedBox(
-        height: 20,
-      ),
       if (widget.device.repairedInCenter == 0) ...[
-        if (deviceStatus == 'جاهز')
-          Card(
-            color: const Color.fromARGB(255, 252, 234, 251),
-            child: ListTile(
-              leading: const Icon(Icons.calendar_today),
-              title: const Text("تاريخ انتهاء الكفالة"),
-              subtitle: Text(
-                customerDateWarranty != null
-                    ? customerDateWarranty!.toIso8601String()
-                    : "لم يتم التحديد",
-              ),
-              trailing: IconButton(
-                onPressed: () async {
-                  DateTime? newCustomerDateWarranty =
-                      await showDateTimePicker(context: context);
-                  setState(() {
-                    customerDateWarranty = newCustomerDateWarranty;
-                  });
-                },
-                icon: const Icon(Icons.edit),
-              ),
-            ),
+        TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          decoration: InputDecoration(
+            labelText: 'العطل',
+            prefixIcon: const Icon(Icons.report_problem),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           ),
+          controller: problemController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'الرجاء إدخال العطل';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         DropdownButton<String>(
             hint: const Text('حالة الجهاز'),
             value: deviceStatus,
@@ -116,7 +93,30 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
         const SizedBox(
           height: 20,
         ),
-      ]
+      ],
+      if (deviceStatus == 'جاهز' || widget.device.status == 'جاهز')
+        Card(
+          color: const Color.fromARGB(255, 252, 234, 251),
+          child: ListTile(
+            leading: const Icon(Icons.calendar_today),
+            title: const Text("تاريخ انتهاء الكفالة"),
+            subtitle: Text(
+              customerDateWarranty != null
+                  ? customerDateWarranty!.toIso8601String()
+                  : "لم يتم التحديد",
+            ),
+            trailing: IconButton(
+              onPressed: () async {
+                DateTime? newCustomerDateWarranty =
+                    await showDateTimePicker(context: context);
+                setState(() {
+                  customerDateWarranty = newCustomerDateWarranty;
+                });
+              },
+              icon: const Icon(Icons.edit),
+            ),
+          ),
+        ),
     ];
     return AlertDialog(
       title: const Text('تسليم حهاز'),
@@ -135,7 +135,7 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
             if (!(formKey.currentState?.validate() ?? false)) {
               return;
             }
-            if (deviceStatus == null) {
+            if (deviceStatus == null && widget.device.repairedInCenter == 0) {
               SnackBarAlert().alert('الرجاء تحديد حالة الجهاز');
               return;
             }
@@ -144,14 +144,19 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
               return;
             }
             Device device = widget.device;
-            var response =
-                await Api().put(path: 'api/devices/${device.id}', body: {
+            Map<String, dynamic> body = {
               'deliver_to_customer': 1,
-              'status': deviceStatus,
               'customer_date_warranty': customerDateWarranty?.toIso8601String(),
-              'problem': problemController.text,
               'cost_to_customer': costToCustomerController.text,
-            });
+            };
+            if (widget.device.repairedInCenter == 0) {
+              body.addAll({
+                'problem': problemController.text,
+                'status': deviceStatus,
+              });
+            }
+            var response =
+                await Api().put(path: 'api/devices/${device.id}', body: body);
             if (response == null) {
               Navigator.pop(Get.context!, false);
               return;
