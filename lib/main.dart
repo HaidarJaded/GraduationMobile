@@ -65,7 +65,7 @@ Future main() async {
   AwesomeNotifications().initialize(
       'resource://drawable/sss', // Replace with your app icon
       [
-gi        NotificationChannel(
+        NotificationChannel(
             channelGroupKey: 'high_importance_channel',
             channelKey: 'high_importance_channel',
             channelName: 'Basic notifications',

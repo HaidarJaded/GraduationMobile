@@ -34,6 +34,23 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
   Widget build(BuildContext context) {
     List<Widget> contentList = [
       if (widget.device.repairedInCenter == 0) ...[
+        DropdownButton<String>(
+            hint: const Text('حالة الجهاز'),
+            value: deviceStatus,
+            onChanged: (String? newStatus) {
+              setState(() {
+                deviceStatus = newStatus;
+              });
+            },
+            items: devicesStatus.map((String deviceState) {
+              return DropdownMenuItem<String>(
+                value: deviceState,
+                child: Text(deviceState),
+              );
+            }).toList()),
+        const SizedBox(
+          height: 20,
+        ),
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
@@ -54,25 +71,8 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
         const SizedBox(
           height: 20,
         ),
-        DropdownButton<String>(
-            hint: const Text('حالة الجهاز'),
-            value: deviceStatus,
-            onChanged: (String? newStatus) {
-              setState(() {
-                deviceStatus = newStatus;
-              });
-            },
-            items: devicesStatus.map((String deviceState) {
-              return DropdownMenuItem<String>(
-                value: deviceState,
-                child: Text(deviceState),
-              );
-            }).toList()),
-        const SizedBox(
-          height: 20,
-        ),
       ],
-      if (deviceStatus == 'جاهز' || widget.device.status == 'جاهز')
+      if (deviceStatus == 'جاهز' || widget.device.status == 'جاهز') ...[
         TextFormField(
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -92,31 +92,32 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
             return null;
           },
         ),
-      const SizedBox(
-        height: 20,
-      ),
-      Card(
-        color: const Color.fromARGB(255, 252, 234, 251),
-        child: ListTile(
-          leading: const Icon(Icons.calendar_today),
-          title: const Text("تاريخ انتهاء الكفالة"),
-          subtitle: Text(
-            customerDateWarranty != null
-                ? customerDateWarranty!.toIso8601String()
-                : "لم يتم التحديد",
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              DateTime? newCustomerDateWarranty =
-                  await showDateTimePicker(context: context);
-              setState(() {
-                customerDateWarranty = newCustomerDateWarranty;
-              });
-            },
-            icon: const Icon(Icons.edit),
+        const SizedBox(
+          height: 20,
+        ),
+        Card(
+          color: const Color.fromARGB(255, 252, 234, 251),
+          child: ListTile(
+            leading: const Icon(Icons.calendar_today),
+            title: const Text("تاريخ انتهاء الكفالة"),
+            subtitle: Text(
+              customerDateWarranty != null
+                  ? customerDateWarranty!.toIso8601String()
+                  : "لم يتم التحديد",
+            ),
+            trailing: IconButton(
+              onPressed: () async {
+                DateTime? newCustomerDateWarranty =
+                    await showDateTimePicker(context: context);
+                setState(() {
+                  customerDateWarranty = newCustomerDateWarranty;
+                });
+              },
+              icon: const Icon(Icons.edit),
+            ),
           ),
         ),
-      ),
+      ]
     ];
     return AlertDialog(
       title: const Text('تسليم حهاز'),
@@ -139,20 +140,26 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
               SnackBarAlert().alert('الرجاء تحديد حالة الجهاز');
               return;
             }
-            if (customerDateWarranty == null&&widget.device.status=='جاهز') {
+            if (customerDateWarranty == null &&
+                widget.device.status == 'جاهز') {
               SnackBarAlert().alert('الرجاء تحديد الكفالة');
               return;
             }
             Device device = widget.device;
             Map<String, dynamic> body = {
               'deliver_to_customer': 1,
-              'customer_date_warranty': customerDateWarranty?.toIso8601String(),
-              'cost_to_customer': costToCustomerController.text,
             };
             if (widget.device.repairedInCenter == 0) {
               body.addAll({
                 'problem': problemController.text,
                 'status': deviceStatus,
+              });
+            }
+            if (widget.device.status == 'جاهز') {
+              body.addAll({
+                'customer_date_warranty':
+                    customerDateWarranty?.toIso8601String(),
+                'cost_to_customer': costToCustomerController.text,
               });
             }
             var response =

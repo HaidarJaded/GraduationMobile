@@ -79,7 +79,7 @@ class _oldPhoneState extends State<oldPhone> {
                   .getCompletedDeviceData({
                 'page': 1,
                 'per_page': perPage,
-                'orderBy': 'date_receipt',
+                'orderBy': 'date_delivery_customer',
                 'dir': 'desc',
                 'client_id': id,
                 'with': 'customer',
