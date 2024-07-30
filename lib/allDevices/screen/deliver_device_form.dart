@@ -33,28 +33,6 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
   @override
   Widget build(BuildContext context) {
     List<Widget> contentList = [
-      TextFormField(
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: 'التكلفة على الزبون',
-          prefixIcon: const Icon(Icons.attach_money),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        ),
-        controller: costToCustomerController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'الرجاء إدخال التكلفة على الزبون';
-          }
-          return null;
-        },
-      ),
-      const SizedBox(
-        height: 20,
-      ),
       if (widget.device.repairedInCenter == 0) ...[
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -95,28 +73,50 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
         ),
       ],
       if (deviceStatus == 'جاهز' || widget.device.status == 'جاهز')
-        Card(
-          color: const Color.fromARGB(255, 252, 234, 251),
-          child: ListTile(
-            leading: const Icon(Icons.calendar_today),
-            title: const Text("تاريخ انتهاء الكفالة"),
-            subtitle: Text(
-              customerDateWarranty != null
-                  ? customerDateWarranty!.toIso8601String()
-                  : "لم يتم التحديد",
-            ),
-            trailing: IconButton(
-              onPressed: () async {
-                DateTime? newCustomerDateWarranty =
-                    await showDateTimePicker(context: context);
-                setState(() {
-                  customerDateWarranty = newCustomerDateWarranty;
-                });
-              },
-              icon: const Icon(Icons.edit),
-            ),
+        TextFormField(
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          decoration: InputDecoration(
+            labelText: 'التكلفة على الزبون',
+            prefixIcon: const Icon(Icons.attach_money),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          ),
+          controller: costToCustomerController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'الرجاء إدخال التكلفة على الزبون';
+            }
+            return null;
+          },
+        ),
+      const SizedBox(
+        height: 20,
+      ),
+      Card(
+        color: const Color.fromARGB(255, 252, 234, 251),
+        child: ListTile(
+          leading: const Icon(Icons.calendar_today),
+          title: const Text("تاريخ انتهاء الكفالة"),
+          subtitle: Text(
+            customerDateWarranty != null
+                ? customerDateWarranty!.toIso8601String()
+                : "لم يتم التحديد",
+          ),
+          trailing: IconButton(
+            onPressed: () async {
+              DateTime? newCustomerDateWarranty =
+                  await showDateTimePicker(context: context);
+              setState(() {
+                customerDateWarranty = newCustomerDateWarranty;
+              });
+            },
+            icon: const Icon(Icons.edit),
           ),
         ),
+      ),
     ];
     return AlertDialog(
       title: const Text('تسليم حهاز'),
@@ -139,7 +139,7 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
               SnackBarAlert().alert('الرجاء تحديد حالة الجهاز');
               return;
             }
-            if (customerDateWarranty == null) {
+            if (customerDateWarranty == null&&widget.device.status=='جاهز') {
               SnackBarAlert().alert('الرجاء تحديد الكفالة');
               return;
             }

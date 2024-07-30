@@ -54,7 +54,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  firebaseMessaging.requestPermission();
+  await firebaseMessaging.requestPermission();
 
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
@@ -62,21 +62,26 @@ Future main() async {
     NotificationController().showLocalNotificationWithActions(message.data);
   });
 
-  firebaseMessaging.requestPermission();
-
   AwesomeNotifications().initialize(
-    'resource://drawable/sss', // Replace with your app icon
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic notifications',
-        channelDescription: 'Notification channel',
-        defaultColor: const Color(0xFF9D50DD),
-        ledColor: Colors.white,
-        criticalAlerts: true,
-      ),
-    ],
-  );
+      'resource://drawable/sss', // Replace with your app icon
+      [
+gi        NotificationChannel(
+            channelGroupKey: 'high_importance_channel',
+            channelKey: 'high_importance_channel',
+            channelName: 'Basic notifications',
+            channelDescription: 'Notification channel',
+            defaultColor: const Color(0xFF9D50DD),
+            ledColor: Colors.white,
+            criticalAlerts: true,
+            channelShowBadge: true,
+            playSound: true,
+            onlyAlertOnce: true),
+      ], channelGroups: [
+    NotificationChannelGroup(
+      channelGroupKey: 'high_importance_channel',
+      channelGroupName: 'Group1',
+    )
+  ]);
   await AwesomeNotifications().requestPermissionToSendNotifications();
 
   AwesomeNotifications().setListeners(
