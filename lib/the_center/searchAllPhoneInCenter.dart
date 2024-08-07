@@ -1,17 +1,13 @@
 // ignore_for_file: camel_case_types, file_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-// ignore: unnecessary_import
-import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/pages/client/widget/device_info.dart';
 
 import '../../Controllers/crud_controller.dart';
 import '../../helper/shared_perferences.dart';
-import '../allDevices/screen/cubit/edit_cubit.dart';
-import '../allDevices/screen/edit.dart';
+import '../allDevices/screen/edit_device.dart';
 
 class searchAllPhoneInCenter extends SearchDelegate {
   @override
@@ -88,14 +84,16 @@ class searchAllPhoneInCenter extends SearchDelegate {
                                             onPressed: () {
                                               if (filter[i].id != null) {
                                                 selectedDeviceId = filter[i].id;
-                                                BlocProvider.of<EditCubit>(
-                                                        context)
-                                                    .exitIdDevice(
-                                                        id: selectedDeviceId!);
+                                                // BlocProvider.of<EditCubit>(
+                                                //         context)
+                                                //     .exitIdDevice(
+                                                //         id: selectedDeviceId!);
                                                 showDialog(
                                                   context: context,
                                                   builder: (context) {
-                                                    return edit();
+                                                    return EditDevice(
+                                                      device: filter[i],
+                                                    );
                                                   },
                                                 );
                                               }
@@ -162,10 +160,9 @@ class searchAllPhoneInCenter extends SearchDelegate {
                                                                   "الحالة")),
                                                           const Expanded(
                                                               child: Text(":")),
-                                                          Expanded(
-                                                              child: Text(
-                                                                  // ignore: unnecessary_string_interpolations
-                                                                  "${filter[i].status}")),
+                                                          Expanded(child: Text(
+                                                              // ignore: unnecessary_string_interpolations
+                                                              "${filter[i].status}")),
                                                         ],
                                                       ),
                                                       TextButton(

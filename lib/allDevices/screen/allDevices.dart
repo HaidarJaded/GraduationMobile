@@ -8,7 +8,7 @@ import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/allDevices/screen/Search_for_a_customer.dart';
 import 'package:graduation_mobile/allDevices/screen/deliver_device_form.dart';
 import 'package:graduation_mobile/allDevices/screen/device_info_card.dart';
-import 'package:graduation_mobile/allDevices/screen/edit.dart';
+import 'package:graduation_mobile/allDevices/screen/edit_device.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
@@ -16,8 +16,6 @@ import 'package:graduation_mobile/models/user_model.dart';
 import '../../bar/custom_drawer.dart';
 import '../../bar/SearchAppBar.dart';
 import '../cubit/all_devices_cubit.dart';
-
-import 'cubit/edit_cubit.dart';
 
 class allDevices extends StatefulWidget {
   const allDevices({super.key});
@@ -191,16 +189,21 @@ class _allDevicesState extends State<allDevices> {
                                                 if (device.id != null) {
                                                   selectedDeviceId = device.id;
 
-                                                  BlocProvider.of<EditCubit>(
-                                                          context)
-                                                      .exitIdDevice(
-                                                          id: selectedDeviceId!);
+                                                  // BlocProvider.of<EditCubit>(
+                                                  //         context)
+                                                  //     .exitIdDevice(
+                                                  //         id: selectedDeviceId!);
                                                   showDialog(
+                                                    barrierDismissible: false,
                                                     context: context,
                                                     builder: (context) {
-                                                      return edit();
+                                                      return EditDevice(
+                                                        device: device,
+                                                      );
                                                     },
-                                                  );
+                                                  ).then((_) {
+                                                    setState(() {});
+                                                  });
                                                 }
                                               },
                                             ),

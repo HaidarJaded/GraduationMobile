@@ -9,7 +9,7 @@ import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 
 import '../allDevices/screen/cubit/edit_cubit.dart';
-import '../allDevices/screen/edit.dart';
+import '../allDevices/screen/edit_device.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<bool> _isSearching = ValueNotifier(false);
@@ -148,7 +148,9 @@ class search extends SearchDelegate {
                                                 showDialog(
                                                   context: context,
                                                   builder: (context) {
-                                                    return edit();
+                                                    return EditDevice(
+                                                      device: filter[i],
+                                                    );
                                                   },
                                                 );
                                               }

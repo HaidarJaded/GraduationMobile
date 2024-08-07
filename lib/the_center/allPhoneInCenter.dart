@@ -8,9 +8,8 @@ import 'package:graduation_mobile/bar/custom_drawer.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/the_center/cubit/all_phone_in_center_cubit.dart';
 import '../Controllers/crud_controller.dart';
-import '../allDevices/screen/cubit/edit_cubit.dart';
 import '../allDevices/screen/device_info_card.dart';
-import '../allDevices/screen/edit.dart';
+import '../allDevices/screen/edit_device.dart';
 import '../models/device_model.dart';
 import 'searchAllPhoneInCenter.dart';
 
@@ -181,16 +180,20 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                               if (devices[i].id != null) {
                                                 selectedDeviceId =
                                                     devices[i].id;
-                                                BlocProvider.of<EditCubit>(
-                                                        context)
-                                                    .exitIdDevice(
-                                                        id: selectedDeviceId!);
+                                                // BlocProvider.of<EditCubit>(
+                                                //         context)
+                                                //     .exitIdDevice(
+                                                //         id: selectedDeviceId!);
                                                 showDialog(
                                                   context: context,
                                                   builder: (context) {
-                                                    return edit();
+                                                    return EditDevice(
+                                                      device: devices[i],
+                                                    );
                                                   },
-                                                );
+                                                ).then((_) {
+                                                  setState(() {});
+                                                });
                                               }
                                             },
                                           ),

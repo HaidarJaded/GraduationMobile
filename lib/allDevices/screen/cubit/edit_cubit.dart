@@ -16,9 +16,8 @@ class EditCubit extends Cubit<EditState> {
     final CrudController<Device> _crudController = CrudController<Device>();
     emit(Editloading());
     try {
-      
       final Device? result = await _crudController.getById(id, {});
-      
+
       if (result != null) {
         emit(EditFound(editDevicesDatat: result));
       } else {
@@ -29,12 +28,11 @@ class EditCubit extends Cubit<EditState> {
     }
   }
 
-  Future<dynamic> editDevice({
+  Future<bool> editDevice({
     required int id,
     required String model,
     required String imei,
     required String info,
-    required String problem,
   }) async {
     emit(Editloading());
     try {
@@ -46,30 +44,29 @@ class EditCubit extends Cubit<EditState> {
       if (info != null && info.isNotEmpty) {
         body['info'] = info;
       }
-      if (problem != null && problem.isNotEmpty) {
-        body['problem'] = problem;
+
+      if (body.isEmpty) {
+        return false;
       }
+      var response = await Api().put(
+        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
+        body: body,
+      );
 
-      if (body.isNotEmpty) {
-        var response = await Api().put(
-          path: 'https://haidarjaded787.serv00.net/api/devices/$id',
-          body: body,
-        );
-
-      
-
-        if (response != null) {
-          emit(EditSuccess());
-        } else {
-          emit(EditFailur(errMessage: "somethingWrong"));
-        }
-      } else {
-       
-        emit(EditFailur(errMessage: "No data to update"));
+      if (response == null) {
+        return false;
+        // emit(EditSuccess());
       }
+      return true;
+      // //  else {
+      //   emit(EditFailur(errMessage: "somethingWrong"));
+      // }
+      //  else {
+      //   emit(EditFailur(errMessage: "No data to update"));
+      // }
     } catch (e) {
-     
-      emit(EditFailur(errMessage: e.toString()));
+      return false;
+      // emit(EditFailur(errMessage: e.toString()));
     }
   }
 
@@ -103,19 +100,15 @@ class EditCubit extends Cubit<EditState> {
           body: body,
         );
 
-        
-
         if (response != null) {
           emit(EditSuccess());
         } else {
           emit(EditFailur(errMessage: "somethingWrong"));
         }
       } else {
-       
         emit(EditFailur(errMessage: "No data to update"));
       }
     } catch (e) {
-     
       emit(EditFailur(errMessage: e.toString()));
     }
   }
