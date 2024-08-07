@@ -37,16 +37,17 @@ class EditCubit extends Cubit<EditState> {
     emit(Editloading());
     try {
       Map<String, dynamic> body = {};
-      // إضافة القيم إلى الجسم فقط إذا كانت موجودة وغير فارغة
       if (model != null && model.isNotEmpty) {
         body['model'] = model;
       }
       if (info != null && info.isNotEmpty) {
         body['info'] = info;
       }
-
+      if (imei != null && imei.isNotEmpty) {
+        body['imei'] = imei;
+      }
       if (body.isEmpty) {
-        return false;
+        return true;
       }
       var response = await Api().put(
         path: 'https://haidarjaded787.serv00.net/api/devices/$id',
