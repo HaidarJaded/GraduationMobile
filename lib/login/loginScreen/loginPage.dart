@@ -72,11 +72,6 @@ class LoginPageState extends State<LoginPage> {
             InstanceSharedPrefrences().getRuleName().then((ruleName) {
               if (ruleName == 'فني') {
                 Get.off(() => const HomePages());
-                SnackBarAlert().alert(
-                  "تم تسجيل الدخول بنجاح",
-                  color: const Color.fromRGBO(0, 200, 0, 1),
-                  title: "مرحباً بعودتك",
-                );
               } else if (ruleName == 'عامل توصيل') {
                 Get.off(() => const Delivery_man());
               } else if (ruleName == 'عميل') {
@@ -84,11 +79,6 @@ class LoginPageState extends State<LoginPage> {
                     .isAccountActive()
                     .then((isAccountActive) {
                   if (isAccountActive) {
-                    SnackBarAlert().alert(
-                      "تم تسجيل الدخول بنجاح",
-                      color: const Color.fromRGBO(0, 200, 0, 1),
-                      title: "مرحباً بعودتك",
-                    );
                     Get.off(() => const allDevices());
                   } else {
                     SnackBarAlert().alert(
