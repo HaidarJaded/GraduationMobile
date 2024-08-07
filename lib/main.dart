@@ -66,9 +66,9 @@ Future main() async {
       'resource://drawable/sss', // Replace with your app icon
       [
         NotificationChannel(
-            channelGroupKey: 'high_importance_channel',
-            channelKey: 'high_importance_channel',
-            channelName: 'Basic notifications',
+            channelGroupKey: 'basic_channel',
+            channelKey: 'basic_channel',
+            channelName: 'basic_channel',
             channelDescription: 'Notification channel',
             defaultColor: const Color(0xFF9D50DD),
             ledColor: Colors.white,
@@ -78,11 +78,15 @@ Future main() async {
             onlyAlertOnce: true),
       ], channelGroups: [
     NotificationChannelGroup(
-      channelGroupKey: 'high_importance_channel',
+      channelGroupKey: 'basic_channel',
       channelGroupName: 'Group1',
     )
   ]);
-  await AwesomeNotifications().requestPermissionToSendNotifications();
+  bool isAllowedToSendNotifications =
+      await AwesomeNotifications().isNotificationAllowed();
+  if (isAllowedToSendNotifications) {
+    await AwesomeNotifications().requestPermissionToSendNotifications();
+  }
 
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: NotificationController.onActionReceivedMethod,
@@ -118,21 +122,11 @@ Future<void> checkLoginStatus() async {
   InstanceSharedPrefrences().getRuleName().then((ruleName) {
     if (ruleName == 'فني') {
       Get.off(() => const HomePages());
-      SnackBarAlert().alert(
-        "تم تسجيل الدخول بنجاح",
-        color: const Color.fromRGBO(0, 200, 0, 1),
-        title: "مرحباً بعودتك",
-      );
     } else if (ruleName == 'عامل توصيل') {
       Get.off(() => const Delivery_man());
     } else if (ruleName == 'عميل') {
       InstanceSharedPrefrences().isAccountActive().then((isAccountActive) {
         if (isAccountActive) {
-          SnackBarAlert().alert(
-            "تم تسجيل الدخول بنجاح",
-            color: const Color.fromRGBO(0, 200, 0, 1),
-            title: "مرحباً بعودتك",
-          );
           Get.off(() => const allDevices());
         } else {
           SnackBarAlert().alert(
