@@ -88,16 +88,13 @@ class EditCubit extends Cubit<EditState> {
       if (lastName != null && lastName.isNotEmpty) {
         body['lastName'] = lastName;
       }
-      if (email != null && email.isNotEmpty) {
-        body['email'] = email;
-      }
       if (phone != null && phone.isNotEmpty) {
         body['phone'] = phone;
       }
 
       if (body.isNotEmpty) {
         var response = await Api().put(
-          path: 'https://haidarjaded787.serv00.net/api/cutome/$id',
+          path: 'https://haidarjaded787.serv00.net/api/customers/$id',
           body: body,
         );
 

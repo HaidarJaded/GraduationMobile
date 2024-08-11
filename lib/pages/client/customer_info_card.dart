@@ -42,8 +42,6 @@ class CustomerInfoCard extends StatelessWidget {
               ),
             ],
           ),
-          if (customer.email != null)
-            Text('البريد الالكتروني: ${customer.email}'),
           Text('عدد الزيارات: ${customer.devicesCount}'),
         ]),
       ),

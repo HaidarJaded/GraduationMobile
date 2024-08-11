@@ -45,15 +45,6 @@ class Search_for_a_customer extends StatelessWidget {
                       height: 10,
                     ),
                     const Expanded(
-                      child: Text("email:"),
-                    ),
-                    Expanded(
-                      child: Text('${state.result[0].email}'),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Expanded(
                       child: Text("الرقم:"),
                     ),
                     Expanded(
