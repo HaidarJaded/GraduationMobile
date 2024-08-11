@@ -38,8 +38,6 @@ class _addInfoDeviceState extends State<addInfoDevice> {
   GlobalKey<FormState> myform = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController nationalIdController = TextEditingController();
   TextEditingController modelController = TextEditingController();
@@ -145,7 +143,7 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
-                                      labelText: 'Imei',
+                                      labelText: 'Imei (اختياري)',
                                       prefixIcon: const Icon(Icons.numbers),
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -176,7 +174,7 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                               height: 10,
                             ),
                             textFormField(
-                                labelText: "معلومات الجهاز",
+                                labelText: "معلومات الجهاز (اختياري)",
                                 icon: const Icon(Icons.playlist_add),
                                 controller: infoController),
                             const SizedBox(
@@ -337,26 +335,6 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                       height: 10,
                     ),
                     TextFormField(
-                      textDirection: TextDirection.ltr,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'البريد الالكتروني',
-                        prefixIcon: const Icon(Icons.email),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-
-                    TextFormField(
                       enabled: false,
                       readOnly: true,
                       decoration: const InputDecoration(
@@ -384,7 +362,7 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                       controller: nationalIdController,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.person_add_alt_1_outlined),
-                        labelText: "الرقم الوطني",
+                        labelText: "الرقم الوطني (اختياري)",
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.number,
@@ -441,7 +419,7 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                              labelText: 'Imei',
+                              labelText: 'Imei (اختياري)',
                               prefixIcon: const Icon(Icons.numbers),
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
@@ -472,7 +450,7 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                       height: 10,
                     ),
                     textFormField(
-                        labelText: "معلومات الجهاز",
+                        labelText: "معلومات الجهاز (اختياري)",
                         icon: const Icon(Icons.playlist_add),
                         controller: infoController),
                     const SizedBox(
@@ -510,7 +488,6 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                               .addNewDevicewithNewCustomer(
                             firstnameCustomer: nameController.text,
                             lastnameCustomer: lastNameController.text,
-                            email: emailController.text,
                             phone: phoneController.text,
                             nationalId: nationalIdController.text,
                             model: modelController.text,
@@ -519,8 +496,6 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                             repairedInCenter: inCenterController.text,
                             customerComplaint: customerComplaintController.text,
                           );
-
-                          ;
                         }
                       },
                       child: Container(

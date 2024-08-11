@@ -41,7 +41,6 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
   Future<dynamic> addNewDevicewithNewCustomer({
     required String firstnameCustomer,
     required String lastnameCustomer,
-    required String email,
     required String phone,
     required String nationalId,
     required String model,
@@ -55,7 +54,6 @@ class AddDevicesCubit extends Cubit<AddDevicesState> {
     var respons = await Api().post(path: '/api/devices/with_customer', body: {
       'name': firstnameCustomer,
       'last_name': lastnameCustomer,
-      'email': email,
       'phone': phone,
       'national_id': nationalId,
       'model': model,
