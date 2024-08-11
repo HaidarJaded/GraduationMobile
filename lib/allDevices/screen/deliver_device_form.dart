@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/Controllers/device_report_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
@@ -19,6 +20,7 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
   TextEditingController problemController = TextEditingController();
   DateTime? customerDateWarranty;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isLoading = false;
   List<String> devicesStatus = [
     'جاهز',
     'غير جاهز',
@@ -119,67 +121,87 @@ class _DeliverDeviceFormState extends State<DeliverDeviceForm> {
         ),
       ]
     ];
-    return AlertDialog(
-      title: const Text('تسليم حهاز'),
-      content: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: contentList,
-            ),
-          )),
-      actions: [
-        TextButton(
-          onPressed: () async {
-            if (!(formKey.currentState?.validate() ?? false)) {
-              return;
-            }
-            if (deviceStatus == null && widget.device.repairedInCenter == 0) {
-              SnackBarAlert().alert('الرجاء تحديد حالة الجهاز');
-              return;
-            }
-            if (customerDateWarranty == null &&
-                widget.device.status == 'جاهز') {
-              SnackBarAlert().alert('الرجاء تحديد الكفالة');
-              return;
-            }
-            Device device = widget.device;
-            Map<String, dynamic> body = {
-              'deliver_to_customer': 1,
-            };
-            if (widget.device.repairedInCenter == 0) {
-              body.addAll({
-                'problem': problemController.text,
-                'status': deviceStatus,
-              });
-            }
-            if (widget.device.status == 'جاهز') {
-              body.addAll({
-                'customer_date_warranty':
-                    customerDateWarranty?.toIso8601String(),
-                'cost_to_customer': costToCustomerController.text,
-              });
-            }
-            var response =
-                await Api().put(path: 'api/devices/${device.id}', body: body);
-            if (response == null) {
-              Navigator.pop(Get.context!, false);
-              return;
-            }
-            Navigator.pop(Get.context!, true);
-          },
-          child: const Text('تسليم'),
-        ),
-        TextButton(
-          onPressed: () async {
-            Get.back(result: false);
-          },
-          child: const Text('الغاء'),
-        ),
-      ],
-    );
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : AlertDialog(
+            title: const Text('تسليم حهاز'),
+            content: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: contentList,
+                  ),
+                )),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  if (!(formKey.currentState?.validate() ?? false)) {
+                    return;
+                  }
+                  if (deviceStatus == null &&
+                      widget.device.repairedInCenter == 0) {
+                    SnackBarAlert().alert('الرجاء تحديد حالة الجهاز');
+                    return;
+                  }
+                  if (customerDateWarranty == null &&
+                      widget.device.status == 'جاهز') {
+                    SnackBarAlert().alert('الرجاء تحديد الكفالة');
+                    return;
+                  }
+                  setState(() {
+                    isLoading = true;
+                  });
+                  Device device = widget.device;
+                  Map<String, dynamic> body = {
+                    'deliver_to_customer': 1,
+                  };
+                  device.problem = problemController.text;
+                  device.costToCustomer =
+                      double.tryParse(costToCustomerController.text);
+                  device.customerDateWarranty = customerDateWarranty;
+                  if (deviceStatus != null) {
+                    device.status = deviceStatus!;
+                  }
+                  if (device.repairedInCenter == 0) {
+                    body.addAll({
+                      'problem': problemController.text,
+                      'status': deviceStatus,
+                    });
+                  }
+                  if (device.status == 'جاهز') {
+                    body.addAll({
+                      'customer_date_warranty':
+                          customerDateWarranty?.toIso8601String(),
+                      'cost_to_customer': costToCustomerController.text,
+                    });
+                  }
+                  var response = await Api()
+                      .put(path: 'api/devices/${device.id}', body: body);
+                  if (response == null) {
+                    Navigator.pop(Get.context!, false);
+                    return;
+                  }
+
+                  if (device.status == 'جاهز') {
+                    await DeviceReportController().showReportPreview(device);
+                    return;
+                  }
+                  Navigator.pop(Get.context!, true);
+                },
+                child: const Text('تسليم'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Get.back(result: false);
+                },
+                child: const Text('الغاء'),
+              ),
+            ],
+          );
   }
 
   Future<DateTime?> showDateTimePicker({
