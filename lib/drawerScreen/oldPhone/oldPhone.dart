@@ -29,7 +29,7 @@ class _oldPhoneState extends State<oldPhone> {
   int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
-  List<dynamic> completedDevice = [];
+  List<CompletedDevice> completedDevices = [];
   bool firstTime = true;
   bool readyToBuild = false;
   Future<void> fetchCompletedDevice([int page = 1, int perPage = 20]) async {
@@ -47,15 +47,15 @@ class _oldPhoneState extends State<oldPhone> {
         'with': 'customer',
         'deliver_to_customer': 1
       });
-      final List<CompletedDevice>? completedDevice = data.items;
-      if (completedDevice != null) {
+      final List<CompletedDevice>? completedDevices = data.items;
+      if (completedDevices != null) {
         int currentPage = data.pagination?['current_page'];
         int lastPage = data.pagination?['last_page'];
         int totalCount = data.pagination?['total'];
         setState(() {
           this.currentPage = currentPage;
           pagesCount = lastPage;
-          this.completedDevice.addAll(completedDevice);
+          this.completedDevices.addAll(completedDevices);
           this.totalCount = totalCount;
         });
         return;
@@ -116,7 +116,8 @@ class _oldPhoneState extends State<oldPhone> {
             totalCount = state.data.pagination?['total'];
             currentPage = state.data.pagination?['current_page'];
             pagesCount = state.data.pagination?['last_page'];
-            completedDevice.addAll(state.data.items!);
+            completedDevices
+                .addAll(state.data.items! as Iterable<CompletedDevice>);
             firstTime = false;
           }
           return Scaffold(
@@ -146,9 +147,11 @@ class _oldPhoneState extends State<oldPhone> {
                           child: ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
                             controller: controller,
-                            itemCount: completedDevice.length + 1,
+                            itemCount: completedDevices.length + 1,
                             itemBuilder: (context, i) {
-                              if (i < completedDevice.length) {
+                              if (i < completedDevices.length) {
+                                CompletedDevice completedDevice =
+                                    completedDevices[i];
                                 return Card(
                                   color:
                                       const Color.fromARGB(255, 252, 234, 251),
@@ -158,11 +161,11 @@ class _oldPhoneState extends State<oldPhone> {
                                         expandedAlignment:
                                             FractionalOffset.topRight,
                                         title: Text(
-                                          completedDevice[i].model,
+                                          completedDevice.model,
                                         ),
                                         subtitle:
                                             // ignore: prefer_interpolation_to_compose_strings
-                                            Text(completedDevice[i].imei ?? ''),
+                                            Text(completedDevice.imei ?? ''),
                                         children: <Widget>[
                                           Padding(
                                               padding: const EdgeInsets
@@ -195,12 +198,27 @@ class _oldPhoneState extends State<oldPhone> {
                                                       children: [
                                                         const Expanded(
                                                             child:
+                                                                Text("الشكوى")),
+                                                        const Expanded(
+                                                            child: Text(":")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${completedDevice.customerComplaint}")),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        const Expanded(
+                                                            child:
                                                                 Text("العطل")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${completedDevice[i].problem}")),
+                                                                "${completedDevice.problem}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -210,12 +228,12 @@ class _oldPhoneState extends State<oldPhone> {
                                                       children: [
                                                         const Expanded(
                                                             child: Text(
-                                                                "التكلفة ")),
+                                                                "التكلفة على الزبون")),
                                                         const Expanded(
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${completedDevice[i].costToCustomer}")),
+                                                                "${completedDevice.costToCustomer}")),
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -230,14 +248,13 @@ class _oldPhoneState extends State<oldPhone> {
                                                             child: Text(":")),
                                                         Expanded(
                                                             child: Text(
-                                                                "${completedDevice[i].status}")),
+                                                                "${completedDevice.status}")),
                                                       ],
                                                     ),
                                                     TextButton(
                                                         onPressed: () {
                                                           _showCompletedDeviceDetailsDialog(
-                                                              completedDevice[
-                                                                  i]);
+                                                              completedDevice);
                                                         },
                                                         child: const Align(
                                                           alignment: Alignment
@@ -260,14 +277,14 @@ class _oldPhoneState extends State<oldPhone> {
                                   ),
                                 );
                               } else {
-                                return completedDevice.isEmpty
+                                return completedDevices.isEmpty
                                     ? firstTime
                                         ? const Center(
                                             child: CircularProgressIndicator(),
                                           )
                                         : const Center(
                                             child: Text('لا يوجد اجهزة'))
-                                    : completedDevice.length >= 20
+                                    : completedDevices.length >= 20
                                         ? const Center(
                                             child: Text('لا يوجد المزيد'))
                                         : null;
@@ -291,7 +308,7 @@ class _oldPhoneState extends State<oldPhone> {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       currentPage = 1;
-      completedDevice.clear();
+      completedDevices.clear();
       fetchCompletedDevice(currentPage);
     });
   }
