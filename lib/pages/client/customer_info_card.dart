@@ -12,11 +12,7 @@ class CustomerInfoCard extends StatelessWidget {
       scheme: 'tel',
       path: phone,
     );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    } else {
-      throw 'Could not launch $phone';
-    }
+    await launchUrl(launchUri);
   }
 
   @override

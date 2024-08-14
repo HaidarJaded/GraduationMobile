@@ -147,8 +147,6 @@ class DeviceReportController {
                 );
                 Share.shareFiles([filePath],
                     text: 'وصل استلام جهاز', subject: 'PDF Document');
-
-                Navigator.of(Get.context!).pop();
               },
             ),
             TextButton(

@@ -13,11 +13,7 @@ class AppVersionController {
 
   void _launchUpdateLink() async {
     const url = 'https://t.me/+B8QR3XcJ7r5lMmQ0';
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      throw 'Could not launch $url';
-    }
+    await launchUrl(Uri.parse(url));
   }
 
   Future<bool> checkLatestVersion() async {
@@ -43,13 +39,13 @@ class AppVersionController {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); 
+                Navigator.of(context).pop();
               },
               child: const Text('لاحقاً'),
             ),
             TextButton(
               onPressed: () {
-                _launchUpdateLink(); 
+                _launchUpdateLink();
               },
               child: const Text('تحديث'),
             ),

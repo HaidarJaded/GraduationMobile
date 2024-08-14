@@ -16,11 +16,7 @@ class DisabledAccountPage extends StatelessWidget {
     final String message = "الرجاء تفعيل الحساب\n$email";
     final String url =
         "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
-    if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   @override
