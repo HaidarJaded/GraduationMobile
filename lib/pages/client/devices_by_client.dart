@@ -170,85 +170,118 @@ class _DevicesByClientState extends State<DevicesByClient> {
   }
 
   Widget _buildTrailingActions(Device device) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (device.status == 'لم يتم بدء العمل فيه')
-          IconButton(
+    bool deviceExistsInCenter = device.dateReceipt != null;
+    return !deviceExistsInCenter
+        ? IconButton(
             onPressed: () {
-              _showStatusDialog('يتم فحصه', device, () {
-                updateDeviceStatus(device, 'يتم فحصه');
-                Get.back();
-              });
-            },
-            icon: const Icon(Icons.handyman_outlined),
-          ),
-        if (device.status == 'قيد العمل')
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UpdateStatusPage(
-                    device: device,
-                    status: device.status,
-                  ),
-                ),
+              showDialog(
+                context: Get.context!,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('هل تريد تأكيد استلام الحهاز من العميل؟'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('لا'),
+                        onPressed: () {
+                          Get.back();
+                        },
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await updateDateReceiptColumn(device);
+                          Get.back();
+                        },
+                        child: const Text('نعم'),
+                      ),
+                    ],
+                  );
+                },
               );
             },
-            icon: const Icon(Icons.check_circle_outline),
-          ),
-        if (device.status == 'يتم فحصه')
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddDetalis(device: device),
-                ),
-              );
-            },
-            icon: const Icon(FontAwesomeIcons.penToSquare),
-          ),
-        if (device.status == 'بانتظار استجابة العميل')
-          IconButton(
-            onPressed: () {
-              SnackBarAlert().alert(
-                "تم ارسال اشعار للعميل مسبقاً انتظر الاستجابة رجاءاً",
-                color: const Color.fromARGB(255, 4, 83, 173),
-                title: "اشعار العميل",
-              );
-            },
-            icon: const Icon(Icons.alarm_on),
-          ),
-        if (device.status == 'لا يصلح' ||
-            device.status == 'لم يوافق على العمل به' ||
-            device.status == 'جاهز')
-          FutureBuilder(
-            future: User.hasPermission('تسليم جهاز'),
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data!) {
-                return IconButton(
+            icon: const Icon(Icons.handshake),
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (device.status == 'لم يتم بدء العمل فيه')
+                IconButton(
                   onPressed: () {
-                    _showConfirmProcessDialog(device.id!, () {
-                      setState(() {
-                        devices.remove(device);
-                      });
-                      Api().put(path: 'api/devices/${device.id}', body: {
-                        'deliver_to_client': 1,
-                      });
+                    _showStatusDialog('يتم فحصه', device, () {
+                      updateDeviceStatus(device, 'يتم فحصه');
                       Get.back();
                     });
                   },
-                  icon: const Icon(Icons.local_shipping_outlined),
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          ),
-      ],
-    );
+                  icon: const Icon(Icons.handyman_outlined),
+                ),
+              if (device.status == 'قيد العمل')
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateStatusPage(
+                          device: device,
+                          status: device.status,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.check_circle_outline),
+                ),
+              if (device.status == 'يتم فحصه')
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddDetalis(device: device),
+                      ),
+                    );
+                    Get.to(() => AddDetalis(device: device))?.then((_) {
+                      setState(() {});
+                    });
+                  },
+                  icon: const Icon(FontAwesomeIcons.penToSquare),
+                ),
+              if (device.status == 'بانتظار استجابة العميل')
+                IconButton(
+                  onPressed: () {
+                    SnackBarAlert().alert(
+                      "تم ارسال اشعار للعميل مسبقاً انتظر الاستجابة رجاءاً",
+                      color: const Color.fromARGB(255, 4, 83, 173),
+                      title: "اشعار العميل",
+                    );
+                  },
+                  icon: const Icon(Icons.alarm_on),
+                ),
+              if (device.status == 'لا يصلح' ||
+                  device.status == 'لم يوافق على العمل به' ||
+                  device.status == 'جاهز')
+                FutureBuilder(
+                  future: User.hasPermission('تسليم جهاز'),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!) {
+                      return IconButton(
+                        onPressed: () {
+                          _showConfirmProcessDialog(device.id!, () {
+                            setState(() {
+                              devices.remove(device);
+                            });
+                            Api().put(path: 'api/devices/${device.id}', body: {
+                              'deliver_to_client': 1,
+                            });
+                            Get.back();
+                          });
+                        },
+                        icon: const Icon(Icons.local_shipping_outlined),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
+            ],
+          );
   }
 
   Widget _buildDeviceDetails(Device device) {
@@ -260,9 +293,10 @@ class _DevicesByClientState extends State<DevicesByClient> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
+          _buildDetailRow('شكوى الزبون:', device.customerComplaint),
           _buildDetailRow('العطل:', device.problem ?? 'لم يحدد بعد'),
           _buildDetailRow(
-              'التكلفة:', "${device.costToClient ?? 'لم يحدد بعد'}"),
+              'التكلفة:', "${device.costToClient ?? 'لم تحدد بعد'}"),
           _buildDetailRow('الحالة:', device.status),
           TextButton(
             onPressed: () {
@@ -398,5 +432,16 @@ class _DevicesByClientState extends State<DevicesByClient> {
     } catch (e) {
       return;
     }
+  }
+
+  Future updateDateReceiptColumn(Device device) async {
+    Device? response = await _crudController
+        .update(device.id!, {'date_receipt': DateTime.now().toIso8601String()});
+    if (response == null) {
+      return;
+    }
+    setState(() {
+      device.dateReceipt = DateTime.now();
+    });
   }
 }

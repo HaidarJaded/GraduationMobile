@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:graduation_mobile/models/client_model.dart';
 
 import 'package:graduation_mobile/models/device_model.dart';
+import 'package:graduation_mobile/pages/client/client_info_card.dart';
 
 class DeviceInfo extends StatelessWidget {
   final Device device;
@@ -35,12 +38,23 @@ class DeviceInfo extends StatelessWidget {
         ],
       ),
       Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Text(
             'اسم العميل:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          Text(' ${device.client?.name ?? ''}'),
+          Text(
+              ' ${device.client?.name ?? ''} ${device.client?.lastName ?? ''}'),
+          TextButton(
+              onPressed: () {
+                if (device.client == null) {
+                  return;
+                }
+                _showClinetDetailsDialog(device.client!);
+              },
+              child: const Text('عرض بيانات العميل'))
         ],
       ),
       const SizedBox(
@@ -57,6 +71,10 @@ class DeviceInfo extends StatelessWidget {
       ),
       const SizedBox(
         height: 5,
+      ),
+      Text(
+        'شكوى الزبون: ${device.customerComplaint}',
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       Row(
         children: [
@@ -82,7 +100,10 @@ class DeviceInfo extends StatelessWidget {
       const SizedBox(
         height: 5,
       ),
-      const Text('خطوات الاصلاح:'),
+      const Text(
+        'خطوات الاصلاح:',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       const SizedBox(
         height: 3,
       ),
@@ -103,9 +124,21 @@ class DeviceInfo extends StatelessWidget {
     return AlertDialog(
       title: Text(device.model),
       content: SingleChildScrollView(
-        padding: const EdgeInsets.all(8),
         child: ListBody(children: contentList),
       ),
+    );
+  }
+
+  void _showClinetDetailsDialog(Client client) {
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return SizedBox(
+          width: 50,
+          height: 50,
+          child: ClientInfoCard(client: client),
+        );
+      },
     );
   }
 }
