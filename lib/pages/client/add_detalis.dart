@@ -1,11 +1,11 @@
 // ignore_for_file: unnecessary_import, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
-import 'package:graduation_mobile/pages/client/Home_Page.dart';
-
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_cubit.dart';
 import 'package:graduation_mobile/pages/client/cubit/detalis_cubit/detalis_state.dart';
 
@@ -24,26 +24,24 @@ class _AddDetalisState extends State<AddDetalis> {
   late DeviceDetailsCubit _deviceDetailsCubit;
   late TextEditingController _costController;
   late TextEditingController _problemController;
-  late TextEditingController _infoController;
   DateTime? _expectedDateOfDelivery;
 
   @override
   void initState() {
     super.initState();
     _deviceDetailsCubit = BlocProvider.of<DeviceDetailsCubit>(context);
-    _deviceDetailsCubit.fetchDeviceDetails(widget.device.id!);
     _costController = TextEditingController(
         text: widget.device.costToClient?.toString() ?? '');
     _problemController =
         TextEditingController(text: widget.device.problem ?? '');
     _expectedDateOfDelivery = widget.device.expectedDateOfDelivery;
-    _infoController = TextEditingController(text: widget.device.info);
   }
 
   @override
   void dispose() {
     _costController.dispose();
     _problemController.dispose();
+    _deviceDetailsCubit.dispose();
     super.dispose();
   }
 
@@ -72,8 +70,9 @@ class _AddDetalisState extends State<AddDetalis> {
         builder: (context, state) {
           if (state is DeviceDetalisLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is DeviceDetalisSuccesses) {
-            final device = state.details.first;
+          }
+          if (state is DeviceDetalisInitial) {
+            final device = widget.device;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -83,78 +82,52 @@ class _AddDetalisState extends State<AddDetalis> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 12),
-                      const SizedBox(height: 10),
-                      Card(
-                        color: const Color.fromARGB(255, 252, 234, 251),
-                        child: ListTile(
-                          leading: const Icon(Icons.price_change),
-                          title: const Text("التكلفة"),
-                          subtitle: Text(device.costToClient?.toString() ?? ""),
-                          trailing: IconButton(
-                            onPressed: () {
-                              _showEditDialog("التكلفة",
-                                  device.costToClient?.toString() ?? "",
-                                  (costController) {
-                                setState(() {
-                                  device.costToClient =
-                                      double.tryParse(costController);
-                                  _costController.text =
-                                      costController; // تحديث TextEditingController
-                                });
-                              });
-                            },
-                            icon: const Icon(Icons.edit),
+                      const SizedBox(height: 22),
+                      TextFormField(
+                        controller: _costController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'يرجى إدخال التكلفة';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.datetime,
+                        decoration: InputDecoration(
+                          labelText: 'التكلفة',
+                          prefixIcon: const Icon(Icons.price_change_outlined),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                      ),
+                      const SizedBox(height: 26),
+                      TextFormField(
+                        controller: _problemController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'يرجى إدخال المشكلة';
+                          }
+                          if (value.length > 50) {
+                            return 'يجب ان تكون أقل من 50 محرف';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'المشكلة',
+                          prefixIcon: const Icon(Icons.report_problem_outlined),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      const SizedBox(height: 16),
-                      Card(
-                        color: const Color.fromARGB(255, 252, 234, 251),
-                        child: ListTile(
-                          leading: const Icon(Icons.report_problem),
-                          title: const Text("المشكلة"),
-                          subtitle: Text(device.problem ?? ""),
-                          trailing: IconButton(
-                            onPressed: () {
-                              _showEditDialog("المشكلة", device.problem ?? "",
-                                  (newValue) {
-                                setState(() {
-                                  device.problem = newValue;
-                                  _problemController.text =
-                                      newValue; // تحديث TextEditingController
-                                });
-                              });
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        color: const Color.fromARGB(255, 252, 234, 251),
-                        child: ListTile(
-                          leading: const Icon(Icons.info),
-                          title: const Text("المعلومات الاضافية"),
-                          subtitle: Text(device.info ?? ""),
-                          trailing: IconButton(
-                            onPressed: () {
-                              _showEditDialog(
-                                  "المعلومات الاضافية", device.info ?? "",
-                                  (newValue) {
-                                setState(() {
-                                  device.info = newValue;
-                                  _infoController.text =
-                                      newValue; // تحديث TextEditingController
-                                });
-                              });
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       Card(
                         color: const Color.fromARGB(255, 252, 234, 251),
                         child: ListTile(
@@ -176,16 +149,46 @@ class _AddDetalisState extends State<AddDetalis> {
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: () async {
-                          if (_formKey.currentState!.validate()) {
-                            await _deviceDetailsCubit.EditDstalis(
-                                id: device.id!,
-                                costToClient:
-                                    double.parse(_costController.text),
-                                problem: _problemController.text,
-                                expectedDateOfDelivery: _expectedDateOfDelivery,
-                                info: _infoController.text);
-                            Get.off(() => const HomePages());
+                          if (!_formKey.currentState!.validate()) {
+                            return;
                           }
+                          if (_expectedDateOfDelivery == null) {
+                            SnackBarAlert()
+                                .alert('يرجى تحديد التاريخ المتوقع للتسليم');
+                            return;
+                          }
+                          double? parsedCost;
+                          try {
+                            parsedCost = double.parse(_costController.text);
+                          } catch (e) {
+                            SnackBarAlert()
+                                .alert('يرجى إدخال التكلفة بشكل صحيح');
+                            return;
+                          }
+                          bool editSuccess =
+                              await _deviceDetailsCubit.EditDetalis(
+                            id: device.id!,
+                            costToClient: parsedCost,
+                            problem: _problemController.text,
+                            expectedDateOfDelivery: _expectedDateOfDelivery!,
+                          );
+                          if (!editSuccess) {
+                            SnackBarAlert().alert(
+                                'حدثت مشكلة اثناء تحديث البيانات يرجى إعادة المحاولة');
+                            Navigator.pop(Get.context!);
+                            return;
+                          }
+                          SnackBarAlert().alert(
+                              "تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+                              color: const Color.fromARGB(255, 4, 83, 173),
+                              title: "اشعار العميل");
+                          Navigator.pop(Get.context!);
+                          Navigator.pop(Get.context!);
+                          setState(() {
+                            device.costToClient = parsedCost;
+                            device.problem = _problemController.text;
+                            device.status = 'بانتظار استجابة العميل';
+                          });
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -201,7 +204,7 @@ class _AddDetalisState extends State<AddDetalis> {
                           width: MediaQuery.of(context).size.width,
                           child: const Center(
                             child: Text(
-                              'ارسال',
+                              'حفظ وإعلام العميل',
                               style: TextStyle(
                                 color: Color.fromARGB(255, 252, 234, 251),
                                 fontWeight: FontWeight.w600,
@@ -231,42 +234,6 @@ class _AddDetalisState extends State<AddDetalis> {
         _expectedDateOfDelivery = picked;
       });
     }
-  }
-
-  void _showEditDialog(
-      String title, String currentValue, Function(String) onSave) {
-    final TextEditingController controller =
-        TextEditingController(text: currentValue);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('تعديل $title'),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: ' ادخل $title الجديد',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('اغلاق'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('حفظ'),
-              onPressed: () {
-                onSave(controller.text);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<DateTime?> showDateTimePicker({

@@ -175,7 +175,7 @@ class MyApp extends StatelessWidget {
             create: (context) => PhoneCubit(),
           ),
           BlocProvider(
-            create: (context) => DeviceDetailsCubit(CrudController()),
+            create: (context) => DeviceDetailsCubit(),
           ),
           BlocProvider(
             create: (context) => SwitchBloc(),

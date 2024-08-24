@@ -10,8 +10,8 @@ import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_state.d
 import 'package:graduation_mobile/pages/client/step.dart';
 
 class UpdateStatusPage extends StatefulWidget {
-  const UpdateStatusPage({super.key, this.device, this.status});
-  final Device? device;
+  const UpdateStatusPage({super.key,required this.device, this.status});
+  final Device device;
   final String? status;
   @override
   State<UpdateStatusPage> createState() => _UpdateStatusState();
@@ -49,7 +49,7 @@ class _UpdateStatusState extends State<UpdateStatusPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => RepairSteps(
-                  device: widget.device!,
+                  device: widget.device,
                   state: this.state!,
                   clientDateWarranty: _datecontroller!,
                 ),
@@ -156,7 +156,7 @@ class _UpdateStatusState extends State<UpdateStatusPage> {
                   onTap: () async {
                     if (this.state != null) {
                       context.read<UpdateStatusCubit>().updateStatus(
-                            widget.device!.id
+                            widget.device.id
                                 as int, // بافتراض أن `widget.device` غير null ولديها خاصية `id`
                             this.state!,
                             _datecontroller?.toIso8601String(),
