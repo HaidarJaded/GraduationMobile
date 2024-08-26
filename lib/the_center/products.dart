@@ -182,19 +182,11 @@ class _productsScreensState extends State<productsScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   );
-                } else {
-                  return products.isNotEmpty
-                      ? firstTime
-                          ? const Center(child: Text('لا يوجد اجهزة'))
-                          : products.length >= 20
-                              ? const Center(child: Text('لا يوجد المزيد'))
-                              : null
-                      : const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                }
+                } 
               }),
+              
         );
+        
       }
       if (state is ProductFailure) {
         Scaffold(
