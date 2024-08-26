@@ -118,36 +118,51 @@ class _notificationsScreenState extends State<notificationsScreen> {
             itemBuilder: (BuildContext context, int index) {
               List notificationBodyList = notification[index].body;
               String notificationBody = notificationBodyList.join(' ');
+              if (notification.length > index) {
+                Notification1 notification1 = notification[index];
 
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: Card(
-                  elevation: 4.0,
-                  child: ListTile(
-                    title: Text(notification[index].title),
-                    subtitle: Text(notificationBody),
-                    leading: const Column(
-                      children: [
-                        CircleAvatar(
-                          child: Icon(Icons.notifications),
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        BlocProvider.of<NotificationCubit>(context)
-                            .deleteNotification(
-                                id: notification[index].StringId!);
-                        setState(() {
-                          notification.removeAt(index);
-                        });
-                      },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  child: Card(
+                    color: notification1.read_at == null
+                        ? Color.fromARGB(255, 211, 201, 219)
+                        : const Color.fromARGB(255, 252, 234, 251),
+                    elevation: 4.0,
+                    child: ListTile(
+                      title: Text(notification[index].title),
+                      subtitle: Text(notificationBody),
+                      leading: const Column(
+                        children: [
+                          CircleAvatar(
+                            child: Icon(Icons.notifications),
+                          ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          BlocProvider.of<NotificationCubit>(context)
+                              .deleteNotification(
+                                  id: notification[index].StringId!);
+                          setState(() {
+                            notification.removeAt(index);
+                          });
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
+                );
+              } else if (currentPage <= pagesCount && pagesCount > 1) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else {
+                return _buildNoMoreNotification();
+              }
             },
           ),
         );
@@ -161,8 +176,27 @@ class _notificationsScreenState extends State<notificationsScreen> {
             drawer: const CustomDrawer(),
             body: Center(child: Text("${state.errorMessage}")));
       }
-     
+
       return Container();
     });
+  }
+
+  Widget _buildNoMoreNotification() {
+    if (notification.isEmpty) {
+      if (totalCount == 0) {
+        return const Center(
+          child: Text('لا يوجد اشعارات'),
+        );
+      }
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (notification.length >= 20) {
+      return const Center(
+        child: Text('لا يوجد المزيد'),
+      );
+    } else {
+      return Text('لا يوجد اشعارات');
+    }
   }
 }
