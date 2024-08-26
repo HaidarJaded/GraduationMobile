@@ -271,28 +271,32 @@ class _addInfoDeviceState extends State<addInfoDevice> {
             BlocProvider.of<AddDevicesCubit>(context).resetState();
             if (inCenterController.text == '1') {
               User.hasPermission("اضافة طلب لجهاز").then((hasPermission) {
-                if (hasPermission) {
-                  areThereDelivery().then((areThereDelivery) {
-                    SnackBarAlert().alert("هل تود بارسال طلب؟",
-                        title: "ارسال طلب لعامل توصيل",
-                        color: const Color.fromARGB(255, 3, 75, 134),
-                        yesButton: TextButton(
-                          onPressed: () async {
-                            Get.closeCurrentSnackbar();
-                            if (state.deviceId != null) {
-                              await addingOrder(state.deviceId!);
-                            }
-                          },
-                          child: const Text(
-                            "نعم",
-                            style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1)),
-                            selectionColor: Color.fromRGBO(255, 255, 255, 1),
-                          ),
-                        ),
-                        duration: const Duration(seconds: 10));
-                  });
+                if (!hasPermission) {
+                  return;
                 }
+                areThereDelivery().then((areThereDelivery) {
+                  if (!areThereDelivery) {
+                    return;
+                  }
+                  SnackBarAlert().alert("هل تود بارسال طلب؟",
+                      title: "ارسال طلب لعامل توصيل",
+                      color: const Color.fromARGB(255, 3, 75, 134),
+                      yesButton: TextButton(
+                        onPressed: () async {
+                          Get.closeCurrentSnackbar();
+                          if (state.deviceId != null) {
+                            await addingOrder(state.deviceId!);
+                          }
+                        },
+                        child: const Text(
+                          "نعم",
+                          style: TextStyle(
+                              color: Color.fromRGBO(255, 255, 255, 1)),
+                          selectionColor: Color.fromRGBO(255, 255, 255, 1),
+                        ),
+                      ),
+                      duration: const Duration(seconds: 10));
+                });
               });
             }
           });
