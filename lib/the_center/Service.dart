@@ -114,7 +114,7 @@ class _serviceScreeenState extends State<ServiceScreeen> {
             controller: controller,
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, mainAxisExtent: 150),
+                crossAxisCount: 2, mainAxisExtent: 200),
             itemCount: service.length + 1,
             itemBuilder: (context, index) {
               if (index < service.length) {
@@ -126,38 +126,40 @@ class _serviceScreeenState extends State<ServiceScreeen> {
                   elevation: 10,
                   child: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          service[index].name,
-                          style: const TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            service[index].name,
+                            style: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          service[index].device_model,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            service[index].device_model,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          service[index].timeRequired,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          const SizedBox(height: 5),
+                          Text(
+                            service[index].timeRequired,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          service[index].price,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          const SizedBox(height: 5),
+                          Text(
+                            service[index].price,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
