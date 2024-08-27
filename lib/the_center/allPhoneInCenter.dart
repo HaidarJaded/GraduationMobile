@@ -157,8 +157,8 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                 devices.insert(newIndex, item);
                                 context
                                     .read<AllPhoneInCenterCubit>()
-                                    .reorderDevices(
-                                        item.id, newIndex, oldIndex);
+                                    .reorderDevices(item.id, newIndex, oldIndex,
+                                        devices[oldIndex]);
                               });
                             },
                             children: List.generate(
