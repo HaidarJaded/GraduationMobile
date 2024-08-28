@@ -9,6 +9,7 @@ import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 
 import '../allDevices/screen/cubit/edit_cubit.dart';
+import '../allDevices/screen/device_info_card.dart';
 import '../allDevices/screen/edit_device.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -119,10 +120,14 @@ class search extends SearchDelegate {
                               itemCount: filter.length,
                               itemBuilder: (context, i) {
                                 if (i < filter.length) {
+                                  Device device = filter[i];
                                   return Card(
                                     // key: ValueKey(state.data[index].itemName),
-                                    color: const Color.fromARGB(
-                                        255, 252, 234, 251),
+                                    color: device.repairedInCenter == 1
+                                        ? const Color.fromARGB(
+                                            255, 194, 177, 204)
+                                        : const Color.fromARGB(
+                                            255, 252, 234, 251),
                                     child: Column(
                                       children: [
                                         ExpansionTile(
@@ -224,6 +229,17 @@ class search extends SearchDelegate {
                                                       const SizedBox(
                                                         height: 3,
                                                       ),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            _showDeviceDetailsDialog(
+                                                                device);
+                                                          },
+                                                          child: const Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                'عرض جميع البيانات'),
+                                                          )),
                                                     ])))
                                           ],
                                         )
@@ -240,5 +256,20 @@ class search extends SearchDelegate {
             child: CircularProgressIndicator(),
           );
         });
+  }
+
+  void _showDeviceDetailsDialog(dynamic device) {
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return SizedBox(
+          width: 100,
+          height: 50,
+          child: DeviceInfoCard(
+            device: device,
+          ),
+        );
+      },
+    );
   }
 }

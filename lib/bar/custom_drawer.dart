@@ -66,6 +66,39 @@ class CustomDrawer extends StatelessWidget {
                         subtitle: Text(email),
                       ))
                     ]),
+                    // FutureBuilder(
+                    //     future: User.hasPermission("التعامل مع المركز"),
+                    //     builder: ((BuildContext context,
+                    //         AsyncSnapshot<bool> snapshot) {
+                    //       if (snapshot.hasData && snapshot.data!) {
+                    //         return MaterialButton(
+                    //           // ignore: avoid_unnecessary_containers
+                    //           child: Container(
+                    //             child: const Row(
+                    //               children: [
+                    //                 Icon(
+                    //                   Icons.phone_android_rounded,
+                    //                   size: 23,
+                    //                 ),
+                    //                 SizedBox(
+                    //                   width: 12,
+                    //                 ),
+                    //                 Text(
+                    //                   "الاجهزة",
+                    //                   style: TextStyle(
+                    //                     fontSize: 18,
+                    //                   ),
+                    //                 )
+                    //               ],
+                    //             ),
+                    //           ),
+                    //           onPressed: () {
+                    //             Get.off(() => const allDevices());
+                    //           },
+                    //         );
+                    //       }
+                    //       return SizedBox();
+                    //     })),
                     MaterialButton(
                       // ignore: avoid_unnecessary_containers
                       child: Container(
@@ -79,7 +112,7 @@ class CustomDrawer extends StatelessWidget {
                               width: 12,
                             ),
                             Text(
-                              "MYP",
+                              "الاجهزة",
                               style: TextStyle(
                                 fontSize: 18,
                               ),

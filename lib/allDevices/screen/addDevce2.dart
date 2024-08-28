@@ -196,6 +196,21 @@ class _addInfoDeviceState extends State<addInfoDevice> {
                                     Container(
                                       width: 60,
                                     ),
+                                    // FutureBuilder(
+                                    //     future: User.hasPermission(
+                                    //         "التعامل مع المركز"),
+                                    //     builder: ((BuildContext context,
+                                    //         AsyncSnapshot<bool> snapshot) {
+                                    //       if (snapshot.hasData &&
+                                    //           snapshot.data!) {
+                                    //         return const Text(
+                                    //           "اضافة الى المركز",
+                                    //           style: TextStyle(
+                                    //               fontWeight: FontWeight.bold),
+                                    //         );
+                                    //       }
+                                    //       return SizedBox();
+                                    //     })),
                                     const Text(
                                       "اضافة الى المركز",
                                       style: TextStyle(

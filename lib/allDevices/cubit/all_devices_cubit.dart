@@ -22,7 +22,7 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     try {
       emit(AllDevicesLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
-     
+
       if (data.items != null) {
         emit(AllDevicesSucces(data: data));
       } else {
@@ -33,40 +33,4 @@ class AllDevicesCubit<T extends HasId> extends Cubit<AllDevicesState> {
     }
   }
 
-  Future<void> reorderDevices(int deviceId, int newIndex, int oldIndex) async {
-    if (state is AllDevicesSucces) {
-      final currentState = state as AllDevicesSucces;
-      final devicesList = List<Device>.from(currentState.data.items!);
-      // final device = devicesList.removeAt(oldIndex);
-     
-      // devicesList.insert(newIndex, device);
-
-      final newReturnedObject = ReturnedObject<Device>();
-      newReturnedObject.items = devicesList.cast<Device>();
-
-      // emit(AllDevicesSucces(data: newReturnedObject));
-
-      try {
-        emit(AllDevicesLoading());
-        
-        if (oldIndex < newIndex) {
-          newIndex -= 1;
-        }
-
-        final response = await Api().put(
-          path: 'https://haidarjaded787.serv00.net/api/devices/$deviceId',
-          body: {
-            'client_priority': newIndex,
-          },
-        );
-
-       
-        if (response == null) {
-          throw Exception('Failed to update device order');
-        } 
-      } catch (e) {
-        print('Error: $e');
-      }
-    }
-  }
 }

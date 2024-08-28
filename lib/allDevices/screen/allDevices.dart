@@ -26,7 +26,7 @@ class allDevices extends StatefulWidget {
 
 int? selectedDeviceId;
 
-class _allDevicesState extends State<allDevices> {
+class _allDevicesState extends State<allDevices> with TickerProviderStateMixin {
   int perPage = 20;
   int currentPage = 1;
   int pagesCount = 0;
@@ -34,6 +34,7 @@ class _allDevicesState extends State<allDevices> {
   List<dynamic> devices = [];
   bool firstTime = true;
   bool readyToBuild = false;
+
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
     try {
       if (currentPage > pagesCount) {
@@ -73,6 +74,7 @@ class _allDevicesState extends State<allDevices> {
   @override
   void initState() {
     super.initState();
+
     readyToBuild = false;
     InstanceSharedPrefrences()
         .getId()
@@ -163,10 +165,12 @@ class _allDevicesState extends State<allDevices> {
                             itemBuilder: (context, i) {
                               if (i < devices.length) {
                                 Device device = devices[i];
+
                                 return Card(
-                                  // key: ValueKey(state.data[index].itemName),
-                                  color:
-                                      const Color.fromARGB(255, 252, 234, 251),
+                                  color: device.repairedInCenter == 1
+                                      ? const Color.fromARGB(255, 194, 177, 204)
+                                      : const Color.fromARGB(
+                                          255, 252, 234, 251),
                                   child: Column(
                                     children: [
                                       ExpansionTile(

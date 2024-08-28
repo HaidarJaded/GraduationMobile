@@ -153,8 +153,10 @@ class _oldPhoneState extends State<oldPhone> {
                                 CompletedDevice completedDevice =
                                     completedDevices[i];
                                 return Card(
-                                  color:
-                                      const Color.fromARGB(255, 252, 234, 251),
+                                  color: completedDevice.repairedInCenter == 1
+                                      ? const Color.fromARGB(255, 194, 177, 204)
+                                      : const Color.fromARGB(
+                                          255, 252, 234, 251),
                                   child: Column(
                                     children: [
                                       ExpansionTile(
