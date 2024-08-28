@@ -86,15 +86,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "الاشعارات",
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+        backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+        title: const Text('MYP'),
       ),
       body: BlocBuilder<NotificationsCubit, NotificationsState>(
         builder: (context, state) {
@@ -134,38 +127,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('تأكيد الحذف'),
-                                content: const Text(
-                                    'هل أنت متأكد أنك تريد حذف هذا الإشعار؟'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('إلغاء'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('حذف'),
-                                    onPressed: () {
-                                      BlocProvider.of<NotificationCubit>(
-                                              context)
-                                          .deleteNotification(
-                                              id: notifications[index]
-                                                  .StringId!);
-                                      setState(() {
-                                        notifications.removeAt(index);
-                                      });
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                          BlocProvider.of<NotificationCubit>(context)
+                              .deleteNotification(
+                                  id: notification![index].StringId!);
+                          setState(() {
+                            notification!.removeAt(index);
+                          });
                         },
                       ),
                     ),
@@ -178,35 +145,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
           }
         },
       ),
-    );
-  }
-
-  void _showDeleteConfirmationDialog(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('تأكيد الحذف'),
-          content: const Text('هل أنت متأكد أنك تريد حذف هذا الإشعار؟'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('إلغاء'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('حذف'),
-              onPressed: () {
-                setState(() {
-                  notifications.removeAt(index);
-                });
-                Navigator.of(context).pop(); // إغلاق حوار التأكيد
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/helper/snack_bar_alert.dart';
 import 'package:graduation_mobile/models/device_model.dart';
 import 'package:graduation_mobile/pages/client/Home_Page.dart';
 import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_cubit.dart';
@@ -10,9 +12,10 @@ import 'package:graduation_mobile/pages/client/cubit/status_cubit/status_state.d
 import 'package:graduation_mobile/pages/client/step.dart';
 
 class UpdateStatusPage extends StatefulWidget {
-  const UpdateStatusPage({super.key,required this.device, this.status});
+  const UpdateStatusPage({super.key, required this.device, this.status});
   final Device device;
   final String? status;
+
   @override
   State<UpdateStatusPage> createState() => _UpdateStatusState();
 }
@@ -24,6 +27,28 @@ class _UpdateStatusState extends State<UpdateStatusPage> {
   void dispose() {
     super.dispose();
     BlocProvider.of<UpdateStatusCubit>(Get.context!).resetState();
+  }
+
+  void sendWithoutSteps(
+      int id, String state, DateTime clientDateWarranty) async {
+    try {
+      Map<String, dynamic> body = {
+        'status': 'جاهز',
+        'client_date_warranty': clientDateWarranty.toIso8601String(),
+      };
+      var response = await Api().put(
+        path: 'https://haidarjaded787.serv00.net/api/devices/$id',
+        body: body,
+      );
+      print(response);
+      if (response != null) {
+        SnackBarAlert().alert("تم تحديث حالة الجهاز وإعلام العميل",
+            color: const Color.fromARGB(255, 4, 83, 173),
+            title: "تحديث حالة جهاز");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -45,15 +70,39 @@ class _UpdateStatusState extends State<UpdateStatusPage> {
       body: BlocConsumer<UpdateStatusCubit, UpdateStatusState>(
         listener: (context, state) {
           if (state is UpdateStatusReady) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RepairSteps(
-                  device: widget.device,
-                  state: this.state!,
-                  clientDateWarranty: _datecontroller!,
-                ),
-              ),
+            showDialog(
+              context: Get.context!,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('هل تريد اضافة خطوات التصليح؟'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('لا'),
+                      onPressed: () {
+                        sendWithoutSteps(widget.device.id as int, this.state!,
+                            _datecontroller as DateTime);
+                        Navigator.pop(context); // اغلاق الـ AlertDialog
+                        Get.off(() => const HomePages());
+                      },
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RepairSteps(
+                              device: widget.device,
+                              state: this.state!,
+                              clientDateWarranty: _datecontroller!,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('نعم'),
+                    ),
+                  ],
+                );
+              },
             );
           } else if (state is UpdateStatusError) {
             ScaffoldMessenger.of(context).showSnackBar(
