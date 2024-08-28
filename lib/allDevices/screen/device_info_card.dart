@@ -53,25 +53,16 @@ class DeviceInfoCard extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                'اسم الزبون: ${device.customer?.name ?? ''} ${device.customer?.lastName ?? ''}'),
-                            TextButton(
-                                onPressed: () {
-                                  if (device.customer == null) {
-                                    return;
-                                  }
-                                  _showCustomerDetailsDialog(device.customer!);
-                                },
-                                child: const Text('عرض بيانات الزبون'))
-                          ],
-                        )
-                      ],
-                    ),
+                    Text(
+                        'اسم الزبون: ${device.customer?.name ?? ''} ${device.customer?.lastName ?? ''}'),
+                    TextButton(
+                        onPressed: () {
+                          if (device.customer == null) {
+                            return;
+                          }
+                          _showCustomerDetailsDialog(device.customer!);
+                        },
+                        child: const Text('عرض بيانات الزبون')),
                     if (device.repairedInCenter == 1)
                       Text(
                           'التكلفة عليك: ${device.costToClient ?? 'لم تحدد بعد'}'),
@@ -168,7 +159,7 @@ void _showCustomerDetailsDialog(Customer customer) {
     context: Get.context!,
     builder: (context) {
       return SizedBox(
-        width: 50,
+        width: 100,
         height: 50,
         child: CustomerInfoCard(customer: customer),
       );
