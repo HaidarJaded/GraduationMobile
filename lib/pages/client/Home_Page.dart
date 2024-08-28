@@ -163,7 +163,7 @@ class _HomePagesState extends State<HomePages> {
               ),
               ListTile(
                 leading: const Icon(Icons.list_alt_rounded),
-                title: const Text("الهاتف القديم"),
+                title: const Text("الاجهزة المسلمة"),
                 onTap: () {
                   Get.to(const oldPhoneUser());
                 },

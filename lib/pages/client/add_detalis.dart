@@ -25,6 +25,7 @@ class _AddDetalisState extends State<AddDetalis> {
   late TextEditingController _costController;
   late TextEditingController _problemController;
   DateTime? _expectedDateOfDelivery;
+  bool _isNotRepairable = false;
 
   @override
   void initState() {
@@ -83,11 +84,27 @@ class _AddDetalisState extends State<AddDetalis> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 22),
+                      SwitchListTile(
+                        title: const Text("الجهاز لا يصلح"),
+                        value: _isNotRepairable,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isNotRepairable = value;
+                            if (_isNotRepairable) {
+                              _costController.clear();
+                            }
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 22),
                       TextFormField(
                         controller: _costController,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'يرجى إدخال التكلفة';
+                          if (!_isNotRepairable) {
+                            if (value == null || value.isEmpty) {
+                              return 'يرجى إدخال التكلفة';
+                            }
+                            return null;
                           }
                           return null;
                         },
@@ -104,6 +121,8 @@ class _AddDetalisState extends State<AddDetalis> {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
+                        enabled:
+                            !_isNotRepairable, // تعطيل الحقل إذا كان الجهاز "لا يصلح"
                       ),
                       const SizedBox(height: 26),
                       TextFormField(
@@ -113,7 +132,7 @@ class _AddDetalisState extends State<AddDetalis> {
                             return 'يرجى إدخال المشكلة';
                           }
                           if (value.length > 50) {
-                            return 'يجب ان تكون أقل من 50 محرف';
+                            return 'يجب أن تكون أقل من 50 محرف';
                           }
                           return null;
                         },
@@ -158,36 +177,44 @@ class _AddDetalisState extends State<AddDetalis> {
                             return;
                           }
                           double? parsedCost;
-                          try {
-                            parsedCost = double.parse(_costController.text);
-                          } catch (e) {
-                            SnackBarAlert()
-                                .alert('يرجى إدخال التكلفة بشكل صحيح');
-                            return;
+                          if (!_isNotRepairable) {
+                            try {
+                              parsedCost = double.parse(_costController.text);
+                            } catch (e) {
+                              SnackBarAlert()
+                                  .alert('يرجى إدخال التكلفة بشكل صحيح');
+                              return;
+                            }
                           }
+
                           bool editSuccess =
                               await _deviceDetailsCubit.EditDetalis(
                             id: device.id!,
-                            costToClient: parsedCost,
+                            costToClient: _isNotRepairable ? null : parsedCost,
                             problem: _problemController.text,
                             expectedDateOfDelivery: _expectedDateOfDelivery!,
+                            isNotRepairable: _isNotRepairable,
                           );
                           if (!editSuccess) {
                             SnackBarAlert().alert(
-                                'حدثت مشكلة اثناء تحديث البيانات يرجى إعادة المحاولة');
+                                'حدثت مشكلة أثناء تحديث البيانات، يرجى إعادة المحاولة');
                             Navigator.pop(Get.context!);
                             return;
                           }
                           SnackBarAlert().alert(
-                              "تم ارسال اشعار للعميل انتظر الاستجابة رجاءاً",
+                              "تم إرسال إشعار للعميل، انتظر الاستجابة رجاءً",
                               color: const Color.fromARGB(255, 4, 83, 173),
-                              title: "اشعار العميل");
+                              title: "إشعار العميل");
                           Navigator.pop(Get.context!);
                           Navigator.pop(Get.context!);
                           setState(() {
-                            device.costToClient = parsedCost;
-                            device.problem = _problemController.text;
-                            device.status = 'بانتظار استجابة العميل';
+                            if (_isNotRepairable) {
+                              device.status = 'لا يصلح';
+                            } else {
+                              device.costToClient = parsedCost;
+                              device.problem = _problemController.text;
+                              device.status = 'بانتظار استجابة العميل';
+                            }
                           });
                         },
                         child: Container(
