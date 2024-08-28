@@ -7,6 +7,8 @@ sealed class AllPhoneInCenterState {}
 
 final class AllPhoneInCenterInitial extends AllPhoneInCenterState {}
 
+final class AllPhoneInCenterUpdated extends AllPhoneInCenterState {}
+
 final class AllPhoneInCenterLoading extends AllPhoneInCenterState {}
 
 final class AllPhoneInCenterSuccess extends AllPhoneInCenterState {

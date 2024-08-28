@@ -27,7 +27,7 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
   int currentPage = 1;
   int pagesCount = 0;
   int totalCount = 0;
-  List<dynamic> devices = [];
+  List<Device> devices = [];
   bool firstTime = true;
   bool readyToBuild = false;
   Future<void> fetchDevices([int page = 1, int perPage = 20]) async {
@@ -112,15 +112,18 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
           drawer: const CustomDrawer(),
           body: const Center(child: CircularProgressIndicator()),
         );
-      } else if (state is AllPhoneInCenterSuccess) {
+      }
+      if (state is AllPhoneInCenterSuccess) {
         if (firstTime) {
           totalCount = state.data.pagination?['total'];
           currentPage = state.data.pagination?['current_page'];
           pagesCount = state.data.pagination?['last_page'];
-          devices.addAll(state.data.items!);
+          devices.addAll(state.data.items! as Iterable<Device>);
           firstTime = false;
         }
-
+      }
+      if (state is AllPhoneInCenterSuccess ||
+          state is AllPhoneInCenterUpdated) {
         return Scaffold(
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 87, 42, 170),
@@ -150,15 +153,21 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                             scrollController: controller,
                             onReorder: (oldIndex, newIndex) async {
                               setState(() {
-                                final item = devices.removeAt(oldIndex);
                                 if (oldIndex < newIndex) {
                                   newIndex -= 1;
                                 }
-                                devices.insert(newIndex, item);
+                                Device deviceOnOldPlace = devices[oldIndex];
+                                Device deviceOnNewPlace = devices[newIndex];
                                 context
                                     .read<AllPhoneInCenterCubit>()
-                                    .reorderDevices(item.id, newIndex, oldIndex,
-                                        devices[oldIndex]);
+                                    .reorderDevices(deviceOnOldPlace.id!,
+                                        devices[newIndex].clientPriority!)
+                                    .then((updated) {
+                                  swipBetweenTwoPriority(
+                                      deviceOnNewPlace, deviceOnOldPlace);
+                                  devices.removeAt(oldIndex);
+                                  devices.insert(newIndex, deviceOnOldPlace);
+                                });
                               });
                             },
                             children: List.generate(
@@ -260,7 +269,8 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
                                                               child: Text(":")),
                                                           Expanded(
                                                               child: Text(
-                                                                  "${devices[i].status}")),
+                                                                  devices[i]
+                                                                      .status)),
                                                         ],
                                                       ),
                                                       TextButton(
@@ -353,5 +363,11 @@ class _allPhoneInCenter extends State<allPhoneInCenter> {
     } else {
       return const SizedBox(key: ValueKey('no_devices_first_time'));
     }
+  }
+
+  void swipBetweenTwoPriority(Device device1, Device device2) {
+    int tempPriority = device1.clientPriority!;
+    device1.clientPriority = device2.clientPriority;
+    device2.clientPriority = tempPriority;
   }
 }
