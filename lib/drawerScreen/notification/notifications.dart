@@ -1,16 +1,18 @@
 // ignore_for_file: camel_case_types, unnecessary_import, body_might_complete_normally_nullable, avoid_unnecessary_containers
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:graduation_mobile/drawerScreen/notification/allNotificationScreen.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
-import 'package:graduation_mobile/models/notification.dart';
 
 import '../../Controllers/crud_controller.dart';
 
 import '../../bar/custom_drawer.dart';
+import '../../models/notification.dart';
 
 class notificationsScreen extends StatefulWidget {
   const notificationsScreen({super.key});
@@ -108,62 +110,121 @@ class _notificationsScreenState extends State<notificationsScreen> {
         }
 
         return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Get.to(() => const allNotificationsScreen());
+            },
+            child: const Icon(Icons.list_alt),
+          ),
           appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 87, 42, 170),
             title: const Text('MYP'),
           ),
           drawer: const CustomDrawer(),
-          body: ListView.builder(
-            itemCount: notification.length,
-            itemBuilder: (BuildContext context, int index) {
-              List notificationBodyList = notification[index].body;
-              String notificationBody = notificationBodyList.join(' ');
-              if (notification.length > index) {
-                Notification1 notification1 = notification[index];
+          body: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                alignment: Alignment.centerRight,
+                child: const Text(
+                  "اسحب للتمييز كمقروء",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 246, 26, 26)),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: notification.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    List notificationBodyList = notification[index].body;
+                    String notificationBody = notificationBodyList.join(' ');
+                    if (notification.length > index) {
+                      Notification1 notification1 = notification[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: Card(
-                    color: notification1.read_at == null
-                        ? Color.fromARGB(255, 211, 201, 219)
-                        : const Color.fromARGB(255, 252, 234, 251),
-                    elevation: 4.0,
-                    child: ListTile(
-                      title: Text(notification[index].title),
-                      subtitle: Text(notificationBody),
-                      leading: const Column(
-                        children: [
-                          CircleAvatar(
-                            child: Icon(Icons.notifications),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Dismissible(
+                          key: Key(notification1.StringId!),
+                          onDismissed: (direction) {
+                            setState(() {
+                              BlocProvider.of<NotificationCubit>(context)
+                                  .deleteNotification(
+                                      id: notification1.StringId!);
+                              notification.removeAt(index);
+                            });
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 20),
+                            child:
+                                const Icon(Icons.delete, color: Colors.white),
                           ),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          BlocProvider.of<NotificationCubit>(context)
-                              .deleteNotification(
-                                  id: notification[index].StringId!);
-                          setState(() {
-                            notification.removeAt(index);
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              } else if (currentPage <= pagesCount && pagesCount > 1) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else {
-                return _buildNoMoreNotification();
-              }
-            },
+                          child: Dismissible(
+                            key: Key(notification[index].StringId!),
+                            background: Container(
+                              color: const Color.fromARGB(255, 155, 66, 233),
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.only(left: 20),
+                              child: const Icon(Icons.mark_email_read,
+                                  color: Colors.white),
+                            ),
+                            onDismissed: (direction) {
+                              setState(() {
+                                BlocProvider.of<NotificationCubit>(context)
+                                    .markAsRead(
+                                  id: notification[index].StringId!,
+                                );
+
+                                notification.removeAt(index);
+                              });
+                            },
+                            child: Card(
+                              color: const Color.fromARGB(255, 252, 234, 251),
+                              elevation: 4.0,
+                              child: ListTile(
+                                title: Text(notification[index].title),
+                                subtitle: Text(notificationBody),
+                                leading: const Column(
+                                  children: [
+                                    CircleAvatar(
+                                      child: Icon(Icons.notifications),
+                                    ),
+                                  ],
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    BlocProvider.of<NotificationCubit>(context)
+                                        .deleteNotification(
+                                            id: notification[index].StringId!);
+                                    setState(() {
+                                      notification.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else if (currentPage <= pagesCount && pagesCount > 1) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      return _buildNoMoreNotification();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         );
       }
@@ -196,7 +257,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
         child: Text('لا يوجد المزيد'),
       );
     } else {
-      return Text('لا يوجد اشعارات');
+      return const Text('لا يوجد اشعارات');
     }
   }
 }
