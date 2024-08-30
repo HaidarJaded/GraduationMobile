@@ -4,12 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'detalis_state.dart';
 
-// ignore_for_file: avoid_print
-
-import 'package:bloc/bloc.dart';
-import 'package:graduation_mobile/helper/api.dart';
-import 'detalis_state.dart';
-
 class DeviceDetailsCubit extends Cubit<DeviceDetailsState> {
   DeviceDetailsCubit() : super(DeviceDetalisInitial());
 
