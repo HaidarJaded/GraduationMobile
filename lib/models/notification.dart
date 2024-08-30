@@ -7,7 +7,7 @@ class Notification1 implements HasId {
   @override
   int? id;
   String? StringId;
-  static String table = "notifications";
+  static String table = "notifications/unread";
   String? title;
   List? body;
   String? notifiable_name;
