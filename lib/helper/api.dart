@@ -39,7 +39,7 @@ class Api {
 
   Future<dynamic> post({
     required String path,
-    required dynamic body,
+    dynamic body,
   }) async {
     if (!await CheckConnection().thereIsAnInternet()) {
       return;

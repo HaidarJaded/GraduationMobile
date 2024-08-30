@@ -1,13 +1,13 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, file_names, camel_case_types
 
 import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 
-class Notification1 implements HasId {
+class allNotification implements HasId {
   @override
   int? id;
   String? StringId;
-  static String table = "notifications/unread";
+  static String table = "notifications";
   String? title;
   List? body;
   String? notifiable_name;
@@ -15,7 +15,7 @@ class Notification1 implements HasId {
   DateTime? read_at;
   DateTime? created_at;
   Client? client;
-  Notification1(
+  allNotification(
       {this.id,
       this.title,
       this.body,
@@ -24,8 +24,8 @@ class Notification1 implements HasId {
       this.read_at,
       this.StringId,
       this.created_at});
-  factory Notification1.fromJson(Map<String, dynamic> json) {
-    var notification = Notification1(
+  factory allNotification.fromJson(Map<String, dynamic> json) {
+    var notification = allNotification(
       StringId: json['id'],
       title: json['title'],
       body: json['body'],

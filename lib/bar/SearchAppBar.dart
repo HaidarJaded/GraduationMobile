@@ -95,7 +95,8 @@ class search extends SearchDelegate {
                 'dir': 'desc',
                 'client_id': idSnapShot.data,
                 'deliver_to_client': 0,
-                'all_data': 1
+                'all_data': 1,
+                'with': 'customer'
               }),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

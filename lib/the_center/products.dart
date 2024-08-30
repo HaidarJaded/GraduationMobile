@@ -175,18 +175,18 @@ class _productsScreensState extends State<productsScreen> {
                       ),
                     ),
                   );
-                } else if (currentPage <= pagesCount && pagesCount > 1) {
+                }
+                if (currentPage <= pagesCount && pagesCount > 1) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 32),
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
-                } 
+                }
+                return null;
               }),
-              
         );
-        
       }
       if (state is ProductFailure) {
         Scaffold(

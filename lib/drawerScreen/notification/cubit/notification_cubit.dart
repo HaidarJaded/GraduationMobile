@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/helper/api.dart';
+import 'package:graduation_mobile/models/allNotifications.dart';
 import '../../../Controllers/returned_object.dart';
 import '../../../helper/snack_bar_alert.dart';
 import '../../../models/notification.dart';
@@ -42,6 +43,40 @@ class NotificationCubit extends Cubit<NotificationState> {
       }
     } catch (e) {
       emit(NotificationFailur(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> markAsRead({required String id}) async {
+    try {
+      var respone = await Api().post(
+        path: 'api/notifications/mark_as_read/${id}',
+      );
+
+      if (respone == null) {
+        SnackBarAlert().alert("تمت العملية",
+            color: const Color.fromRGBO(0, 200, 0, 1),
+            title: "تم تحديث البيانات بنجاح");
+      }
+    } catch (e) {
+      emit(NotificationFailur(errorMessage: e.toString()));
+    }
+  }
+
+  final CrudController<allNotification> _crudController2 =
+      CrudController<allNotification>();
+  Future<void> getAllNotificationData(
+      [Map<String, dynamic>? queryParams]) async {
+    try {
+      ReturnedObject data = await _crudController2.getAll(queryParams);
+      emit(NotificationLoading());
+
+      if (data.items != null) {
+        emit(NotificationSucess(data: data));
+      } else {
+        emit(NotificationFailur(errorMessage: 'Error: Failed to fetch data'));
+      }
+    } catch (e) {
+      emit(NotificationFailur(errorMessage: 'Error: $e'));
     }
   }
 }

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:graduation_mobile/Controllers/returned_object.dart';
 import 'package:graduation_mobile/helper/api.dart';
 import 'package:graduation_mobile/helper/check_connection.dart';
+import 'package:graduation_mobile/models/allNotifications.dart';
 import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/has_id.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
@@ -128,6 +129,7 @@ class CrudController<T extends HasId> {
       Customer: (json) => Customer.fromJson(json),
       Client: (json) => Client.fromJson(json),
       Notification1: (json) => Notification1.fromJson(json),
+      allNotification: (json) => allNotification.fromJson(json),
       CompletedDevice: (json) => CompletedDevice.fromJson(json),
       Product: (json) => Product.fromJson(json)
     };
@@ -150,6 +152,7 @@ class CrudController<T extends HasId> {
       Customer: Customer.table,
       Client: Client.table,
       Notification1: Notification1.table,
+      allNotification: allNotification.table,
       CompletedDevice: CompletedDevice.table,
       Product: Product.table
     };
