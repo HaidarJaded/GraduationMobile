@@ -108,6 +108,7 @@ class _AddDetalisState extends State<AddDetalis> {
                           }
                           return null;
                         },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         keyboardType: TextInputType.datetime,
                         decoration: InputDecoration(
                           labelText: 'التكلفة',
@@ -136,6 +137,7 @@ class _AddDetalisState extends State<AddDetalis> {
                           }
                           return null;
                         },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           labelText: 'المشكلة',
                           prefixIcon: const Icon(Icons.report_problem_outlined),
@@ -153,14 +155,16 @@ class _AddDetalisState extends State<AddDetalis> {
                           leading: const Icon(Icons.calendar_today),
                           title: const Text("التاريخ المتوقع للتسليم"),
                           subtitle: Text(
-                            _expectedDateOfDelivery != null
-                                ? _expectedDateOfDelivery!.toIso8601String()
-                                : "لم يتم التحديد",
+                            _isNotRepairable || _expectedDateOfDelivery == null
+                                ? "لا يمكن تحديد التاريخ"
+                                : _expectedDateOfDelivery!.toIso8601String(),
                           ),
                           trailing: IconButton(
-                            onPressed: () {
-                              _selectDate(context);
-                            },
+                            onPressed: _isNotRepairable
+                                ? null
+                                : () {
+                                    _selectDate(context);
+                                  },
                             icon: const Icon(Icons.edit),
                           ),
                         ),
@@ -171,11 +175,17 @@ class _AddDetalisState extends State<AddDetalis> {
                           if (!_formKey.currentState!.validate()) {
                             return;
                           }
-                          if (_expectedDateOfDelivery == null) {
-                            SnackBarAlert()
-                                .alert('يرجى تحديد التاريخ المتوقع للتسليم');
-                            return;
+                          DateTime? expectedDate;
+                          if (!_isNotRepairable) {
+                            try {
+                              expectedDate = _expectedDateOfDelivery!;
+                            } catch (e) {
+                              SnackBarAlert()
+                                  .alert('يرجى تحديد التاريخ المتوقع للتسليم');
+                              return;
+                            }
                           }
+
                           double? parsedCost;
                           if (!_isNotRepairable) {
                             try {
@@ -192,7 +202,8 @@ class _AddDetalisState extends State<AddDetalis> {
                             id: device.id!,
                             costToClient: _isNotRepairable ? null : parsedCost,
                             problem: _problemController.text,
-                            expectedDateOfDelivery: _expectedDateOfDelivery!,
+                            expectedDateOfDelivery:
+                                _isNotRepairable ? null : expectedDate,
                             isNotRepairable: _isNotRepairable,
                           );
                           if (!editSuccess) {
