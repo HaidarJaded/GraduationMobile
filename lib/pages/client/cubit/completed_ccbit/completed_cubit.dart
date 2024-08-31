@@ -4,11 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
 import 'package:graduation_mobile/Controllers/returned_object.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
-
+// ignore: depend_on_referenced_packages
 part 'completed_state.dart';
 
-class CompletedCubit extends Cubit<CompletedState> {
-  CompletedCubit() : super(CompletedInitial());
+class CompletedDeviceUserCubit extends Cubit<CompletedState> {
+  CompletedDeviceUserCubit() : super(CompletedInitial());
   final CrudController<CompletedDevice> _crudController =
       CrudController<CompletedDevice>();
   Future<void> getCompletedDeviceData(
@@ -17,7 +17,6 @@ class CompletedCubit extends Cubit<CompletedState> {
       emit(CompletedLoading());
       ReturnedObject data = await _crudController.getAll(queryParams);
 
-      
       if (data.items != null) {
         emit(CompletedSucces(data: data));
       } else {
