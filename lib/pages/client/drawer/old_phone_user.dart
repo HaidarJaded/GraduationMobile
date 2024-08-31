@@ -97,17 +97,8 @@ class _oldPhoneUserState extends State<oldPhoneUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Center(
-          child: Text(
-            "الاجهزة المسلمة",
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+        backgroundColor: const Color.fromARGB(255, 87, 42, 170),
+        title: const Text('MYP'),
       ),
       body: BlocBuilder<CompletedCubit, CompletedState>(
         builder: (context, state) {
