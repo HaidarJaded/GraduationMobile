@@ -266,9 +266,10 @@ class _DevicesByClientState extends State<DevicesByClient> {
                           _showConfirmProcessDialog(device.id!, () {
                             setState(() {
                               devices.remove(device);
-                            });
-                            Api().put(path: 'api/devices/${device.id}', body: {
-                              'deliver_to_client': 1,
+                              Api()
+                                  .put(path: 'api/devices/${device.id}', body: {
+                                'deliver_to_client': 1,
+                              });
                             });
                             Get.back();
                           });
@@ -384,7 +385,47 @@ class _DevicesByClientState extends State<DevicesByClient> {
               },
             ),
             TextButton(
-              onPressed: action,
+              onPressed: () {
+                Get.back(); // اغلاق مربع الحوار الحالي
+                _showPaymentDialog(deviceId,
+                    action); // استدعاء مربع الحوار الجديد وتمرير الجهاز
+              },
+              child: const Text('نعم'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showPaymentDialog(int deviceId, Function() action) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('هل استلمت حساب الجهاز؟'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('لا'),
+              onPressed: () async {
+                await Api().put(path: 'api/devices/$deviceId', body: {
+                  'deliver_to_client': 1,
+                });
+                // بعد اختيار "لا"، قم بإزالة الجهاز من القائمة واستدعاء الدالة الأصلية
+                action();
+                Get.back(); // اغلاق مربع الحوار
+              },
+            ),
+            TextButton(
+              onPressed: () async {
+                await Api().put(path: 'api/devices/$deviceId', body: {
+                  'deliver_to_client': 1,
+                  'payment_status': 1,
+                });
+                // بعد اختيار "نعم"، قم بإزالة الجهاز من القائمة واستدعاء الدالة الأصلية
+                action();
+                Get.back(); // اغلاق مربع الحوار
+              },
               child: const Text('نعم'),
             ),
           ],
@@ -445,3 +486,33 @@ class _DevicesByClientState extends State<DevicesByClient> {
     });
   }
 }
+
+// // ignore: unused_element
+// void _showPaymentDialog(int deviceId) {
+//   showDialog(
+//     context: Get.context!,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: const Text('هل استلمت حساب الجهاز؟'),
+//         actions: <Widget>[
+//           TextButton(
+//             child: const Text('لا'),
+//             onPressed: () async {
+//               Api().put(path: 'api/devices/$deviceId', body: {
+//                 'deliver_to_client': 1,
+//               });
+//             },
+//           ),
+//           TextButton(
+//             onPressed: () async {
+//               Api().put(
+//                   path: 'api/devices/$deviceId',
+//                   body: {'deliver_to_client': 1, 'payment_status': 1});
+//             },
+//             child: const Text('نعم'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

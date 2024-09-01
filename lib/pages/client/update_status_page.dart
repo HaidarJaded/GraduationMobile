@@ -40,7 +40,6 @@ class _UpdateStatusState extends State<UpdateStatusPage> {
         path: 'https://haidarjaded787.serv00.net/api/devices/$id',
         body: body,
       );
-      print(response);
       if (response != null) {
         SnackBarAlert().alert("تم تحديث حالة الجهاز وإعلام العميل",
             color: const Color.fromARGB(255, 4, 83, 173),

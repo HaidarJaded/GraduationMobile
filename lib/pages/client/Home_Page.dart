@@ -11,9 +11,7 @@ import 'package:graduation_mobile/models/client_model.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/user_model.dart';
 import 'package:graduation_mobile/pages/client/devices_by_client.dart';
-import 'package:graduation_mobile/pages/client/drawer/notificationScreen.dart';
-import 'package:graduation_mobile/pages/client/drawer/old_phone_user.dart';
-import 'package:graduation_mobile/pages/client/drawer/profile_user.dart';
+import 'package:graduation_mobile/pages/client/widget/drawer_user.dart';
 import '../../login/loginScreen/loginPage.dart';
 import 'cubit/phone_cubit/phone_cubit.dart';
 
@@ -114,87 +112,7 @@ class _HomePagesState extends State<HomePages> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: ListView(
-            children: [
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: IconButton(
-                      onPressed: () {
-                        Get.to(() => const UserProfilePage());
-                      },
-                      icon: const Icon(Icons.person),
-                    ),
-                  ),
-                  Expanded(
-                    child: FutureBuilder<String?>(
-                      future: InstanceSharedPrefrences().getName(),
-                      builder: (context, nameSnapshot) {
-                        return FutureBuilder<String?>(
-                          future: InstanceSharedPrefrences().getEmail(),
-                          builder: (context, emailSnapshot) {
-                            if (nameSnapshot.hasData && emailSnapshot.hasData) {
-                              return ListTile(
-                                title: Text(nameSnapshot.data!),
-                                subtitle: Text(emailSnapshot.data!),
-                              );
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              ListTile(
-                leading: const Icon(Icons.notifications_active_sharp),
-                title: const Text("الإشعارات"),
-                onTap: () {
-                  Get.to(NotificationScreen());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.list_alt_rounded),
-                title: const Text("الاجهزة المسلمة"),
-                onTap: () {
-                  Get.to(const oldPhoneUser());
-                },
-              ),
-              InkWell(
-                onTap: logout,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: const LinearGradient(colors: [
-                      Color.fromARGB(255, 203, 139, 248),
-                      Color.fromARGB(255, 67, 25, 146),
-                    ]),
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  child: const Center(
-                    child: Text(
-                      'تسجيل الخروج',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: const UserDrawer(),
       body: BlocProvider(
         create: (context) => _phoneCubit,
         child: Column(

@@ -216,7 +216,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => RepairStepsCubit()),
 
           BlocProvider(
-            create: (context) => CompletedCubit(),
+            create: (context) => CompletedDeviceUserCubit(),
           ),
           BlocProvider<NotificationsCubit>(
             create: (context) => NotificationsCubit()..getNotificationData(),
