@@ -48,7 +48,7 @@ class LoginPageState extends State<LoginPage> {
     super.initState();
     CheckConnection().thereIsAnInternet().then((internet) => {
           if (!internet)
-            {BlocProvider.of<loginCubit>(context).noInternet()}
+            {BlocProvider.of<loginCubit>(Get.context!).noInternet()}
           else
             {checkLoginStatus()}
         });

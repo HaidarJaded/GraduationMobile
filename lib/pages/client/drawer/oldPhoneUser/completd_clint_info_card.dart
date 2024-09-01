@@ -5,8 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
-import 'package:graduation_mobile/models/customer_model.dart';
-import 'package:graduation_mobile/pages/client/customer_info_card.dart';
+import 'package:graduation_mobile/pages/client/client_info_card.dart';
 import 'package:intl/intl.dart';
 
 class completedDeviceInfoUserCard extends StatelessWidget {
@@ -107,7 +106,7 @@ class completedDeviceInfoUserCard extends StatelessWidget {
         return SizedBox(
           width: 50,
           height: 50,
-          child: CustomerInfoCard(client: client),
+          child: ClientInfoCard(client: client),
         );
       },
     );

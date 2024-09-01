@@ -28,15 +28,6 @@ class AllPhoneInCenterCubit extends Cubit<AllPhoneInCenterState> {
       emit(AllPhoneInCenterFailuer(errorMessage: 'Error: $e'));
     }
   }
-
-  Future<void> reorderDevices(
-      int deviceId, int newIndex, int oldIndex, devic) async {
-    if (state is AllPhoneInCenterSuccess) {
-      final currentState = state as AllPhoneInCenterSuccess;
-      final devicesList = List<Device>.from(currentState.data.items!);
-      final newReturnedObject = ReturnedObject<Device>();
-      newReturnedObject.items = devicesList.cast<Device>();
-
   Future<bool> reorderDevices(int deviceId, int newPriority) async {
       emit(AllPhoneInCenterLoading());
       var response = await Api().put(
