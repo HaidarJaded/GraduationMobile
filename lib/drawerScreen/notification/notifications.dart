@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:graduation_mobile/drawerScreen/notification/allNotificationScreen.dart';
+import 'package:graduation_mobile/drawerScreen/notification/all_notifications_screen.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
 
 import '../../Controllers/crud_controller.dart';
@@ -112,7 +112,7 @@ class _notificationsScreenState extends State<notificationsScreen> {
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Get.to(() => const allNotificationsScreen());
+              Get.to(() => const AllNotificationsScreen());
             },
             child: const Icon(Icons.list_alt),
           ),

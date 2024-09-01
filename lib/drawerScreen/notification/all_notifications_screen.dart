@@ -1,10 +1,6 @@
-// ignore_for_file: camel_case_types, unnecessary_import, body_might_complete_normally_nullable, avoid_unnecessary_containers
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/drawerScreen/notification/cubit/notification_cubit.dart';
 import 'package:graduation_mobile/models/allNotifications.dart';
 
@@ -12,16 +8,16 @@ import '../../Controllers/crud_controller.dart';
 
 import '../../bar/custom_drawer.dart';
 
-class allNotificationsScreen extends StatefulWidget {
-  const allNotificationsScreen({super.key});
+class AllNotificationsScreen extends StatefulWidget {
+  const AllNotificationsScreen({super.key});
 
   @override
-  State<allNotificationsScreen> createState() => _allNotificationsScreenState();
+  State<AllNotificationsScreen> createState() => AllNotificationsScreenState();
 }
 
 int? selectedNotificstionId;
 
-class _allNotificationsScreenState extends State<allNotificationsScreen> {
+class AllNotificationsScreenState extends State<AllNotificationsScreen> {
   int perPage = 20;
   int currentPage = 1;
   int pagesCount = 0;
@@ -126,7 +122,7 @@ class _allNotificationsScreenState extends State<allNotificationsScreen> {
                       vertical: 8.0, horizontal: 16.0),
                   child: Card(
                     color: notification1.read_at == null
-                        ? Color.fromARGB(255, 211, 201, 219)
+                        ? const Color.fromARGB(255, 211, 201, 219)
                         : const Color.fromARGB(255, 252, 234, 251),
                     elevation: 4.0,
                     child: ListTile(
@@ -196,7 +192,7 @@ class _allNotificationsScreenState extends State<allNotificationsScreen> {
         child: Text('لا يوجد المزيد'),
       );
     } else {
-      return Text('لا يوجد اشعارات');
+      return const Text('لا يوجد اشعارات');
     }
   }
 }
