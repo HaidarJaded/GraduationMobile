@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:graduation_mobile/models/client_model.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
 import 'package:graduation_mobile/models/customer_model.dart';
 import 'package:graduation_mobile/pages/client/customer_info_card.dart';
@@ -40,15 +41,15 @@ class completedDeviceInfoUserCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-              'اسم الزبون: ${completedDevice.customer?.name ?? ''} ${completedDevice.customer?.lastName ?? ''}'),
+              'اسم العميل: ${completedDevice.client?.name ?? ''} ${completedDevice.client?.lastName ?? ''}'),
           TextButton(
               onPressed: () {
-                if (completedDevice.customer == null) {
+                if (completedDevice.client == null) {
                   return;
                 }
-                _showCustomerDetailsDialog(completedDevice.customer!);
+                _showCustomerDetailsDialog(completedDevice.client!);
               },
-              child: const Text('عرض بيانات الزبون'))
+              child: const Text('عرض بيانات العميل'))
         ],
       ),
       Text('معلومات اضافية: ${completedDevice.info ?? 'لا يوجد'}'),
@@ -79,8 +80,8 @@ class completedDeviceInfoUserCard extends StatelessWidget {
           children: [
             Text(
                 'تاريخ انتهاء كفالة العميل: ${DateFormat('yyyy/MM/dd').format(completedDevice.clientDateWarranty!)}'),
-            if (completedDevice.customerDateWarranty != null &&
-                completedDevice.customerDateWarranty!.isBefore(DateTime.now()))
+            if (completedDevice.clientDateWarranty != null &&
+                completedDevice.clientDateWarranty!.isBefore(DateTime.now()))
               const Text(
                 'منتهية',
                 style: TextStyle(color: Colors.red),
@@ -99,14 +100,14 @@ class completedDeviceInfoUserCard extends StatelessWidget {
     );
   }
 
-  void _showCustomerDetailsDialog(Customer customer) {
+  void _showCustomerDetailsDialog(Client client) {
     showDialog(
       context: Get.context!,
       builder: (context) {
         return SizedBox(
           width: 50,
           height: 50,
-          child: CustomerInfoCard(customer: customer),
+          child: CustomerInfoCard(client: client),
         );
       },
     );
