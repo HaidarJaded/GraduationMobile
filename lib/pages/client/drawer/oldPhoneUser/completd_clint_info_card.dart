@@ -69,10 +69,10 @@ class completedDeviceInfoUserCard extends StatelessWidget {
       ],
       Text('حالة الجهاز: ${completedDevice.status}'),
       Text(
-          'تاريخ الاستلام: ${DateFormat('yyyy/MM/dd hh:mm a').format(completedDevice.dateReceiptFromCustomer)}'),
+          'تاريخ الاستلام: ${DateFormat('yyyy/MM/dd hh:mm a').format(completedDevice.dateReceipt!)}'),
       if (completedDevice.dateDeliveryCustomer != null)
         Text(
-            'تاريخ التسليم: ${DateFormat('yyyy/MM/dd hh:mm a').format(completedDevice.dateDeliveryCustomer!)}'),
+            'تاريخ التسليم: ${DateFormat('yyyy/MM/dd hh:mm a').format(completedDevice.dateDeliveryClient!)}'),
       if (completedDevice.clientDateWarranty != null)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
