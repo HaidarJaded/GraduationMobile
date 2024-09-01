@@ -78,7 +78,7 @@ class completedDeviceInfoUserCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-                'تاريخ انتهاء كفالة العميل: ${DateFormat('yyyy/MM/dd').format(completedDevice.customerDateWarranty!)}'),
+                'تاريخ انتهاء كفالة العميل: ${DateFormat('yyyy/MM/dd').format(completedDevice.clientDateWarranty!)}'),
             if (completedDevice.customerDateWarranty != null &&
                 completedDevice.customerDateWarranty!.isBefore(DateTime.now()))
               const Text(
