@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 // ignore: unnecessary_import
 import 'package:get/get_core/src/get_main.dart';
 import 'package:graduation_mobile/Controllers/crud_controller.dart';
-import 'package:graduation_mobile/drawerScreen/oldPhone/completedDeviceInfoCard.dart';
 import 'package:graduation_mobile/helper/shared_perferences.dart';
 import 'package:graduation_mobile/models/completed_device_model.dart';
+import 'package:graduation_mobile/pages/client/drawer/oldPhoneUser/completd_clint_info_card.dart';
 
 class searchCompletedDeviceUser extends SearchDelegate {
   @override
@@ -186,7 +186,7 @@ class searchCompletedDeviceUser extends SearchDelegate {
         return SizedBox(
           width: 50,
           height: 50,
-          child: completedDeviceInfoCard(
+          child: completedDeviceInfoUserCard(
             completedDevice: completedDevice,
           ),
         );
